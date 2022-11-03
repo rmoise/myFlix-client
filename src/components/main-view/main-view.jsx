@@ -1,60 +1,61 @@
 import React from 'react';
+import axios from 'axios';
+
+import { RegistrationView } from '../registration-view/registration-view';
+import { LoginView } from '../login-view/login-view';
 import { MovieCard } from '../movie-card/movie-card';
 import { MovieView } from '../movie-view/movie-view';
 
 export class MainView extends React.Component {
   constructor() {
     super();
+    // Initial state is set to null
     this.state = {
-      movies: [
-        {
-          _id: 1,
-          Title: 'Fight Club',
-          Description:
-            'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.',
-          Genre: 'Drama',
-          Director: 'David Fincher',
-          ImagePath:
-            'https://www.themoviedb.org/t/p/w1280/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg',
-        },
-        {
-          _id: 2,
-          Title: 'Good Time',
-          Description:
-            'A crime film is a type of film focusing on the lives of criminals. The stylistic approach ranges from grittily realistic portrayals of real-life criminal figures (crime drama) to the far-fetched evil doings of imaginary arch-villains (master criminal films.) Criminal acts are almost always glorified in these movies.',
-          Genre: 'Crime',
-          Director: 'Benny Safdie',
-          ImagePath:
-            'https://www.themoviedb.org/t/p/w1280/s6DJXJU3HzX24Ij3VWg5MfVGHrI.jpg',
-        },
-        {
-          _id: 3,
-          Title: 'American Psycho',
-          Description:
-            'A wealthy New York City investment banking executive, Patrick Bateman, hides his alternate psychopathic ego from his co-workers and friends as he delves deeper into his violent, hedonistic fantasies.',
-          Genre: 'Crime',
-          Director: 'Mary Harron',
-          ImagePath:
-            'https://www.themoviedb.org/t/p/w1280/9uGHEgsiUXjCNq8wdq4r49YL8A1.jpg',
-        },
-      ],
+      movies: [],
+      selectedMovie: null,
+      user: null,
     };
   }
 
+  componentDidMount() {
+    axios
+      .get('https://myflix-firstapi-app.herokuapp.com/movies')
+      .then((response) => {
+        this.setState({
+          movies: response.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  // When a movie is clicked, this function is invoked and updates the state of the `selectedMovie` property to that movie
   setSelectedMovie(newSelectedMovie) {
     this.setState({
       selectedMovie: newSelectedMovie,
     });
   }
 
-  render() {
-    const { movies, selectedMovie } = this.state;
+  // When a user successfully logs in, this function updates the `user` property in state to that particular user
+  onLoggedIn(user) {
+    this.setState({
+      user,
+    });
+  }
 
-    if (movies.length === 0)
-      return <div className="main-view">The list is empty!</div>;
+  render() {
+    const { movies, selectedMovie, user } = this.state;
+
+    // If there is no user, the LoginView is rendered. If there is a user logged in, the user details are passed as a prop to the LoginView
+    if (!user)
+      return <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />;
+
+    // Before the movies have been loaded
+    if (movies.length === 0) return <div className="main-view" />;
 
     return (
       <div className="main-view">
+        {/*If the state of `selectedMovie` is not null, that selected movie will be returned otherwise, all movies will be returned*/}
         {selectedMovie ? (
           <MovieView
             movie={selectedMovie}
@@ -67,8 +68,8 @@ export class MainView extends React.Component {
             <MovieCard
               key={movie._id}
               movie={movie}
-              onMovieClick={(movie) => {
-                this.setSelectedMovie(movie);
+              onMovieClick={(newSelectedMovie) => {
+                this.setSelectedMovie(newSelectedMovie);
               }}
             />
           ))
