@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Form, Button, Card, Container, Row } from 'react-bootstrap';
+
+import './login-view.scss';
 
 
 export function LoginView(props) {
@@ -15,28 +18,46 @@ export function LoginView(props) {
   };
 
   return (
-    <form>
-      <label>
-        Username:
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <button type="submit" onClick={handleSubmit}>
-        Submit
-      </button>
-      <button type="button">Register</button>
-    </form>
+    <Container>
+      <Row className="justify-content-center">
+        <Card style={{ marginTop: 100, marginBottom: 50, width: '30rem' }}>
+          <Card.Body>
+            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }}>
+              Welcome
+            </Card.Title>
+            <Form className="login-border">
+              <Form.Group controlId="formUsername">
+                <Form.Label>Username:</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="mb-3"
+                />
+              </Form.Group>
+
+              <Form.Group controlId="formPassword">
+                <Form.Label>Password:</Form.Label>
+                <Form.Control
+                  type="password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mb-5"
+                />
+              </Form.Group>
+            </Form>
+            <Button
+              className="mr-3"
+              variant="primary"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+            <button type="button">Register</button>
+          </Card.Body>
+        </Card>
+      </Row>
+    </Container>
   );
 }
 

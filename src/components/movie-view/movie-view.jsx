@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+
+import './movie-view.scss';
 
 export class MovieView extends React.Component {
-
   render() {
     const { movie, onBackClick } = this.props;
 
@@ -11,45 +13,50 @@ export class MovieView extends React.Component {
         <div className="movie-poster">
           <img src={movie.ImageURL} />
         </div>
-        <div className="movie-title">
-          <span className="title">Title: </span>
-          <span className="value">{movie.Title}</span>
+        <div className="movie-body">
+          <div className="movie-title">
+            <span className="title"></span>
+            <span className="value font-weight-bold h1">{movie.Title}</span>
+          </div>
+          <div className="movie-genre">
+            <p className="genre mb-3"></p>
+            <span className="value border rounded p-2">{movie.Genre.Name}</span>
+          </div>
+          <div className="genre-description">
+            <p className="genre"></p>
+            <p className="value">{movie.Genre.Description}</p>
+          </div>
+          <div className="movie-description">
+            <span className="description font-weight-bold">Overview</span>
+            <p className="value">{movie.Description}</p>
+          </div>
+
+          <div className="movie-director">
+            <span className="director font-weight-bold pr-2">Director</span>
+            <span className="value">{movie.Director.Name}</span>
+          </div>
+          <div className="director-bio">
+            <span className="director font-weight-bold pr-2">Bio</span>
+            <span className="value">{movie.Director.Bio}</span>
+          </div>
+          <div className="director-birth">
+            <span className="director font-weight-bold pr-2">Birth</span>
+            <span className="value">{movie.Director.Birth}</span>
+          </div>
+          <div className="movie-actors font-weight-bold pr-2">
+            <p className="actors">Actors</p>
+            <p className="value">{movie.Actors}</p>
+          </div>
         </div>
-        <div className="movie-description">
-          <span className="description">Description: </span>
-          <span className="value">{movie.Description}</span>
-        </div>
-        <div className="movie-genre">
-          <span className="genre">Genre: </span>
-          <span className="value">{movie.Genre.Name}</span>
-        </div>
-        <div className="genre-description">
-          <span className="genre">Description: </span>
-          <span className="value">{movie.Genre.Description}</span>
-        </div>
-        <div className="movie-director">
-          <span className="director">Director: </span>
-          <span className="value">{movie.Director.Name}</span>
-        </div>
-        <div className="director-bio">
-          <span className="director">Bio: </span>
-          <span className="value">{movie.Director.Bio}</span>
-        </div>
-        <div className="director-birth">
-          <span className="director">Birth: </span>
-          <span className="value">{movie.Director.Birth}</span>
-        </div>
-        <div className="movie-actors">
-          <span className="actors">Actors: </span>
-          <span className="value">{movie.Actors}</span>
-        </div>
-        <button
+        <Button
+          variant="secondary"
+          className="mb-3"
           onClick={() => {
             onBackClick(null);
           }}
         >
           Back
-        </button>
+        </Button>
       </div>
     );
   }
