@@ -21,7 +21,7 @@ export function RegistrationView(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(username, password, email, birthday);
-    props.Registration(username);
+    props.onRegistration(username);
   };
 
   return (
@@ -29,23 +29,26 @@ export function RegistrationView(props) {
       <Row>
         <Col>
           <CardGroup>
-            <Card>
+            <Card style={{ marginTop: 100, marginBottom: 50, width: '30rem' }}>
               <Card.Body>
-                <Card.Title>Please Register</Card.Title>
+                <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }}>
+                  Please Register
+                </Card.Title>
                 <Form>
                   <Form.Group>
-                    <Form.Label>Username: </Form.Label>
+                    <Form.Label>Username </Form.Label>
                     <Form.Control
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       required
                       placeholder="Enter a username"
+                      className="mb-3"
                     />
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Password: </Form.Label>
+                    <Form.Label>Password </Form.Label>
                     <Form.Control
                       type="password"
                       value={password}
@@ -53,29 +56,33 @@ export function RegistrationView(props) {
                       required
                       minLength="8"
                       placeholder="Your password must be 8 or more characters"
+                      className="mb-3"
                     />
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Email: </Form.Label>
+                    <Form.Label>Email </Form.Label>
                     <Form.Control
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       placeholder="Enter your email address"
+                      className="mb-3"
                     />
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label>Birthday: </Form.Label>
+                    <Form.Label>Birthday </Form.Label>
                     <Form.Control
                       type="birthday"
                       value={birthday}
                       onChange={(e) => setBirthday(e.target.value)}
+                      className="mb-5"
                     />
                   </Form.Group>
                   <Button
+                    className="mr-3"
                     variant="primary"
                     type="submit"
                     onClick={handleSubmit}
@@ -83,18 +90,15 @@ export function RegistrationView(props) {
                     Submit
                   </Button>
 
-                  <button type="submit" onClick={handleSubmit}>
-                    Register
-                  </button>
-
-                  <button
+                  <Button
+                    variant="secondary"
                     type="button"
                     onClick={() => {
                       props.onBackClick(null);
                     }}
                   >
                     Return to Login Page
-                  </button>
+                  </Button>
                 </Form>
               </Card.Body>
             </Card>

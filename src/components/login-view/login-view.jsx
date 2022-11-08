@@ -4,7 +4,6 @@ import { Form, Button, Card, Container, Row } from 'react-bootstrap';
 
 import './login-view.scss';
 
-
 export function LoginView(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +26,7 @@ export function LoginView(props) {
             </Card.Title>
             <Form className="login-border">
               <Form.Group controlId="formUsername">
-                <Form.Label>Username:</Form.Label>
+                <Form.Label>Username</Form.Label>
                 <Form.Control
                   type="text"
                   value={username}
@@ -37,7 +36,7 @@ export function LoginView(props) {
               </Form.Group>
 
               <Form.Group controlId="formPassword">
-                <Form.Label>Password:</Form.Label>
+                <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
                   onChange={(e) => setPassword(e.target.value)}
@@ -53,7 +52,9 @@ export function LoginView(props) {
             >
               Submit
             </Button>
-            <button type="button">Register</button>
+            <Button variant="secondary" type="button">
+              Register
+            </Button>
           </Card.Body>
         </Card>
       </Row>
@@ -63,4 +64,5 @@ export function LoginView(props) {
 
 LoginView.propTypes = {
   onLoggedIn: PropTypes.func.isRequired,
+  onRegistration: PropTypes.func.isRequired,
 };

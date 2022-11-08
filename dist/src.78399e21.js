@@ -50913,17 +50913,29 @@ function RegistrationView(props) {
   var handleSubmit = function handleSubmit(e) {
     e.preventDefault();
     console.log(username, password, email, birthday);
-    props.Registration(username);
+    props.onRegistration(username);
   };
-  return /*#__PURE__*/_react.default.createElement(_reactBootstrap.Container, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.CardGroup, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Body, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Title, null, "Please Register"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Username: "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+  return /*#__PURE__*/_react.default.createElement(_reactBootstrap.Container, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.CardGroup, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card, {
+    style: {
+      marginTop: 100,
+      marginBottom: 50,
+      width: '30rem'
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Body, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Title, {
+    style: {
+      textAlign: 'center',
+      fontSize: '2rem'
+    }
+  }, "Please Register"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Username "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "text",
     value: username,
     onChange: function onChange(e) {
       return setUsername(e.target.value);
     },
     required: true,
-    placeholder: "Enter a username"
-  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Password: "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+    placeholder: "Enter a username",
+    className: "mb-3"
+  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Password "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "password",
     value: password,
     onChange: function onChange(e) {
@@ -50931,29 +50943,31 @@ function RegistrationView(props) {
     },
     required: true,
     minLength: "8",
-    placeholder: "Your password must be 8 or more characters"
-  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Email: "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+    placeholder: "Your password must be 8 or more characters",
+    className: "mb-3"
+  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Email "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "email",
     value: email,
     onChange: function onChange(e) {
       return setEmail(e.target.value);
     },
     required: true,
-    placeholder: "Enter your email address"
-  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Birthday: "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+    placeholder: "Enter your email address",
+    className: "mb-3"
+  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Birthday "), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "birthday",
     value: birthday,
     onChange: function onChange(e) {
       return setBirthday(e.target.value);
-    }
+    },
+    className: "mb-5"
   })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+    className: "mr-3",
     variant: "primary",
     type: "submit",
     onClick: handleSubmit
-  }, "Submit"), /*#__PURE__*/_react.default.createElement("button", {
-    type: "submit",
-    onClick: handleSubmit
-  }, "Register"), /*#__PURE__*/_react.default.createElement("button", {
+  }, "Submit"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+    variant: "secondary",
     type: "button",
     onClick: function onClick() {
       props.onBackClick(null);
@@ -51020,7 +51034,7 @@ function LoginView(props) {
     className: "login-border"
   }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, {
     controlId: "formUsername"
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Username:"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Username"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "text",
     value: username,
     onChange: function onChange(e) {
@@ -51029,7 +51043,7 @@ function LoginView(props) {
     className: "mb-3"
   })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, {
     controlId: "formPassword"
-  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Password:"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Password"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
     type: "password",
     onChange: function onChange(e) {
       return setPassword(e.target.value);
@@ -51040,12 +51054,14 @@ function LoginView(props) {
     variant: "primary",
     type: "submit",
     onClick: handleSubmit
-  }, "Submit"), /*#__PURE__*/_react.default.createElement("button", {
+  }, "Submit"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+    variant: "secondary",
     type: "button"
   }, "Register")))));
 }
 LoginView.propTypes = {
-  onLoggedIn: _propTypes.default.func.isRequired
+  onLoggedIn: _propTypes.default.func.isRequired,
+  onRegistration: _propTypes.default.func.isRequired
 };
 },{"react":"../node_modules/react/index.js","prop-types":"../node_modules/prop-types/index.js","react-bootstrap":"../node_modules/react-bootstrap/esm/index.js","./login-view.scss":"components/login-view/login-view.scss"}],"components/movie-card/movie-card.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
@@ -51307,6 +51323,15 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       });
     }
 
+    //When a user successfully registers
+  }, {
+    key: "onRegistration",
+    value: function onRegistration(register) {
+      this.setState({
+        register: register
+      });
+    }
+
     // When a user successfully logs in, this function updates the `user` property in state to that particular user
   }, {
     key: "onLoggedIn",
@@ -51322,9 +51347,16 @@ var MainView = /*#__PURE__*/function (_React$Component) {
       var _this$state = this.state,
         movies = _this$state.movies,
         selectedMovie = _this$state.selectedMovie,
-        user = _this$state.user;
+        user = _this$state.user,
+        register = _this$state.register;
 
       // If there is no user, the LoginView is rendered. If there is a user logged in, the user details are passed as a prop to the LoginView
+
+      if (!register) return /*#__PURE__*/_react.default.createElement(_registrationView.RegistrationView, {
+        onRegistration: function onRegistration(register) {
+          return _this3.onRegistration(register);
+        }
+      });
       if (!user) return /*#__PURE__*/_react.default.createElement(_loginView.LoginView, {
         onLoggedIn: function onLoggedIn(user) {
           return _this3.onLoggedIn(user);
