@@ -86,7 +86,7 @@ const UpdateUser = ({ user }) => {
     <Card>
       <Card.Body>
         <Card.Title as="h4" className="text-center">
-          Want to change some info?
+          Update Profile
         </Card.Title>
         {message && (
           <div className="form-group">
@@ -143,14 +143,18 @@ const UpdateUser = ({ user }) => {
           </Form.Group>
           <Button
             type="submit"
-            className="login-btn"
+            className="login-btn mt-2 mb-3"
             disabled={!userData.password}
             onClick={handleSubmit}
           >
             Update
           </Button>
           <Button
-            className="d-block mt-5 mb-5"
+            style={{
+              borderStyle: 'none',
+              float: 'right',
+            }}
+            className="d-block mt-2 mb-3"
             variant="warning"
             onClick={handleDelete}
           >

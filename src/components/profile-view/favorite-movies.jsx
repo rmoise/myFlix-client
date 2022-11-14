@@ -8,7 +8,7 @@ const FavoriteMovies = ({favoriteMovies, delFavMovie}) => {
 
 
     return (
-      <Card>
+      <Card className='mt-3'>
         <Card.Body>
           <Row>
             <Col xs={12}>
