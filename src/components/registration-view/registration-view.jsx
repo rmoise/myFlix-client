@@ -1,114 +1,158 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Form,
-  Button,
-  Card,
-  CardGroup,
-  Container,
-  Col,
-  Row,
-} from 'react-bootstrap';
+import axios from 'axios';
+import { API_URL } from '../../utils/constant';
+import { validate } from '../../utils/validate';
+import { Card,
+         Form,
+         Button, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 import './registration-view.scss';
 
-export function RegistrationView(props) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [birthday, setBirthday] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(username, password, email, birthday);
-    props.onRegistration(username);
-  };
 
-  return (
-    <Container>
-      <Row>
-        <Col>
-          <CardGroup>
-            <Card style={{ marginTop: 100, marginBottom: 50, width: '30rem' }}>
-              <Card.Body>
-                <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }}>
-                  Please Register
-                </Card.Title>
-                <Form>
-                  <Form.Group>
-                    <Form.Label>Username </Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                      placeholder="Enter a username"
-                      className="mb-3"
-                    />
-                  </Form.Group>
+const RegistrationView = () => {
+    const [userData, setUserData] = React.useState({
+        username : '',
+        password: '',
+        email: '',
+        dob: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [message, setMessage] = useState("");
 
-                  <Form.Group>
-                    <Form.Label>Password </Form.Label>
-                    <Form.Control
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength="8"
-                      placeholder="Your password must be 8 or more characters"
-                      className="mb-3"
-                    />
-                  </Form.Group>
+    const handleChange = e => {
+        const {name, value} = e.target;
+        let error = validate(name, value);
+        setErrors((prevErr) =>{
+            return {
+                ...prevErr,
+                ...error
+            }
+        });
 
-                  <Form.Group>
-                    <Form.Label>Email </Form.Label>
-                    <Form.Control
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="Enter your email address"
-                      className="mb-3"
-                    />
-                  </Form.Group>
+        setUserData((prevState) =>({
+            ...prevState,
+            [name] : value
+        }));
+    }
 
-                  <Form.Group>
-                    <Form.Label>Birthday </Form.Label>
-                    <Form.Control
-                      type="birthday"
-                      value={birthday}
-                      onChange={(e) => setBirthday(e.target.value)}
-                      className="mb-5"
-                    />
-                  </Form.Group>
-                  <Button
-                    className="mr-3"
-                    variant="primary"
-                    type="submit"
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </Button>
+    const handleSubmit = e => {
+        e.preventDefault();
+        console.log(userData, new Date(userData.dob));
+        const { username, password, email, dob } = userData;
 
-                  <Button
-                    variant="secondary"
-                    type="button"
-                    onClick={() => {
-                      props.onBackClick(null);
-                    }}
-                  >
-                    Return to Login Page
-                  </Button>
-                </Form>
-              </Card.Body>
-            </Card>
-          </CardGroup>
-        </Col>
-      </Row>
-    </Container>
-  );
+        axios.post(`${API_URL}/users`,{
+            Username: username,
+            Password: password,
+            Email: email,
+            Birthday: new Date(dob)
+        })
+        .then(response =>{
+            const data = response.data;
+            setMessage("User registration was successful");
+            setUserData({
+                username : '',
+                password: '',
+                email: '',
+                dob: ''
+            });
+            data && window.open('/', '_self');
+         })
+         .catch(error =>{
+            setMessage("User registration failed. Plaese try later");
+            window.open('/', '_self');
+            console.log(`Registration failed!!! ${error}`);
+         });
+    }
+
+    return (
+      <Col className="mx-auto" lg={4} md={8}>
+        <h1 className="login-logo">myFlix</h1>
+        <Card className="reg-container">
+          <Card.Body>
+            <Card.Title as="h4" className="text-center">
+              Register to myFlix
+            </Card.Title>
+            {message && (
+              <div className="form-group">
+                <div className="alert alert-danger my-1 py-2" role="alert">
+                  {message}
+                </div>
+              </div>
+            )}
+            <Form>
+              <Form.Group controlId="username" className="mb-3">
+                <Form.Label>Username </Form.Label>
+                <Form.Control
+                  type="text"
+                  name="username"
+                  value={userData.username || ''}
+                  onChange={handleChange}
+                  placeholder="Enter username here"
+                  isInvalid={!!errors.username}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="password" className="mb-3">
+                <Form.Label>Password </Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={userData.password || ''}
+                  onChange={handleChange}
+                  placeholder="Enter password here"
+                  isInvalid={!!errors.password}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="email" className="mb-3">
+                <Form.Label>Email </Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={userData.email || ''}
+                  onChange={handleChange}
+                  placeholder="Enter email here"
+                  isInvalid={!!errors.email}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.email}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group controlId="dob" className="mb-3">
+                <Form.Label>Date of Birth </Form.Label>
+                <Form.Control
+                  type="date"
+                  name="dob"
+                  onChange={handleChange}
+                  placeholder="Enter date of birth here"
+                />
+              </Form.Group>
+              <Button
+                type="submit"
+                className="login-btn"
+                disabled={!userData.email && !userData.password}
+                onClick={handleSubmit}
+              >
+                Register
+              </Button>
+              <p></p>
+              <p className="login-register">
+                Already registered <Link to={'/'}>Sign in</Link> here
+              </p>
+            </Form>
+          </Card.Body>
+        </Card>
+      </Col>
+    );
 }
 
-RegistrationView.propTypes = {
-  onRegistration: PropTypes.func.isRequired,
-};
+export default RegistrationView;
