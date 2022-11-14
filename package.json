@@ -29,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DeepthiSRao/myFlix-client.git"
+    "url": "git+https://github.com/rmoise/myFlix-client.git"
   },
   "author": "Deepthi Rao",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DeepthiSRao/myFlix-client/issues"
+    "url": "https://github.com/rmoise/myFlix-client/issues"
   },
-  "homepage": "https://github.com/DeepthiSRao/myFlix-client#readme",
+  "homepage": "https://github.com/rmoise/myFlix-client#readme",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.0.0-rc.0"
   }
