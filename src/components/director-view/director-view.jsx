@@ -71,5 +71,4 @@ const DirectorView = ({ director, movies }) => {
   );
 };
 
-
 export default DirectorView;

@@ -1,12 +1,17 @@
-.movie-img {
-  height: 18rem;
-  object-fit: cover;
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  background-color: rgba(0, 0, 0, 0) !important;
+  border-top: 0 !important;
+  padding: 1.25rem 1.25rem !important;
 }
 .reg-container {
   margin: auto;
-  margin-top: 50px;
-  max-width: 60%;
-  min-width: 480px;
 }
 
 .reg-btn {
@@ -15,20 +20,50 @@
 }
 .login-container {
   margin: auto;
-  margin-top: 50px;
-  max-width: 60%;
-  min-width: 480px;
 }
 
 .login-btn {
-  width: 100%;
   border-radius: 5px;
 }
+
+.login-register {
+  font-size: 16px;
+}
+
+.login-logo {
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.movie-poster {
+  object-fit: cover;
+}
+
+.label {
+  color: #2b2c2c;
+  font-style: italic;
+  font-weight: 800;
+}
+
+.movie-footer a {
+  margin-left: 10px;
+}
+
+.bread-link {
+  color: #0d6efd;
+  text-decoration: underline;
+}
+
+.bread-link:hover {
+  color: #0a58ca;
+}
 .main-view {
-  display: inline-block;
+  display: flex;
   color: black;
   font-size: 1.2rem;
   cursor: pointer;
+  margin-bottom: 30px;
 }
 
 .loading-message {
@@ -42,21 +77,6 @@
   height: 100vh;
   font-size: 32px;
   color: white;
-}
-.movie-poster {
-  width: 400px;
-  height: 400px;
-  object-fit: cover;
-}
-
-.label {
-  color: #2b2c2c;
-  font-style: italic;
-  font-weight: 800;
-}
-
-.movie-footer a {
-  margin-left: 10px;
 }
 .navbar {
   margin-bottom: 10px;
