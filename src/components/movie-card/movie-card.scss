@@ -1,0 +1,12 @@
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  background-color: rgba(0, 0, 0, 0);
+  border-top: 0;
+  padding: 1.25rem 1.25rem;
+}
