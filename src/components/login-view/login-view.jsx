@@ -1,68 +1,129 @@
 import React, { useState } from 'react';
+import { API_URL } from '../../utils/constant';
 import PropTypes from 'prop-types';
-import { Form, Button, Card, Container, Row } from 'react-bootstrap';
-
+import axios from 'axios';
+import { Card,
+         Form,
+         Button,
+         Col} from 'react-bootstrap';
+import { validate } from '../../utils/validate';
+import { Link } from 'react-router-dom';
 import './login-view.scss';
 
-export function LoginView(props) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const LoginView = ({onLoggedIn}) => {
+    const [userData, setUserData] = React.useState({
+        username : '',
+        password: ''
+    });
+    const [errors, setErrors] = useState({});
+    const [message, setMessage] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(username, password);
-    /* Send a request to the server for authentication */
-    /* then call props.onLoggedIn(username) */
-    props.onLoggedIn(username);
-  };
+    const handleChange = e => {
+        const {name, value} = e.target;
+        let error = validate(name, value);
+        setErrors((prevErr) =>{
+            return {
+                ...prevErr,
+                ...error
+            }
+        });
 
-  return (
-    <Container>
-      <Row className="justify-content-center">
-        <Card style={{ marginTop: 100, marginBottom: 50, width: '30rem' }}>
+        setUserData((prevState) =>({
+            ...prevState,
+            [name] : value
+        }));
+    }
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        const { username:Username, password: Password } = userData;
+
+        //form can be submitted if there are no validation errors.
+        let isValid = Object.values(errors).every(error => error.length === 0);
+
+        isValid &&
+        axios.post(`${API_URL}/login`,{
+                Username,
+                Password
+            })
+             .then(response =>{
+                const data = response.data;
+                data && onLoggedIn(data);
+             })
+             .catch(error =>{
+                setMessage("User doesn't exists. Check username or password.");
+                console.log(`no such user exists!!! ${error}`);
+             });
+    }
+
+    return (
+      <Col className="mx-auto" lg={4} md={8}>
+        <h1 className="login-logo">myFlix</h1>
+        <Card className="login-container">
           <Card.Body>
-            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }}>
-              Welcome
+            <Card.Title as="h4" className="text-center">
+              Log into myFlix
             </Card.Title>
-            <Form className="login-border">
-              <Form.Group controlId="formUsername">
-                <Form.Label>Username</Form.Label>
+            {message && (
+              <div className="form-group">
+                <div className="alert alert-danger my-1 py-2" role="alert">
+                  {message}
+                </div>
+              </div>
+            )}
+            <Form>
+              <Form.Group controlId="username" className="mb-3">
+                <Form.Label>Username </Form.Label>
                 <Form.Control
                   type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="mb-3"
+                  name="username"
+                  value={userData.username || ''}
+                  onChange={handleChange}
+                  placeholder="Enter username"
+                  isInvalid={!!errors.username}
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.username}
+                </Form.Control.Feedback>
               </Form.Group>
-
-              <Form.Group controlId="formPassword">
-                <Form.Label>Password</Form.Label>
+              <Form.Group controlId="password" className="mb-3">
+                <Form.Label>Password </Form.Label>
                 <Form.Control
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mb-5"
+                  name="password"
+                  value={userData.password || ''}
+                  onChange={handleChange}
+                  placeholder="Enter password"
+                  isInvalid={!!errors.password}
+                  required
                 />
+                <Form.Control.Feedback type="invalid">
+                  {errors.password}
+                </Form.Control.Feedback>
               </Form.Group>
+              <Button
+                type="submit"
+                className="login-btn"
+                disabled={!userData.email && !userData.password}
+                onClick={handleSubmit}
+              >
+                Login
+              </Button>
+              <p></p>
+              <p className="login-register">
+                Don't have an account? <Link to={'/register'}>Register</Link>{' '}
+                here
+              </p>
             </Form>
-            <Button
-              className="mr-3"
-              variant="primary"
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Submit
-            </Button>
-            <Button variant="secondary" type="button">
-              Register
-            </Button>
           </Card.Body>
         </Card>
-      </Row>
-    </Container>
-  );
+      </Col>
+    );
 }
 
 LoginView.propTypes = {
-  onLoggedIn: PropTypes.func.isRequired,
-  onRegistration: PropTypes.func.isRequired,
-};
+    onLoggedIn: PropTypes.func.isRequired,
+}
+
+export default LoginView;

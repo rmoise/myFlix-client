@@ -1,12 +1,25 @@
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
+.movie-poster {
+
+    object-fit: cover;
 }
 
-.movie-body {
-      margin-bottom: 15px;
-      margin-top: 15px;
+.label {
+    color: #2b2c2c;
+    font-style: italic;
+    font-weight: 800 !important;
+
+}
+
+.movie-footer a {
+    margin-left: 10px;
+}
+
+.bread-link {
+        color: #0d6efd;
+    text-decoration: underline;
+}
+
+.bread-link:hover {
+    color: #0a58ca;
 }
 
