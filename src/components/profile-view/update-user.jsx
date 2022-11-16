@@ -85,7 +85,7 @@ const UpdateUser = ({ user }) => {
   return (
     <Card>
       <Card.Body>
-        <Card.Title as="h4" className="text-center">
+        <Card.Title as="h4" className='mb-4'>
           Update Profile
         </Card.Title>
         {message && (
@@ -97,7 +97,7 @@ const UpdateUser = ({ user }) => {
         )}
         <Form>
           <Form.Group controlId="username" className="mb-3">
-            <Form.Label>Username: </Form.Label>
+            <Form.Label>Username </Form.Label>
             <Form.Control
               type="text"
               name="username"
@@ -112,7 +112,7 @@ const UpdateUser = ({ user }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="password" className="mb-3">
-            <Form.Label>Password: </Form.Label>
+            <Form.Label>Password </Form.Label>
             <Form.Control
               type="password"
               name="password"
@@ -127,7 +127,7 @@ const UpdateUser = ({ user }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId="email" className="mb-3">
-            <Form.Label>e-mail: </Form.Label>
+            <Form.Label>e-mail </Form.Label>
             <Form.Control
               type="email"
               name="email"
