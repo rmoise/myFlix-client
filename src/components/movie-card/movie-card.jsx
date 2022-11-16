@@ -6,24 +6,24 @@ import FavouriteBtn from './favourite-btn';
 import './movie-card.scss';
 
 const MovieCard = ({ movie, liked, addFavMovie }) => {
-  return (
-    <Card className="h-100 gap-1">
-      <Card.Img variant="top" src={movie.ImageURL} className="movie-img" />
-      <Card.Body>
-        <Card.Title as="h4">{movie.Title}</Card.Title>
-        <Card.Text>{movie.Description}</Card.Text>
-      </Card.Body>
-      <Card.Footer>
-        <Link to={`/movies/${movie._id}`}>
-          <Button variant="outline-primary link">Open</Button>
-        </Link>
-        <FavouriteBtn
-          liked={liked}
-          addFavMovie={() => addFavMovie(movie._id)}
-        />
-      </Card.Footer>
-    </Card>
-  );
+    return (
+      <Card className="h-100 gap-1">
+        <Card.Img variant="top" src={movie.ImageURL} className="movie-img" />
+        <Card.Body>
+          <Card.Title as="h4">{movie.Title}</Card.Title>
+          <Card.Text>{movie.Description}</Card.Text>
+        </Card.Body>
+        <Card.Footer>
+          <Link to={`/movies/${movie._id}`}>
+            <Button variant="outline-primary link">Open</Button>
+          </Link>
+          <FavouriteBtn
+            liked={liked}
+            addFavMovie={() => addFavMovie(movie._id)}
+          />
+        </Card.Footer>
+      </Card>
+    );
 };
 
 MovieCard.propTypes = {
@@ -37,6 +37,7 @@ MovieCard.propTypes = {
     Director: PropTypes.shape({
       Name: PropTypes.string.isRequired,
       Bio: PropTypes.string.isRequired,
+
     }),
     ImageURL: PropTypes.string.isRequired,
   }).isRequired,

@@ -7,8 +7,6 @@ import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import './movie-view.scss';
 
 const MovieView = ({ movie }) => {
-
-
   return (
     <>
       <Breadcrumb>
@@ -94,6 +92,5 @@ MovieView.propTypes = {
     ImageURL: PropTypes.string.isRequired,
   }).isRequired,
 };
-
 
 export default MovieView;

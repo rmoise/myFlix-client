@@ -945,25 +945,40 @@ var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _reactDom = require("react-dom");
 var _reactDomDefault = parcelHelpers.interopDefault(_reactDom);
+var _redux = require("redux");
+var _reactRedux = require("react-redux");
 var _reactBootstrap = require("react-bootstrap");
+var _reduxDevtoolsExtension = require("redux-devtools-extension");
+var _reducer = require("./reducer");
+var _reducerDefault = parcelHelpers.interopDefault(_reducer);
 var _mainView = require("./components/main-view/main-view");
 var _mainViewDefault = parcelHelpers.interopDefault(_mainView);
+var _fontAwesomeMinCss = require("font-awesome/css/font-awesome.min.css");
 var _indexScss = require("./index.scss");
+const store = _redux.createStore(_reducerDefault.default, _reduxDevtoolsExtension.devToolsEnhancer());
 class MyFlixApplication extends _reactDefault.default.Component {
     render() {
-        return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Container, {
-            fluid: true,
+        return(/*#__PURE__*/ _jsxRuntime.jsx(_reactRedux.Provider, {
+            store: store,
             __source: {
                 fileName: "src/index.jsx",
-                lineNumber: 10
+                lineNumber: 17
             },
             __self: this,
-            children: /*#__PURE__*/ _jsxRuntime.jsx(_mainViewDefault.default, {
+            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Container, {
+                fluid: true,
                 __source: {
                     fileName: "src/index.jsx",
-                    lineNumber: 11
+                    lineNumber: 18
                 },
-                __self: this
+                __self: this,
+                children: /*#__PURE__*/ _jsxRuntime.jsx(_mainViewDefault.default, {
+                    __source: {
+                        fileName: "src/index.jsx",
+                        lineNumber: 19
+                    },
+                    __self: this
+                })
             })
         }));
     }
@@ -978,7 +993,7 @@ _reactDomDefault.default.render(/*#__PURE__*/ _reactDefault.default.createElemen
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-dom":"gkWJK","react-bootstrap":"h2YVd","./components/main-view/main-view":"2zHas","./index.scss":"jUTZ8","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"8xIwr":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-dom":"gkWJK","redux":"4d0QS","react-redux":"2L0if","react-bootstrap":"h2YVd","redux-devtools-extension":"8GWVf","./reducer":"c02pe","./components/main-view/main-view":"2zHas","font-awesome/css/font-awesome.min.css":"8bnpO","./index.scss":"jUTZ8","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"8xIwr":[function(require,module,exports) {
 'use strict';
 module.exports = require('./cjs/react-jsx-runtime.development.js');
 
@@ -22736,7 +22751,2844 @@ module.exports = require('./cjs/scheduler-tracing.development.js');
     exports.unstable_wrap = unstable_wrap;
 })();
 
-},{}],"h2YVd":[function(require,module,exports) {
+},{}],"4d0QS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "__DO_NOT_USE__ActionTypes", ()=>ActionTypes
+);
+parcelHelpers.export(exports, "applyMiddleware", ()=>applyMiddleware
+);
+parcelHelpers.export(exports, "bindActionCreators", ()=>bindActionCreators
+);
+parcelHelpers.export(exports, "combineReducers", ()=>combineReducers
+);
+parcelHelpers.export(exports, "compose", ()=>compose
+);
+parcelHelpers.export(exports, "createStore", ()=>createStore
+);
+parcelHelpers.export(exports, "legacy_createStore", ()=>legacy_createStore
+);
+var _objectSpread2 = require("@babel/runtime/helpers/esm/objectSpread2");
+var _objectSpread2Default = parcelHelpers.interopDefault(_objectSpread2);
+/**
+ * Adapted from React: https://github.com/facebook/react/blob/master/packages/shared/formatProdErrorMessage.js
+ *
+ * Do not require this module directly! Use normal throw error calls. These messages will be replaced with error codes
+ * during build.
+ * @param {number} code
+ */ function formatProdErrorMessage(code) {
+    return "Minified Redux error #" + code + "; visit https://redux.js.org/Errors?code=" + code + " for the full message or " + 'use the non-minified dev environment for full errors. ';
+}
+// Inlined version of the `symbol-observable` polyfill
+var $$observable = function() {
+    return typeof Symbol === 'function' && Symbol.observable || '@@observable';
+}();
+/**
+ * These are private action types reserved by Redux.
+ * For any unknown actions, you must return the current state.
+ * If the current state is undefined, you must return the initial state.
+ * Do not reference these action types directly in your code.
+ */ var randomString = function randomString1() {
+    return Math.random().toString(36).substring(7).split('').join('.');
+};
+var ActionTypes = {
+    INIT: "@@redux/INIT" + randomString(),
+    REPLACE: "@@redux/REPLACE" + randomString(),
+    PROBE_UNKNOWN_ACTION: function PROBE_UNKNOWN_ACTION() {
+        return "@@redux/PROBE_UNKNOWN_ACTION" + randomString();
+    }
+};
+/**
+ * @param {any} obj The object to inspect.
+ * @returns {boolean} True if the argument appears to be a plain object.
+ */ function isPlainObject(obj) {
+    if (typeof obj !== 'object' || obj === null) return false;
+    var proto = obj;
+    while(Object.getPrototypeOf(proto) !== null)proto = Object.getPrototypeOf(proto);
+    return Object.getPrototypeOf(obj) === proto;
+}
+// Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
+function miniKindOf(val) {
+    if (val === void 0) return 'undefined';
+    if (val === null) return 'null';
+    var type = typeof val;
+    switch(type){
+        case 'boolean':
+        case 'string':
+        case 'number':
+        case 'symbol':
+        case 'function':
+            return type;
+    }
+    if (Array.isArray(val)) return 'array';
+    if (isDate(val)) return 'date';
+    if (isError(val)) return 'error';
+    var constructorName = ctorName(val);
+    switch(constructorName){
+        case 'Symbol':
+        case 'Promise':
+        case 'WeakMap':
+        case 'WeakSet':
+        case 'Map':
+        case 'Set':
+            return constructorName;
+    } // other
+    return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+}
+function ctorName(val) {
+    return typeof val.constructor === 'function' ? val.constructor.name : null;
+}
+function isError(val) {
+    return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
+}
+function isDate(val) {
+    if (val instanceof Date) return true;
+    return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
+}
+function kindOf(val) {
+    var typeOfVal = typeof val;
+    typeOfVal = miniKindOf(val);
+    return typeOfVal;
+}
+/**
+ * @deprecated
+ *
+ * **We recommend using the `configureStore` method
+ * of the `@reduxjs/toolkit` package**, which replaces `createStore`.
+ *
+ * Redux Toolkit is our recommended approach for writing Redux logic today,
+ * including store setup, reducers, data fetching, and more.
+ *
+ * **For more details, please read this Redux docs page:**
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * `configureStore` from Redux Toolkit is an improved version of `createStore` that
+ * simplifies setup and helps avoid common bugs.
+ *
+ * You should not be using the `redux` core package by itself today, except for learning purposes.
+ * The `createStore` method from the core `redux` package will not be removed, but we encourage
+ * all users to migrate to using Redux Toolkit for all Redux code.
+ *
+ * If you want to use `createStore` without this visual deprecation warning, use
+ * the `legacy_createStore` import instead:
+ *
+ * `import { legacy_createStore as createStore} from 'redux'`
+ *
+ */ function createStore(reducer, preloadedState, enhancer) {
+    var _ref2;
+    if (typeof preloadedState === 'function' && typeof enhancer === 'function' || typeof enhancer === 'function' && typeof arguments[3] === 'function') throw new Error("It looks like you are passing several store enhancers to createStore(). This is not supported. Instead, compose them together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.");
+    if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
+        enhancer = preloadedState;
+        preloadedState = undefined;
+    }
+    if (typeof enhancer !== 'undefined') {
+        if (typeof enhancer !== 'function') throw new Error("Expected the enhancer to be a function. Instead, received: '" + kindOf(enhancer) + "'");
+        return enhancer(createStore)(reducer, preloadedState);
+    }
+    if (typeof reducer !== 'function') throw new Error("Expected the root reducer to be a function. Instead, received: '" + kindOf(reducer) + "'");
+    var currentReducer = reducer;
+    var currentState = preloadedState;
+    var currentListeners = [];
+    var nextListeners = currentListeners;
+    var isDispatching = false;
+    /**
+   * This makes a shallow copy of currentListeners so we can use
+   * nextListeners as a temporary list while dispatching.
+   *
+   * This prevents any bugs around consumers calling
+   * subscribe/unsubscribe in the middle of a dispatch.
+   */ function ensureCanMutateNextListeners() {
+        if (nextListeners === currentListeners) nextListeners = currentListeners.slice();
+    }
+    /**
+   * Reads the state tree managed by the store.
+   *
+   * @returns {any} The current state tree of your application.
+   */ function getState() {
+        if (isDispatching) throw new Error("You may not call store.getState() while the reducer is executing. The reducer has already received the state as an argument. Pass it down from the top reducer instead of reading it from the store.");
+        return currentState;
+    }
+    /**
+   * Adds a change listener. It will be called any time an action is dispatched,
+   * and some part of the state tree may potentially have changed. You may then
+   * call `getState()` to read the current state tree inside the callback.
+   *
+   * You may call `dispatch()` from a change listener, with the following
+   * caveats:
+   *
+   * 1. The subscriptions are snapshotted just before every `dispatch()` call.
+   * If you subscribe or unsubscribe while the listeners are being invoked, this
+   * will not have any effect on the `dispatch()` that is currently in progress.
+   * However, the next `dispatch()` call, whether nested or not, will use a more
+   * recent snapshot of the subscription list.
+   *
+   * 2. The listener should not expect to see all state changes, as the state
+   * might have been updated multiple times during a nested `dispatch()` before
+   * the listener is called. It is, however, guaranteed that all subscribers
+   * registered before the `dispatch()` started will be called with the latest
+   * state by the time it exits.
+   *
+   * @param {Function} listener A callback to be invoked on every dispatch.
+   * @returns {Function} A function to remove this change listener.
+   */ function subscribe(listener) {
+        if (typeof listener !== 'function') throw new Error("Expected the listener to be a function. Instead, received: '" + kindOf(listener) + "'");
+        if (isDispatching) throw new Error("You may not call store.subscribe() while the reducer is executing. If you would like to be notified after the store has been updated, subscribe from a component and invoke store.getState() in the callback to access the latest state. See https://redux.js.org/api/store#subscribelistener for more details.");
+        var isSubscribed = true;
+        ensureCanMutateNextListeners();
+        nextListeners.push(listener);
+        return function unsubscribe() {
+            if (!isSubscribed) return;
+            if (isDispatching) throw new Error("You may not unsubscribe from a store listener while the reducer is executing. See https://redux.js.org/api/store#subscribelistener for more details.");
+            isSubscribed = false;
+            ensureCanMutateNextListeners();
+            var index = nextListeners.indexOf(listener);
+            nextListeners.splice(index, 1);
+            currentListeners = null;
+        };
+    }
+    /**
+   * Dispatches an action. It is the only way to trigger a state change.
+   *
+   * The `reducer` function, used to create the store, will be called with the
+   * current state tree and the given `action`. Its return value will
+   * be considered the **next** state of the tree, and the change listeners
+   * will be notified.
+   *
+   * The base implementation only supports plain object actions. If you want to
+   * dispatch a Promise, an Observable, a thunk, or something else, you need to
+   * wrap your store creating function into the corresponding middleware. For
+   * example, see the documentation for the `redux-thunk` package. Even the
+   * middleware will eventually dispatch plain object actions using this method.
+   *
+   * @param {Object} action A plain object representing “what changed”. It is
+   * a good idea to keep actions serializable so you can record and replay user
+   * sessions, or use the time travelling `redux-devtools`. An action must have
+   * a `type` property which may not be `undefined`. It is a good idea to use
+   * string constants for action types.
+   *
+   * @returns {Object} For convenience, the same action object you dispatched.
+   *
+   * Note that, if you use a custom middleware, it may wrap `dispatch()` to
+   * return something else (for example, a Promise you can await).
+   */ function dispatch(action) {
+        if (!isPlainObject(action)) throw new Error("Actions must be plain objects. Instead, the actual type was: '" + kindOf(action) + "'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.");
+        if (typeof action.type === 'undefined') throw new Error('Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
+        if (isDispatching) throw new Error('Reducers may not dispatch actions.');
+        try {
+            isDispatching = true;
+            currentState = currentReducer(currentState, action);
+        } finally{
+            isDispatching = false;
+        }
+        var listeners = currentListeners = nextListeners;
+        for(var i = 0; i < listeners.length; i++){
+            var listener = listeners[i];
+            listener();
+        }
+        return action;
+    }
+    /**
+   * Replaces the reducer currently used by the store to calculate the state.
+   *
+   * You might need this if your app implements code splitting and you want to
+   * load some of the reducers dynamically. You might also need this if you
+   * implement a hot reloading mechanism for Redux.
+   *
+   * @param {Function} nextReducer The reducer for the store to use instead.
+   * @returns {void}
+   */ function replaceReducer(nextReducer) {
+        if (typeof nextReducer !== 'function') throw new Error("Expected the nextReducer to be a function. Instead, received: '" + kindOf(nextReducer));
+        currentReducer = nextReducer; // This action has a similiar effect to ActionTypes.INIT.
+        // Any reducers that existed in both the new and old rootReducer
+        // will receive the previous state. This effectively populates
+        // the new state tree with any relevant data from the old one.
+        dispatch({
+            type: ActionTypes.REPLACE
+        });
+    }
+    /**
+   * Interoperability point for observable/reactive libraries.
+   * @returns {observable} A minimal observable of state changes.
+   * For more information, see the observable proposal:
+   * https://github.com/tc39/proposal-observable
+   */ function observable() {
+        var _ref;
+        var outerSubscribe = subscribe;
+        return _ref = {
+            /**
+       * The minimal observable subscription method.
+       * @param {Object} observer Any object that can be used as an observer.
+       * The observer object should have a `next` method.
+       * @returns {subscription} An object with an `unsubscribe` method that can
+       * be used to unsubscribe the observable from the store, and prevent further
+       * emission of values from the observable.
+       */ subscribe: function subscribe1(observer) {
+                if (typeof observer !== 'object' || observer === null) throw new Error("Expected the observer to be an object. Instead, received: '" + kindOf(observer) + "'");
+                function observeState() {
+                    if (observer.next) observer.next(getState());
+                }
+                observeState();
+                var unsubscribe = outerSubscribe(observeState);
+                return {
+                    unsubscribe: unsubscribe
+                };
+            }
+        }, _ref[$$observable] = function() {
+            return this;
+        }, _ref;
+    } // When a store is created, an "INIT" action is dispatched so that every
+    // reducer returns their initial state. This effectively populates
+    // the initial state tree.
+    dispatch({
+        type: ActionTypes.INIT
+    });
+    return _ref2 = {
+        dispatch: dispatch,
+        subscribe: subscribe,
+        getState: getState,
+        replaceReducer: replaceReducer
+    }, _ref2[$$observable] = observable, _ref2;
+}
+/**
+ * Creates a Redux store that holds the state tree.
+ *
+ * **We recommend using `configureStore` from the
+ * `@reduxjs/toolkit` package**, which replaces `createStore`:
+ * **https://redux.js.org/introduction/why-rtk-is-redux-today**
+ *
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @param {Function} reducer A function that returns the next state tree, given
+ * the current state tree and the action to handle.
+ *
+ * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * to hydrate the state from the server in universal apps, or to restore a
+ * previously serialized user session.
+ * If you use `combineReducers` to produce the root reducer function, this must be
+ * an object with the same shape as `combineReducers` keys.
+ *
+ * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+ * to enhance the store with third-party capabilities such as middleware,
+ * time travel, persistence, etc. The only store enhancer that ships with Redux
+ * is `applyMiddleware()`.
+ *
+ * @returns {Store} A Redux store that lets you read the state, dispatch actions
+ * and subscribe to changes.
+ */ var legacy_createStore = createStore;
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */ function warning(message) {
+    /* eslint-disable no-console */ if (typeof console !== 'undefined' && typeof console.error === 'function') console.error(message);
+    /* eslint-enable no-console */ try {
+        // This error was thrown as a convenience so that if you enable
+        // "break on all exceptions" in your console,
+        // it would pause the execution at this line.
+        throw new Error(message);
+    } catch (e) {
+    } // eslint-disable-line no-empty
+}
+function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+    var reducerKeys = Object.keys(reducers);
+    var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+    if (reducerKeys.length === 0) return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
+    if (!isPlainObject(inputState)) return "The " + argumentName + " has unexpected type of \"" + kindOf(inputState) + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
+    var unexpectedKeys = Object.keys(inputState).filter(function(key) {
+        return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+    });
+    unexpectedKeys.forEach(function(key) {
+        unexpectedKeyCache[key] = true;
+    });
+    if (action && action.type === ActionTypes.REPLACE) return;
+    if (unexpectedKeys.length > 0) return "Unexpected " + (unexpectedKeys.length > 1 ? 'keys' : 'key') + " " + ("\"" + unexpectedKeys.join('", "') + "\" found in " + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ("\"" + reducerKeys.join('", "') + "\". Unexpected keys will be ignored.");
+}
+function assertReducerShape(reducers) {
+    Object.keys(reducers).forEach(function(key) {
+        var reducer = reducers[key];
+        var initialState = reducer(undefined, {
+            type: ActionTypes.INIT
+        });
+        if (typeof initialState === 'undefined') throw new Error("The slice reducer for key \"" + key + "\" returned undefined during initialization. " + "If the state passed to the reducer is undefined, you must " + "explicitly return the initial state. The initial state may " + "not be undefined. If you don't want to set a value for this reducer, " + "you can use null instead of undefined.");
+        if (typeof reducer(undefined, {
+            type: ActionTypes.PROBE_UNKNOWN_ACTION()
+        }) === 'undefined') throw new Error("The slice reducer for key \"" + key + "\" returned undefined when probed with a random type. " + ("Don't try to handle '" + ActionTypes.INIT + "' or other actions in \"redux/*\" ") + "namespace. They are considered private. Instead, you must return the " + "current state for any unknown actions, unless it is undefined, " + "in which case you must return the initial state, regardless of the " + "action type. The initial state may not be undefined, but can be null.");
+    });
+}
+/**
+ * Turns an object whose values are different reducer functions, into a single
+ * reducer function. It will call every child reducer, and gather their results
+ * into a single state object, whose keys correspond to the keys of the passed
+ * reducer functions.
+ *
+ * @param {Object} reducers An object whose values correspond to different
+ * reducer functions that need to be combined into one. One handy way to obtain
+ * it is to use ES6 `import * as reducers` syntax. The reducers may never return
+ * undefined for any action. Instead, they should return their initial state
+ * if the state passed to them was undefined, and the current state for any
+ * unrecognized action.
+ *
+ * @returns {Function} A reducer function that invokes every reducer inside the
+ * passed object, and builds a state object with the same shape.
+ */ function combineReducers(reducers) {
+    var reducerKeys = Object.keys(reducers);
+    var finalReducers = {
+    };
+    for(var i = 0; i < reducerKeys.length; i++){
+        var key = reducerKeys[i];
+        if (typeof reducers[key] === 'undefined') warning("No reducer provided for key \"" + key + "\"");
+        if (typeof reducers[key] === 'function') finalReducers[key] = reducers[key];
+    }
+    var finalReducerKeys = Object.keys(finalReducers); // This is used to make sure we don't warn about the same
+    // keys multiple times.
+    var unexpectedKeyCache;
+    unexpectedKeyCache = {
+    };
+    var shapeAssertionError;
+    try {
+        assertReducerShape(finalReducers);
+    } catch (e) {
+        shapeAssertionError = e;
+    }
+    return function combination(state, action) {
+        if (state === void 0) state = {
+        };
+        if (shapeAssertionError) throw shapeAssertionError;
+        var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+        if (warningMessage) warning(warningMessage);
+        var hasChanged = false;
+        var nextState = {
+        };
+        for(var _i = 0; _i < finalReducerKeys.length; _i++){
+            var _key = finalReducerKeys[_i];
+            var reducer = finalReducers[_key];
+            var previousStateForKey = state[_key];
+            var nextStateForKey = reducer(previousStateForKey, action);
+            if (typeof nextStateForKey === 'undefined') {
+                var actionType = action && action.type;
+                throw new Error("When called with an action of type " + (actionType ? "\"" + String(actionType) + "\"" : '(unknown type)') + ", the slice reducer for key \"" + _key + "\" returned undefined. " + "To ignore an action, you must explicitly return the previous state. " + "If you want this reducer to hold no value, you can return null instead of undefined.");
+            }
+            nextState[_key] = nextStateForKey;
+            hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+        }
+        hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
+        return hasChanged ? nextState : state;
+    };
+}
+function bindActionCreator(actionCreator, dispatch) {
+    return function() {
+        return dispatch(actionCreator.apply(this, arguments));
+    };
+}
+/**
+ * Turns an object whose values are action creators, into an object with the
+ * same keys, but with every function wrapped into a `dispatch` call so they
+ * may be invoked directly. This is just a convenience method, as you can call
+ * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+ *
+ * For convenience, you can also pass an action creator as the first argument,
+ * and get a dispatch wrapped function in return.
+ *
+ * @param {Function|Object} actionCreators An object whose values are action
+ * creator functions. One handy way to obtain it is to use ES6 `import * as`
+ * syntax. You may also pass a single function.
+ *
+ * @param {Function} dispatch The `dispatch` function available on your Redux
+ * store.
+ *
+ * @returns {Function|Object} The object mimicking the original object, but with
+ * every action creator wrapped into the `dispatch` call. If you passed a
+ * function as `actionCreators`, the return value will also be a single
+ * function.
+ */ function bindActionCreators(actionCreators, dispatch) {
+    if (typeof actionCreators === 'function') return bindActionCreator(actionCreators, dispatch);
+    if (typeof actionCreators !== 'object' || actionCreators === null) throw new Error("bindActionCreators expected an object or a function, but instead received: '" + kindOf(actionCreators) + "'. " + "Did you write \"import ActionCreators from\" instead of \"import * as ActionCreators from\"?");
+    var boundActionCreators = {
+    };
+    for(var key in actionCreators){
+        var actionCreator = actionCreators[key];
+        if (typeof actionCreator === 'function') boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+    return boundActionCreators;
+}
+/**
+ * Composes single-argument functions from right to left. The rightmost
+ * function can take multiple arguments as it provides the signature for
+ * the resulting composite function.
+ *
+ * @param {...Function} funcs The functions to compose.
+ * @returns {Function} A function obtained by composing the argument functions
+ * from right to left. For example, compose(f, g, h) is identical to doing
+ * (...args) => f(g(h(...args))).
+ */ function compose() {
+    for(var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++)funcs[_key] = arguments[_key];
+    if (funcs.length === 0) return function(arg) {
+        return arg;
+    };
+    if (funcs.length === 1) return funcs[0];
+    return funcs.reduce(function(a, b) {
+        return function() {
+            return a(b.apply(void 0, arguments));
+        };
+    });
+}
+/**
+ * Creates a store enhancer that applies middleware to the dispatch method
+ * of the Redux store. This is handy for a variety of tasks, such as expressing
+ * asynchronous actions in a concise manner, or logging every action payload.
+ *
+ * See `redux-thunk` package as an example of the Redux middleware.
+ *
+ * Because middleware is potentially asynchronous, this should be the first
+ * store enhancer in the composition chain.
+ *
+ * Note that each middleware will be given the `dispatch` and `getState` functions
+ * as named arguments.
+ *
+ * @param {...Function} middlewares The middleware chain to be applied.
+ * @returns {Function} A store enhancer applying the middleware.
+ */ function applyMiddleware() {
+    for(var _len = arguments.length, middlewares = new Array(_len), _key = 0; _key < _len; _key++)middlewares[_key] = arguments[_key];
+    return function(createStore1) {
+        return function() {
+            var store = createStore1.apply(void 0, arguments);
+            var _dispatch = function dispatch() {
+                throw new Error("Dispatching while constructing your middleware is not allowed. Other middleware would not be applied to this dispatch.");
+            };
+            var middlewareAPI = {
+                getState: store.getState,
+                dispatch: function dispatch1() {
+                    return _dispatch.apply(void 0, arguments);
+                }
+            };
+            var chain = middlewares.map(function(middleware) {
+                return middleware(middlewareAPI);
+            });
+            _dispatch = compose.apply(void 0, chain)(store.dispatch);
+            return _objectSpread2Default.default(_objectSpread2Default.default({
+            }, store), {
+            }, {
+                dispatch: _dispatch
+            });
+        };
+    };
+}
+/*
+ * This is a dummy function to check if the function name has been altered by minification.
+ * If the function has been minified and NODE_ENV !== 'production', warn the user.
+ */ function isCrushed() {
+}
+if (typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') warning("You are currently using minified code outside of NODE_ENV === \"production\". This means that you are running a slower development build of Redux. You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) to ensure you have the correct code for your production build.");
+
+},{"@babel/runtime/helpers/esm/objectSpread2":"bSD1u","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bSD1u":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _definePropertyJs = require("./defineProperty.js");
+var _definePropertyJsDefault = parcelHelpers.interopDefault(_definePropertyJs);
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        enumerableOnly && (symbols = symbols.filter(function(sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+        })), keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpread2(target) {
+    for(var i = 1; i < arguments.length; i++){
+        var source = null != arguments[i] ? arguments[i] : {
+        };
+        i % 2 ? ownKeys(Object(source), !0).forEach(function(key) {
+            _definePropertyJsDefault.default(target, key, source[key]);
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
+exports.default = _objectSpread2;
+
+},{"./defineProperty.js":"7s3FO","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"7s3FO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function _defineProperty(obj, key, value) {
+    if (key in obj) Object.defineProperty(obj, key, {
+        value: value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+    });
+    else obj[key] = value;
+    return obj;
+}
+exports.default = _defineProperty;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6PVVw":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule') return;
+        // Skip duplicate re-exports when they have the same value.
+        if (key in dest && dest[key] === source[key]) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"2L0if":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "batch", ()=>_reactBatchedUpdates.unstable_batchedUpdates
+);
+var _reactBatchedUpdates = require("./utils/reactBatchedUpdates");
+var _batch = require("./utils/batch"); // Enable batched updates in our subscriptions for use
+var _exports = require("./exports");
+parcelHelpers.exportAll(_exports, exports);
+// with standard React renderers (ReactDOM, React Native)
+_batch.setBatch(_reactBatchedUpdates.unstable_batchedUpdates);
+
+},{"./exports":"amFLd","./utils/reactBatchedUpdates":"kaP8a","./utils/batch":"2g3ZY","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"amFLd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Provider", ()=>_providerDefault.default
+);
+parcelHelpers.export(exports, "connectAdvanced", ()=>_connectAdvancedDefault.default
+);
+parcelHelpers.export(exports, "ReactReduxContext", ()=>_context.ReactReduxContext
+);
+parcelHelpers.export(exports, "connect", ()=>_connectDefault.default
+);
+parcelHelpers.export(exports, "useDispatch", ()=>_useDispatch.useDispatch
+);
+parcelHelpers.export(exports, "createDispatchHook", ()=>_useDispatch.createDispatchHook
+);
+parcelHelpers.export(exports, "useSelector", ()=>_useSelector.useSelector
+);
+parcelHelpers.export(exports, "createSelectorHook", ()=>_useSelector.createSelectorHook
+);
+parcelHelpers.export(exports, "useStore", ()=>_useStore.useStore
+);
+parcelHelpers.export(exports, "createStoreHook", ()=>_useStore.createStoreHook
+);
+parcelHelpers.export(exports, "shallowEqual", ()=>_shallowEqualDefault.default
+);
+var _provider = require("./components/Provider");
+var _providerDefault = parcelHelpers.interopDefault(_provider);
+var _connectAdvanced = require("./components/connectAdvanced");
+var _connectAdvancedDefault = parcelHelpers.interopDefault(_connectAdvanced);
+var _context = require("./components/Context");
+var _connect = require("./connect/connect");
+var _connectDefault = parcelHelpers.interopDefault(_connect);
+var _useDispatch = require("./hooks/useDispatch");
+var _useSelector = require("./hooks/useSelector");
+var _useStore = require("./hooks/useStore");
+var _shallowEqual = require("./utils/shallowEqual");
+var _shallowEqualDefault = parcelHelpers.interopDefault(_shallowEqual);
+
+},{"./components/Provider":"efEZ1","./components/connectAdvanced":"5cRBV","./components/Context":"gT1Jg","./connect/connect":"9zpXe","./hooks/useDispatch":"2CDvn","./hooks/useSelector":"27k1i","./hooks/useStore":"fDPAT","./utils/shallowEqual":"leLul","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"efEZ1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _propTypes = require("prop-types");
+var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
+var _context = require("./Context");
+var _subscription = require("../utils/Subscription");
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+function Provider(_ref) {
+    var store = _ref.store, context = _ref.context, children = _ref.children;
+    var contextValue = _react.useMemo(function() {
+        var subscription = _subscription.createSubscription(store);
+        return {
+            store: store,
+            subscription: subscription
+        };
+    }, [
+        store
+    ]);
+    var previousState = _react.useMemo(function() {
+        return store.getState();
+    }, [
+        store
+    ]);
+    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
+        var subscription = contextValue.subscription;
+        subscription.onStateChange = subscription.notifyNestedSubs;
+        subscription.trySubscribe();
+        if (previousState !== store.getState()) subscription.notifyNestedSubs();
+        return function() {
+            subscription.tryUnsubscribe();
+            subscription.onStateChange = null;
+        };
+    }, [
+        contextValue,
+        previousState
+    ]);
+    var Context = context || _context.ReactReduxContext;
+    return(/*#__PURE__*/ _reactDefault.default.createElement(Context.Provider, {
+        value: contextValue
+    }, children));
+}
+Provider.propTypes = {
+    store: _propTypesDefault.default.shape({
+        subscribe: _propTypesDefault.default.func.isRequired,
+        dispatch: _propTypesDefault.default.func.isRequired,
+        getState: _propTypesDefault.default.func.isRequired
+    }),
+    context: _propTypesDefault.default.object,
+    children: _propTypesDefault.default.any
+};
+exports.default = Provider;
+
+},{"react":"6TuXu","prop-types":"1tgq3","./Context":"gT1Jg","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"1tgq3":[function(require,module,exports) {
+var ReactIs = require('react-is');
+// By explicitly using `prop-types` you are opting into new development behavior.
+// http://fb.me/prop-types-in-prod
+var throwOnDirectAccess = true;
+module.exports = require('./factoryWithTypeCheckers')(ReactIs.isElement, throwOnDirectAccess);
+
+},{"react-is":"5wFcP","./factoryWithTypeCheckers":"gMSjX"}],"5wFcP":[function(require,module,exports) {
+'use strict';
+module.exports = require('./cjs/react-is.development.js');
+
+},{"./cjs/react-is.development.js":"dxS2U"}],"dxS2U":[function(require,module,exports) {
+/** @license React v16.13.1
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ 'use strict';
+(function() {
+    // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+    // nor polyfill, then a plain number is used for performance.
+    var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+    var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 60103;
+    var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 60106;
+    var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 60107;
+    var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 60108;
+    var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 60114;
+    var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 60109;
+    var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 60110; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+    // (unstable) APIs that have been removed. Can we remove the symbols?
+    var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 60111;
+    var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 60111;
+    var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 60112;
+    var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 60113;
+    var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 60120;
+    var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 60115;
+    var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 60116;
+    var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 60121;
+    var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 60117;
+    var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 60118;
+    var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 60119;
+    function isValidElementType(type) {
+        return typeof type === 'string' || typeof type === 'function' || type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+    }
+    function typeOf(object) {
+        if (typeof object === 'object' && object !== null) {
+            var $$typeof = object.$$typeof;
+            switch($$typeof){
+                case REACT_ELEMENT_TYPE:
+                    var type = object.type;
+                    switch(type){
+                        case REACT_ASYNC_MODE_TYPE:
+                        case REACT_CONCURRENT_MODE_TYPE:
+                        case REACT_FRAGMENT_TYPE:
+                        case REACT_PROFILER_TYPE:
+                        case REACT_STRICT_MODE_TYPE:
+                        case REACT_SUSPENSE_TYPE:
+                            return type;
+                        default:
+                            var $$typeofType = type && type.$$typeof;
+                            switch($$typeofType){
+                                case REACT_CONTEXT_TYPE:
+                                case REACT_FORWARD_REF_TYPE:
+                                case REACT_LAZY_TYPE:
+                                case REACT_MEMO_TYPE:
+                                case REACT_PROVIDER_TYPE:
+                                    return $$typeofType;
+                                default:
+                                    return $$typeof;
+                            }
+                    }
+                case REACT_PORTAL_TYPE:
+                    return $$typeof;
+            }
+        }
+        return undefined;
+    } // AsyncMode is deprecated along with isAsyncMode
+    var AsyncMode = REACT_ASYNC_MODE_TYPE;
+    var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+    var ContextConsumer = REACT_CONTEXT_TYPE;
+    var ContextProvider = REACT_PROVIDER_TYPE;
+    var Element1 = REACT_ELEMENT_TYPE;
+    var ForwardRef = REACT_FORWARD_REF_TYPE;
+    var Fragment = REACT_FRAGMENT_TYPE;
+    var Lazy = REACT_LAZY_TYPE;
+    var Memo = REACT_MEMO_TYPE;
+    var Portal = REACT_PORTAL_TYPE;
+    var Profiler = REACT_PROFILER_TYPE;
+    var StrictMode = REACT_STRICT_MODE_TYPE;
+    var Suspense = REACT_SUSPENSE_TYPE;
+    var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+    function isAsyncMode(object) {
+        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+            hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+            console['warn']("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.");
+        }
+        return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+    }
+    function isConcurrentMode(object) {
+        return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+    }
+    function isContextConsumer(object) {
+        return typeOf(object) === REACT_CONTEXT_TYPE;
+    }
+    function isContextProvider(object) {
+        return typeOf(object) === REACT_PROVIDER_TYPE;
+    }
+    function isElement(object) {
+        return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+    }
+    function isForwardRef(object) {
+        return typeOf(object) === REACT_FORWARD_REF_TYPE;
+    }
+    function isFragment(object) {
+        return typeOf(object) === REACT_FRAGMENT_TYPE;
+    }
+    function isLazy(object) {
+        return typeOf(object) === REACT_LAZY_TYPE;
+    }
+    function isMemo(object) {
+        return typeOf(object) === REACT_MEMO_TYPE;
+    }
+    function isPortal(object) {
+        return typeOf(object) === REACT_PORTAL_TYPE;
+    }
+    function isProfiler(object) {
+        return typeOf(object) === REACT_PROFILER_TYPE;
+    }
+    function isStrictMode(object) {
+        return typeOf(object) === REACT_STRICT_MODE_TYPE;
+    }
+    function isSuspense(object) {
+        return typeOf(object) === REACT_SUSPENSE_TYPE;
+    }
+    exports.AsyncMode = AsyncMode;
+    exports.ConcurrentMode = ConcurrentMode;
+    exports.ContextConsumer = ContextConsumer;
+    exports.ContextProvider = ContextProvider;
+    exports.Element = Element1;
+    exports.ForwardRef = ForwardRef;
+    exports.Fragment = Fragment;
+    exports.Lazy = Lazy;
+    exports.Memo = Memo;
+    exports.Portal = Portal;
+    exports.Profiler = Profiler;
+    exports.StrictMode = StrictMode;
+    exports.Suspense = Suspense;
+    exports.isAsyncMode = isAsyncMode;
+    exports.isConcurrentMode = isConcurrentMode;
+    exports.isContextConsumer = isContextConsumer;
+    exports.isContextProvider = isContextProvider;
+    exports.isElement = isElement;
+    exports.isForwardRef = isForwardRef;
+    exports.isFragment = isFragment;
+    exports.isLazy = isLazy;
+    exports.isMemo = isMemo;
+    exports.isPortal = isPortal;
+    exports.isProfiler = isProfiler;
+    exports.isStrictMode = isStrictMode;
+    exports.isSuspense = isSuspense;
+    exports.isValidElementType = isValidElementType;
+    exports.typeOf = typeOf;
+})();
+
+},{}],"gMSjX":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ 'use strict';
+var ReactIs = require('react-is');
+var assign = require('object-assign');
+var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+var has = require('./lib/has');
+var checkPropTypes = require('./checkPropTypes');
+var printWarning = function() {
+};
+printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') console.error(message);
+    try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+    } catch (x) {
+    }
+};
+function emptyFunctionThatReturnsNull() {
+    return null;
+}
+module.exports = function(isValidElement, throwOnDirectAccess) {
+    /* global Symbol */ var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+    var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+    /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */ function getIteratorFn(maybeIterable) {
+        var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+        if (typeof iteratorFn === 'function') return iteratorFn;
+    }
+    /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */ var ANONYMOUS = '<<anonymous>>';
+    // Important!
+    // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+    var ReactPropTypes = {
+        array: createPrimitiveTypeChecker('array'),
+        bigint: createPrimitiveTypeChecker('bigint'),
+        bool: createPrimitiveTypeChecker('boolean'),
+        func: createPrimitiveTypeChecker('function'),
+        number: createPrimitiveTypeChecker('number'),
+        object: createPrimitiveTypeChecker('object'),
+        string: createPrimitiveTypeChecker('string'),
+        symbol: createPrimitiveTypeChecker('symbol'),
+        any: createAnyTypeChecker(),
+        arrayOf: createArrayOfTypeChecker,
+        element: createElementTypeChecker(),
+        elementType: createElementTypeTypeChecker(),
+        instanceOf: createInstanceTypeChecker,
+        node: createNodeChecker(),
+        objectOf: createObjectOfTypeChecker,
+        oneOf: createEnumTypeChecker,
+        oneOfType: createUnionTypeChecker,
+        shape: createShapeTypeChecker,
+        exact: createStrictShapeTypeChecker
+    };
+    /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */ /*eslint-disable no-self-compare*/ function is(x, y) {
+        // SameValue algorithm
+        if (x === y) // Steps 1-5, 7-10
+        // Steps 6.b-6.e: +0 != -0
+        return x !== 0 || 1 / x === 1 / y;
+        else // Step 6.a: NaN == NaN
+        return x !== x && y !== y;
+    }
+    /*eslint-enable no-self-compare*/ /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */ function PropTypeError(message, data) {
+        this.message = message;
+        this.data = data && typeof data === 'object' ? data : {
+        };
+        this.stack = '';
+    }
+    // Make `instanceof Error` still work for returned errors.
+    PropTypeError.prototype = Error.prototype;
+    function createChainableTypeChecker(validate) {
+        var manualPropTypeCallCache = {
+        };
+        var manualPropTypeWarningCount = 0;
+        function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+            componentName = componentName || ANONYMOUS;
+            propFullName = propFullName || propName;
+            if (secret !== ReactPropTypesSecret) {
+                if (throwOnDirectAccess) {
+                    // New behavior only for users of `prop-types` package
+                    var err = new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types");
+                    err.name = 'Invariant Violation';
+                    throw err;
+                } else if (typeof console !== 'undefined') {
+                    // Old behavior for people using React.PropTypes
+                    var cacheKey = componentName + ':' + propName;
+                    if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
+                    manualPropTypeWarningCount < 3) {
+                        printWarning("You are manually calling a React.PropTypes validation function for the `" + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
+                        manualPropTypeCallCache[cacheKey] = true;
+                        manualPropTypeWarningCount++;
+                    }
+                }
+            }
+            if (props[propName] == null) {
+                if (isRequired) {
+                    if (props[propName] === null) return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+                    return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+                }
+                return null;
+            } else return validate(props, propName, componentName, location, propFullName);
+        }
+        var chainedCheckType = checkType.bind(null, false);
+        chainedCheckType.isRequired = checkType.bind(null, true);
+        return chainedCheckType;
+    }
+    function createPrimitiveTypeChecker(expectedType) {
+        function validate(props, propName, componentName, location, propFullName, secret) {
+            var propValue = props[propName];
+            var propType = getPropType(propValue);
+            if (propType !== expectedType) {
+                // `propValue` being instance of, say, date/regexp, pass the 'object'
+                // check, but we can offer a more precise error message here rather than
+                // 'of type `object`'.
+                var preciseType = getPreciseType(propValue);
+                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'), {
+                    expectedType: expectedType
+                });
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createAnyTypeChecker() {
+        return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+    }
+    function createArrayOfTypeChecker(typeChecker) {
+        function validate(props, propName, componentName, location, propFullName) {
+            if (typeof typeChecker !== 'function') return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+            var propValue = props[propName];
+            if (!Array.isArray(propValue)) {
+                var propType = getPropType(propValue);
+                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+            }
+            for(var i = 0; i < propValue.length; i++){
+                var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+                if (error instanceof Error) return error;
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createElementTypeChecker() {
+        function validate(props, propName, componentName, location, propFullName) {
+            var propValue = props[propName];
+            if (!isValidElement(propValue)) {
+                var propType = getPropType(propValue);
+                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createElementTypeTypeChecker() {
+        function validate(props, propName, componentName, location, propFullName) {
+            var propValue = props[propName];
+            if (!ReactIs.isValidElementType(propValue)) {
+                var propType = getPropType(propValue);
+                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createInstanceTypeChecker(expectedClass) {
+        function validate(props, propName, componentName, location, propFullName) {
+            if (!(props[propName] instanceof expectedClass)) {
+                var expectedClassName = expectedClass.name || ANONYMOUS;
+                var actualClassName = getClassName(props[propName]);
+                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createEnumTypeChecker(expectedValues) {
+        if (!Array.isArray(expectedValues)) {
+            {
+                if (arguments.length > 1) printWarning('Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' + 'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).');
+                else printWarning('Invalid argument supplied to oneOf, expected an array.');
+            }
+            return emptyFunctionThatReturnsNull;
+        }
+        function validate(props, propName, componentName, location, propFullName) {
+            var propValue = props[propName];
+            for(var i = 0; i < expectedValues.length; i++){
+                if (is(propValue, expectedValues[i])) return null;
+            }
+            var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+                var type = getPreciseType(value);
+                if (type === 'symbol') return String(value);
+                return value;
+            });
+            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createObjectOfTypeChecker(typeChecker) {
+        function validate(props, propName, componentName, location, propFullName) {
+            if (typeof typeChecker !== 'function') return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+            var propValue = props[propName];
+            var propType = getPropType(propValue);
+            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+            for(var key in propValue)if (has(propValue, key)) {
+                var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+                if (error instanceof Error) return error;
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createUnionTypeChecker(arrayOfTypeCheckers) {
+        if (!Array.isArray(arrayOfTypeCheckers)) {
+            printWarning('Invalid argument supplied to oneOfType, expected an instance of array.');
+            return emptyFunctionThatReturnsNull;
+        }
+        for(var i = 0; i < arrayOfTypeCheckers.length; i++){
+            var checker = arrayOfTypeCheckers[i];
+            if (typeof checker !== 'function') {
+                printWarning("Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + ' at index ' + i + '.');
+                return emptyFunctionThatReturnsNull;
+            }
+        }
+        function validate(props, propName, componentName, location, propFullName) {
+            var expectedTypes = [];
+            for(var i1 = 0; i1 < arrayOfTypeCheckers.length; i1++){
+                var checker = arrayOfTypeCheckers[i1];
+                var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+                if (checkerResult == null) return null;
+                if (checkerResult.data && has(checkerResult.data, 'expectedType')) expectedTypes.push(checkerResult.data.expectedType);
+            }
+            var expectedTypesMessage = expectedTypes.length > 0 ? ', expected one of type [' + expectedTypes.join(', ') + ']' : '';
+            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createNodeChecker() {
+        function validate(props, propName, componentName, location, propFullName) {
+            if (!isNode(props[propName])) return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function invalidValidatorError(componentName, location, propFullName, key, type) {
+        return new PropTypeError((componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + type + '`.');
+    }
+    function createShapeTypeChecker(shapeTypes) {
+        function validate(props, propName, componentName, location, propFullName) {
+            var propValue = props[propName];
+            var propType = getPropType(propValue);
+            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+            for(var key in shapeTypes){
+                var checker = shapeTypes[key];
+                if (typeof checker !== 'function') return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+                var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+                if (error) return error;
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function createStrictShapeTypeChecker(shapeTypes) {
+        function validate(props, propName, componentName, location, propFullName) {
+            var propValue = props[propName];
+            var propType = getPropType(propValue);
+            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+            // We need to check all keys in case some are required but missing from props.
+            var allKeys = assign({
+            }, props[propName], shapeTypes);
+            for(var key in allKeys){
+                var checker = shapeTypes[key];
+                if (has(shapeTypes, key) && typeof checker !== 'function') return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+                if (!checker) return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' + '\nBad object: ' + JSON.stringify(props[propName], null, '  ') + '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
+                var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+                if (error) return error;
+            }
+            return null;
+        }
+        return createChainableTypeChecker(validate);
+    }
+    function isNode(propValue) {
+        switch(typeof propValue){
+            case 'number':
+            case 'string':
+            case 'undefined':
+                return true;
+            case 'boolean':
+                return !propValue;
+            case 'object':
+                if (Array.isArray(propValue)) return propValue.every(isNode);
+                if (propValue === null || isValidElement(propValue)) return true;
+                var iteratorFn = getIteratorFn(propValue);
+                if (iteratorFn) {
+                    var iterator = iteratorFn.call(propValue);
+                    var step;
+                    if (iteratorFn !== propValue.entries) while(!(step = iterator.next()).done){
+                        if (!isNode(step.value)) return false;
+                    }
+                    else // Iterator will provide entry [k,v] tuples rather than values.
+                    while(!(step = iterator.next()).done){
+                        var entry = step.value;
+                        if (entry) {
+                            if (!isNode(entry[1])) return false;
+                        }
+                    }
+                } else return false;
+                return true;
+            default:
+                return false;
+        }
+    }
+    function isSymbol(propType, propValue) {
+        // Native Symbol.
+        if (propType === 'symbol') return true;
+        // falsy value can't be a Symbol
+        if (!propValue) return false;
+        // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+        if (propValue['@@toStringTag'] === 'Symbol') return true;
+        // Fallback for non-spec compliant Symbols which are polyfilled.
+        if (typeof Symbol === 'function' && propValue instanceof Symbol) return true;
+        return false;
+    }
+    // Equivalent of `typeof` but with special handling for array and regexp.
+    function getPropType(propValue) {
+        var propType = typeof propValue;
+        if (Array.isArray(propValue)) return 'array';
+        if (propValue instanceof RegExp) // Old webkits (at least until Android 4.0) return 'function' rather than
+        // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+        // passes PropTypes.object.
+        return 'object';
+        if (isSymbol(propType, propValue)) return 'symbol';
+        return propType;
+    }
+    // This handles more types than `getPropType`. Only used for error messages.
+    // See `createPrimitiveTypeChecker`.
+    function getPreciseType(propValue) {
+        if (typeof propValue === 'undefined' || propValue === null) return '' + propValue;
+        var propType = getPropType(propValue);
+        if (propType === 'object') {
+            if (propValue instanceof Date) return 'date';
+            else if (propValue instanceof RegExp) return 'regexp';
+        }
+        return propType;
+    }
+    // Returns a string that is postfixed to a warning about an invalid type.
+    // For example, "undefined" or "of type array"
+    function getPostfixForTypeWarning(value) {
+        var type = getPreciseType(value);
+        switch(type){
+            case 'array':
+            case 'object':
+                return 'an ' + type;
+            case 'boolean':
+            case 'date':
+            case 'regexp':
+                return 'a ' + type;
+            default:
+                return type;
+        }
+    }
+    // Returns class name of the object, if any.
+    function getClassName(propValue) {
+        if (!propValue.constructor || !propValue.constructor.name) return ANONYMOUS;
+        return propValue.constructor.name;
+    }
+    ReactPropTypes.checkPropTypes = checkPropTypes;
+    ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
+    ReactPropTypes.PropTypes = ReactPropTypes;
+    return ReactPropTypes;
+};
+
+},{"react-is":"5wFcP","object-assign":"jzTFF","./lib/ReactPropTypesSecret":"lYuBM","./lib/has":"9e9z2","./checkPropTypes":"3evPV"}],"lYuBM":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ 'use strict';
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+module.exports = ReactPropTypesSecret;
+
+},{}],"9e9z2":[function(require,module,exports) {
+module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
+
+},{}],"3evPV":[function(require,module,exports) {
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ 'use strict';
+var printWarning = function() {
+};
+var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+var loggedTypeFailures = {
+};
+var has = require('./lib/has');
+printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') console.error(message);
+    try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+    } catch (x) {
+    }
+};
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+    for(var typeSpecName in typeSpecs)if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+            // This is intentionally an invariant that gets caught. It's the same
+            // behavior as without this statement except with a better message.
+            if (typeof typeSpecs[typeSpecName] !== 'function') {
+                var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
+                err.name = 'Invariant Violation';
+                throw err;
+            }
+            error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+            error = ex;
+        }
+        if (error && !(error instanceof Error)) printWarning((componentName || 'React class') + ': type specification of ' + location + ' `' + typeSpecName + '` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a ' + typeof error + '. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).');
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+            // Only monitor this failure once because there tends to be a lot of the
+            // same error.
+            loggedTypeFailures[error.message] = true;
+            var stack = getStack ? getStack() : '';
+            printWarning('Failed ' + location + ' type: ' + error.message + (stack != null ? stack : ''));
+        }
+    }
+}
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */ checkPropTypes.resetWarningCache = function() {
+    loggedTypeFailures = {
+    };
+};
+module.exports = checkPropTypes;
+
+},{"./lib/ReactPropTypesSecret":"lYuBM","./lib/has":"9e9z2"}],"gT1Jg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ReactReduxContext", ()=>ReactReduxContext
+);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var ReactReduxContext = /*#__PURE__*/ _reactDefault.default.createContext(null);
+ReactReduxContext.displayName = 'ReactRedux';
+exports.default = ReactReduxContext;
+
+},{"react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6rtcC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createSubscription", ()=>createSubscription
+);
+var _batch = require("./batch"); // encapsulates the subscription logic for connecting a component to the redux store, as
+// well as nesting subscriptions of descendant components, so that we can ensure the
+// ancestor components re-render before descendants
+function createListenerCollection() {
+    var batch = _batch.getBatch();
+    var first = null;
+    var last = null;
+    return {
+        clear: function clear() {
+            first = null;
+            last = null;
+        },
+        notify: function notify() {
+            batch(function() {
+                var listener = first;
+                while(listener){
+                    listener.callback();
+                    listener = listener.next;
+                }
+            });
+        },
+        get: function get() {
+            var listeners = [];
+            var listener = first;
+            while(listener){
+                listeners.push(listener);
+                listener = listener.next;
+            }
+            return listeners;
+        },
+        subscribe: function subscribe(callback) {
+            var isSubscribed = true;
+            var listener = last = {
+                callback: callback,
+                next: null,
+                prev: last
+            };
+            if (listener.prev) listener.prev.next = listener;
+            else first = listener;
+            return function unsubscribe() {
+                if (!isSubscribed || first === null) return;
+                isSubscribed = false;
+                if (listener.next) listener.next.prev = listener.prev;
+                else last = listener.prev;
+                if (listener.prev) listener.prev.next = listener.next;
+                else first = listener.next;
+            };
+        }
+    };
+}
+var nullListeners = {
+    notify: function notify() {
+    },
+    get: function get() {
+        return [];
+    }
+};
+function createSubscription(store, parentSub) {
+    var unsubscribe;
+    var listeners = nullListeners;
+    function addNestedSub(listener) {
+        trySubscribe();
+        return listeners.subscribe(listener);
+    }
+    function notifyNestedSubs() {
+        listeners.notify();
+    }
+    function handleChangeWrapper() {
+        if (subscription.onStateChange) subscription.onStateChange();
+    }
+    function isSubscribed() {
+        return Boolean(unsubscribe);
+    }
+    function trySubscribe() {
+        if (!unsubscribe) {
+            unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store.subscribe(handleChangeWrapper);
+            listeners = createListenerCollection();
+        }
+    }
+    function tryUnsubscribe() {
+        if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = undefined;
+            listeners.clear();
+            listeners = nullListeners;
+        }
+    }
+    var subscription = {
+        addNestedSub: addNestedSub,
+        notifyNestedSubs: notifyNestedSubs,
+        handleChangeWrapper: handleChangeWrapper,
+        isSubscribed: isSubscribed,
+        trySubscribe: trySubscribe,
+        tryUnsubscribe: tryUnsubscribe,
+        getListeners: function getListeners() {
+            return listeners;
+        }
+    };
+    return subscription;
+}
+
+},{"./batch":"2g3ZY","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2g3ZY":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setBatch", ()=>setBatch
+);
+parcelHelpers.export(exports, "getBatch", ()=>getBatch
+);
+// Default to a dummy "batch" implementation that just runs the callback
+function defaultNoopBatch(callback) {
+    callback();
+}
+var batch = defaultNoopBatch; // Allow injecting another batching function later
+var setBatch = function setBatch1(newBatch) {
+    return batch = newBatch;
+}; // Supply a getter just to skip dealing with ESM bindings
+var getBatch = function getBatch1() {
+    return batch;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2TWoQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "useIsomorphicLayoutEffect", ()=>useIsomorphicLayoutEffect
+);
+var _react = require("react"); // React currently throws a warning when using useLayoutEffect on the server.
+var useIsomorphicLayoutEffect = typeof window !== 'undefined' && typeof window.document !== 'undefined' && typeof window.document.createElement !== 'undefined' ? _react.useLayoutEffect : _react.useEffect;
+
+},{"react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"5cRBV":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _extends = require("@babel/runtime/helpers/esm/extends");
+var _extendsDefault = parcelHelpers.interopDefault(_extends);
+var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
+var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
+var _hoistNonReactStatics = require("hoist-non-react-statics");
+var _hoistNonReactStaticsDefault = parcelHelpers.interopDefault(_hoistNonReactStatics);
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactIs = require("react-is");
+var _subscription = require("../utils/Subscription");
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+var _context = require("./Context"); // Define some constant arrays just to avoid re-creating these
+var _excluded = [
+    "getDisplayName",
+    "methodName",
+    "renderCountProp",
+    "shouldHandleStateChanges",
+    "storeKey",
+    "withRef",
+    "forwardRef",
+    "context"
+], _excluded2 = [
+    "reactReduxForwardedRef"
+];
+var EMPTY_ARRAY = [];
+var NO_SUBSCRIPTION_ARRAY = [
+    null,
+    null
+];
+var stringifyComponent = function stringifyComponent1(Comp) {
+    try {
+        return JSON.stringify(Comp);
+    } catch (err) {
+        return String(Comp);
+    }
+};
+function storeStateUpdatesReducer(state, action) {
+    var updateCount = state[1];
+    return [
+        action.payload,
+        updateCount + 1
+    ];
+}
+function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
+    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
+        return effectFunc.apply(void 0, effectArgs);
+    }, dependencies);
+}
+function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs) {
+    // We want to capture the wrapper props and child props we used for later comparisons
+    lastWrapperProps.current = wrapperProps;
+    lastChildProps.current = actualChildProps;
+    renderIsScheduled.current = false; // If the render was from a store update, clear out that reference and cascade the subscriber update
+    if (childPropsFromStoreUpdate.current) {
+        childPropsFromStoreUpdate.current = null;
+        notifyNestedSubs();
+    }
+}
+function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
+    // If we're not subscribed to the store, nothing to do here
+    if (!shouldHandleStateChanges) return; // Capture values for checking if and when this component unmounts
+    var didUnsubscribe = false;
+    var lastThrownError = null; // We'll run this callback every time a store subscription update propagates to this component
+    var checkForUpdates = function checkForUpdates1() {
+        if (didUnsubscribe) // Don't run stale listeners.
+        // Redux doesn't guarantee unsubscriptions happen until next dispatch.
+        return;
+        var latestStoreState = store.getState();
+        var newChildProps, error;
+        try {
+            // Actually run the selector with the most recent store state and wrapper props
+            // to determine what the child props should be
+            newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
+        } catch (e) {
+            error = e;
+            lastThrownError = e;
+        }
+        if (!error) lastThrownError = null;
+         // If the child props haven't changed, nothing to do here - cascade the subscription update
+        if (newChildProps === lastChildProps.current) {
+            if (!renderIsScheduled.current) notifyNestedSubs();
+        } else {
+            // Save references to the new child props.  Note that we track the "child props from store update"
+            // as a ref instead of a useState/useReducer because we need a way to determine if that value has
+            // been processed.  If this went into useState/useReducer, we couldn't clear out the value without
+            // forcing another re-render, which we don't want.
+            lastChildProps.current = newChildProps;
+            childPropsFromStoreUpdate.current = newChildProps;
+            renderIsScheduled.current = true; // If the child props _did_ change (or we caught an error), this wrapper component needs to re-render
+            forceComponentUpdateDispatch({
+                type: 'STORE_UPDATED',
+                payload: {
+                    error: error
+                }
+            });
+        }
+    }; // Actually subscribe to the nearest connected ancestor (or store)
+    subscription.onStateChange = checkForUpdates;
+    subscription.trySubscribe(); // Pull data from the store after first render in case the store has
+    // changed since we began.
+    checkForUpdates();
+    var unsubscribeWrapper = function unsubscribeWrapper1() {
+        didUnsubscribe = true;
+        subscription.tryUnsubscribe();
+        subscription.onStateChange = null;
+        if (lastThrownError) // It's possible that we caught an error due to a bad mapState function, but the
+        // parent re-rendered without this component and we're about to unmount.
+        // This shouldn't happen as long as we do top-down subscriptions correctly, but
+        // if we ever do those wrong, this throw will surface the error in our tests.
+        // In that case, throw the error from here so it doesn't get lost.
+        throw lastThrownError;
+    };
+    return unsubscribeWrapper;
+}
+var initStateUpdates = function initStateUpdates1() {
+    return [
+        null,
+        0
+    ];
+};
+function connectAdvanced(/*
+  selectorFactory is a func that is responsible for returning the selector function used to
+  compute new props from state, props, and dispatch. For example:
+      export default connectAdvanced((dispatch, options) => (state, props) => ({
+      thing: state.things[props.thingId],
+      saveThing: fields => dispatch(actionCreators.saveThing(props.thingId, fields)),
+    }))(YourComponent)
+    Access to dispatch is provided to the factory so selectorFactories can bind actionCreators
+  outside of their selector as an optimization. Options passed to connectAdvanced are passed to
+  the selectorFactory, along with displayName and WrappedComponent, as the second argument.
+    Note that selectorFactory is responsible for all caching/memoization of inbound and outbound
+  props. Do not use connectAdvanced directly without memoizing results between calls to your
+  selector, otherwise the Connect component will re-render on every state or props change.
+*/ selectorFactory, _ref) {
+    if (_ref === void 0) _ref = {
+    };
+    var _ref2 = _ref, _ref2$getDisplayName = _ref2.getDisplayName, getDisplayName = _ref2$getDisplayName === void 0 ? function(name) {
+        return "ConnectAdvanced(" + name + ")";
+    } : _ref2$getDisplayName, _ref2$methodName = _ref2.methodName, methodName = _ref2$methodName === void 0 ? 'connectAdvanced' : _ref2$methodName, _ref2$renderCountProp = _ref2.renderCountProp, renderCountProp = _ref2$renderCountProp === void 0 ? undefined : _ref2$renderCountProp, _ref2$shouldHandleSta = _ref2.shouldHandleStateChanges, shouldHandleStateChanges = _ref2$shouldHandleSta === void 0 ? true : _ref2$shouldHandleSta, _ref2$storeKey = _ref2.storeKey, storeKey = _ref2$storeKey === void 0 ? 'store' : _ref2$storeKey, _ref2$withRef = _ref2.withRef, withRef = _ref2$withRef === void 0 ? false : _ref2$withRef, _ref2$forwardRef = _ref2.forwardRef, forwardRef = _ref2$forwardRef === void 0 ? false : _ref2$forwardRef, _ref2$context = _ref2.context, context = _ref2$context === void 0 ? _context.ReactReduxContext : _ref2$context, connectOptions = _objectWithoutPropertiesLooseDefault.default(_ref2, _excluded);
+    if (renderCountProp !== undefined) throw new Error("renderCountProp is removed. render counting is built into the latest React Dev Tools profiling extension");
+    if (withRef) throw new Error('withRef is removed. To access the wrapped instance, use a ref on the connected component');
+    var customStoreWarningMessage = "To use a custom Redux store for specific components, create a custom React context with React.createContext(), and pass the context object to React Redux's Provider and specific components like: <Provider context={MyContext}><ConnectedComponent context={MyContext} /></Provider>. You may also pass a {context : MyContext} option to connect";
+    if (storeKey !== 'store') throw new Error('storeKey has been removed and does not do anything. ' + customStoreWarningMessage);
+    var Context = context;
+    return function wrapWithConnect(WrappedComponent) {
+        if (!_reactIs.isValidElementType(WrappedComponent)) throw new Error("You must pass a component to the function returned by " + (methodName + ". Instead received " + stringifyComponent(WrappedComponent)));
+        var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+        var displayName = getDisplayName(wrappedComponentName);
+        var selectorFactoryOptions = _extendsDefault.default({
+        }, connectOptions, {
+            getDisplayName: getDisplayName,
+            methodName: methodName,
+            renderCountProp: renderCountProp,
+            shouldHandleStateChanges: shouldHandleStateChanges,
+            storeKey: storeKey,
+            displayName: displayName,
+            wrappedComponentName: wrappedComponentName,
+            WrappedComponent: WrappedComponent
+        });
+        var pure = connectOptions.pure;
+        function createChildSelector(store) {
+            return selectorFactory(store.dispatch, selectorFactoryOptions);
+        } // If we aren't running in "pure" mode, we don't want to memoize values.
+        // To avoid conditionally calling hooks, we fall back to a tiny wrapper
+        // that just executes the given callback immediately.
+        var usePureOnlyMemo = pure ? _react.useMemo : function(callback) {
+            return callback();
+        };
+        function ConnectFunction(props) {
+            var _useMemo = _react.useMemo(function() {
+                // Distinguish between actual "data" props that were passed to the wrapper component,
+                // and values needed to control behavior (forwarded refs, alternate context instances).
+                // To maintain the wrapperProps object reference, memoize this destructuring.
+                var reactReduxForwardedRef = props.reactReduxForwardedRef, wrapperProps = _objectWithoutPropertiesLooseDefault.default(props, _excluded2);
+                return [
+                    props.context,
+                    reactReduxForwardedRef,
+                    wrapperProps
+                ];
+            }, [
+                props
+            ]), propsContext = _useMemo[0], reactReduxForwardedRef = _useMemo[1], wrapperProps = _useMemo[2];
+            var ContextToUse = _react.useMemo(function() {
+                // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
+                // Memoize the check that determines which context instance we should use.
+                return propsContext && propsContext.Consumer && _reactIs.isContextConsumer(/*#__PURE__*/ _reactDefault.default.createElement(propsContext.Consumer, null)) ? propsContext : Context;
+            }, [
+                propsContext,
+                Context
+            ]); // Retrieve the store and ancestor subscription via context, if available
+            var contextValue = _react.useContext(ContextToUse); // The store _must_ exist as either a prop or in context.
+            // We'll check to see if it _looks_ like a Redux store first.
+            // This allows us to pass through a `store` prop that is just a plain value.
+            var didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
+            var didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
+            if (!didStoreComeFromProps && !didStoreComeFromContext) throw new Error("Could not find \"store\" in the context of " + ("\"" + displayName + "\". Either wrap the root component in a <Provider>, ") + "or pass a custom React context provider to <Provider> and the corresponding " + ("React context consumer to " + displayName + " in connect options."));
+             // Based on the previous check, one of these must be true
+            var store = didStoreComeFromProps ? props.store : contextValue.store;
+            var childPropsSelector = _react.useMemo(function() {
+                // The child props selector needs the store reference as an input.
+                // Re-create this selector whenever the store changes.
+                return createChildSelector(store);
+            }, [
+                store
+            ]);
+            var _useMemo2 = _react.useMemo(function() {
+                if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY; // This Subscription's source should match where store came from: props vs. context. A component
+                // connected to the store via props shouldn't use subscription from context, or vice versa.
+                // This Subscription's source should match where store came from: props vs. context. A component
+                // connected to the store via props shouldn't use subscription from context, or vice versa.
+                var subscription = _subscription.createSubscription(store, didStoreComeFromProps ? null : contextValue.subscription); // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
+                // the middle of the notification loop, where `subscription` will then be null. This can
+                // probably be avoided if Subscription's listeners logic is changed to not call listeners
+                // that have been unsubscribed in the  middle of the notification loop.
+                // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
+                // the middle of the notification loop, where `subscription` will then be null. This can
+                // probably be avoided if Subscription's listeners logic is changed to not call listeners
+                // that have been unsubscribed in the  middle of the notification loop.
+                var notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription);
+                return [
+                    subscription,
+                    notifyNestedSubs
+                ];
+            }, [
+                store,
+                didStoreComeFromProps,
+                contextValue
+            ]), subscription = _useMemo2[0], notifyNestedSubs = _useMemo2[1]; // Determine what {store, subscription} value should be put into nested context, if necessary,
+            // and memoize that value to avoid unnecessary context updates.
+            var overriddenContextValue = _react.useMemo(function() {
+                if (didStoreComeFromProps) // This component is directly subscribed to a store from props.
+                // We don't want descendants reading from this store - pass down whatever
+                // the existing context value is from the nearest connected ancestor.
+                return contextValue;
+                 // Otherwise, put this component's subscription instance into context, so that
+                // connected descendants won't update until after this component is done
+                return _extendsDefault.default({
+                }, contextValue, {
+                    subscription: subscription
+                });
+            }, [
+                didStoreComeFromProps,
+                contextValue,
+                subscription
+            ]); // We need to force this wrapper component to re-render whenever a Redux store update
+            // causes a change to the calculated child component props (or we caught an error in mapState)
+            var _useReducer = _react.useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates), _useReducer$ = _useReducer[0], previousStateUpdateResult = _useReducer$[0], forceComponentUpdateDispatch = _useReducer[1]; // Propagate any mapState/mapDispatch errors upwards
+            if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error;
+             // Set up refs to coordinate values between the subscription effect and the render logic
+            var lastChildProps = _react.useRef();
+            var lastWrapperProps = _react.useRef(wrapperProps);
+            var childPropsFromStoreUpdate = _react.useRef();
+            var renderIsScheduled = _react.useRef(false);
+            var actualChildProps = usePureOnlyMemo(function() {
+                // Tricky logic here:
+                // - This render may have been triggered by a Redux store update that produced new child props
+                // - However, we may have gotten new wrapper props after that
+                // If we have new child props, and the same wrapper props, we know we should use the new child props as-is.
+                // But, if we have new wrapper props, those might change the child props, so we have to recalculate things.
+                // So, we'll use the child props from store update only if the wrapper props are the same as last time.
+                if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
+                 // TODO We're reading the store directly in render() here. Bad idea?
+                // This will likely cause Bad Things (TM) to happen in Concurrent Mode.
+                // Note that we do this because on renders _not_ caused by store updates, we need the latest store state
+                // to determine what the child props should be.
+                return childPropsSelector(store.getState(), wrapperProps);
+            }, [
+                store,
+                previousStateUpdateResult,
+                wrapperProps
+            ]); // We need this to execute synchronously every time we re-render. However, React warns
+            // about useLayoutEffect in SSR, so we try to detect environment and fall back to
+            // just useEffect instead to avoid the warning, since neither will run anyway.
+            useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [
+                lastWrapperProps,
+                lastChildProps,
+                renderIsScheduled,
+                wrapperProps,
+                actualChildProps,
+                childPropsFromStoreUpdate,
+                notifyNestedSubs
+            ]); // Our re-subscribe logic only runs when the store/subscription setup changes
+            useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [
+                shouldHandleStateChanges,
+                store,
+                subscription,
+                childPropsSelector,
+                lastWrapperProps,
+                lastChildProps,
+                renderIsScheduled,
+                childPropsFromStoreUpdate,
+                notifyNestedSubs,
+                forceComponentUpdateDispatch
+            ], [
+                store,
+                subscription,
+                childPropsSelector
+            ]); // Now that all that's done, we can finally try to actually render the child component.
+            // We memoize the elements for the rendered child component as an optimization.
+            var renderedWrappedComponent = _react.useMemo(function() {
+                return(/*#__PURE__*/ _reactDefault.default.createElement(WrappedComponent, _extendsDefault.default({
+                }, actualChildProps, {
+                    ref: reactReduxForwardedRef
+                })));
+            }, [
+                reactReduxForwardedRef,
+                WrappedComponent,
+                actualChildProps
+            ]); // If React sees the exact same element reference as last time, it bails out of re-rendering
+            // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
+            var renderedChild = _react.useMemo(function() {
+                if (shouldHandleStateChanges) // If this component is subscribed to store updates, we need to pass its own
+                // subscription instance down to our descendants. That means rendering the same
+                // Context instance, and putting a different value into the context.
+                return(/*#__PURE__*/ _reactDefault.default.createElement(ContextToUse.Provider, {
+                    value: overriddenContextValue
+                }, renderedWrappedComponent));
+                return renderedWrappedComponent;
+            }, [
+                ContextToUse,
+                renderedWrappedComponent,
+                overriddenContextValue
+            ]);
+            return renderedChild;
+        } // If we're in "pure" mode, ensure our wrapper component only re-renders when incoming props have changed.
+        var Connect = pure ? _reactDefault.default.memo(ConnectFunction) : ConnectFunction;
+        Connect.WrappedComponent = WrappedComponent;
+        Connect.displayName = ConnectFunction.displayName = displayName;
+        if (forwardRef) {
+            var forwarded = _reactDefault.default.forwardRef(function forwardConnectRef(props, ref) {
+                return(/*#__PURE__*/ _reactDefault.default.createElement(Connect, _extendsDefault.default({
+                }, props, {
+                    reactReduxForwardedRef: ref
+                })));
+            });
+            forwarded.displayName = displayName;
+            forwarded.WrappedComponent = WrappedComponent;
+            return _hoistNonReactStaticsDefault.default(forwarded, WrappedComponent);
+        }
+        return _hoistNonReactStaticsDefault.default(Connect, WrappedComponent);
+    };
+}
+exports.default = connectAdvanced;
+
+},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","hoist-non-react-statics":"jfzb6","react":"6TuXu","react-is":"bCfxJ","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","./Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bKAu6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function _extends() {
+    _extends = Object.assign ? Object.assign.bind() : function(target) {
+        for(var i = 1; i < arguments.length; i++){
+            var source = arguments[i];
+            for(var key in source)if (Object.prototype.hasOwnProperty.call(source, key)) target[key] = source[key];
+        }
+        return target;
+    };
+    return _extends.apply(this, arguments);
+}
+exports.default = _extends;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"3Rubg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function _objectWithoutPropertiesLoose(source, excluded) {
+    if (source == null) return {
+    };
+    var target = {
+    };
+    var sourceKeys = Object.keys(source);
+    var key, i;
+    for(i = 0; i < sourceKeys.length; i++){
+        key = sourceKeys[i];
+        if (excluded.indexOf(key) >= 0) continue;
+        target[key] = source[key];
+    }
+    return target;
+}
+exports.default = _objectWithoutPropertiesLoose;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"jfzb6":[function(require,module,exports) {
+'use strict';
+var reactIs = require('react-is');
+/**
+ * Copyright 2015, Yahoo! Inc.
+ * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
+ */ var REACT_STATICS = {
+    childContextTypes: true,
+    contextType: true,
+    contextTypes: true,
+    defaultProps: true,
+    displayName: true,
+    getDefaultProps: true,
+    getDerivedStateFromError: true,
+    getDerivedStateFromProps: true,
+    mixins: true,
+    propTypes: true,
+    type: true
+};
+var KNOWN_STATICS = {
+    name: true,
+    length: true,
+    prototype: true,
+    caller: true,
+    callee: true,
+    arguments: true,
+    arity: true
+};
+var FORWARD_REF_STATICS = {
+    '$$typeof': true,
+    render: true,
+    defaultProps: true,
+    displayName: true,
+    propTypes: true
+};
+var MEMO_STATICS = {
+    '$$typeof': true,
+    compare: true,
+    defaultProps: true,
+    displayName: true,
+    propTypes: true,
+    type: true
+};
+var TYPE_STATICS = {
+};
+TYPE_STATICS[reactIs.ForwardRef] = FORWARD_REF_STATICS;
+TYPE_STATICS[reactIs.Memo] = MEMO_STATICS;
+function getStatics(component) {
+    // React v16.11 and below
+    if (reactIs.isMemo(component)) return MEMO_STATICS;
+     // React v16.12 and above
+    return TYPE_STATICS[component['$$typeof']] || REACT_STATICS;
+}
+var defineProperty = Object.defineProperty;
+var getOwnPropertyNames = Object.getOwnPropertyNames;
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var getPrototypeOf = Object.getPrototypeOf;
+var objectPrototype = Object.prototype;
+function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
+    if (typeof sourceComponent !== 'string') {
+        // don't hoist over string (html) components
+        if (objectPrototype) {
+            var inheritedComponent = getPrototypeOf(sourceComponent);
+            if (inheritedComponent && inheritedComponent !== objectPrototype) hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
+        }
+        var keys = getOwnPropertyNames(sourceComponent);
+        if (getOwnPropertySymbols) keys = keys.concat(getOwnPropertySymbols(sourceComponent));
+        var targetStatics = getStatics(targetComponent);
+        var sourceStatics = getStatics(sourceComponent);
+        for(var i = 0; i < keys.length; ++i){
+            var key = keys[i];
+            if (!KNOWN_STATICS[key] && !(blacklist && blacklist[key]) && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
+                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
+                try {
+                    // Avoid failures from read-only properties
+                    defineProperty(targetComponent, key, descriptor);
+                } catch (e) {
+                }
+            }
+        }
+    }
+    return targetComponent;
+}
+module.exports = hoistNonReactStatics;
+
+},{"react-is":"5wFcP"}],"bCfxJ":[function(require,module,exports) {
+'use strict';
+module.exports = require('./cjs/react-is.development.js');
+
+},{"./cjs/react-is.development.js":"eyUIi"}],"eyUIi":[function(require,module,exports) {
+/** @license React v17.0.2
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */ 'use strict';
+(function() {
+    // ATTENTION
+    // When adding new symbols to this file,
+    // Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
+    // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+    // nor polyfill, then a plain number is used for performance.
+    var REACT_ELEMENT_TYPE = 60103;
+    var REACT_PORTAL_TYPE = 60106;
+    var REACT_FRAGMENT_TYPE = 60107;
+    var REACT_STRICT_MODE_TYPE = 60108;
+    var REACT_PROFILER_TYPE = 60114;
+    var REACT_PROVIDER_TYPE = 60109;
+    var REACT_CONTEXT_TYPE = 60110;
+    var REACT_FORWARD_REF_TYPE = 60112;
+    var REACT_SUSPENSE_TYPE = 60113;
+    var REACT_SUSPENSE_LIST_TYPE = 60120;
+    var REACT_MEMO_TYPE = 60115;
+    var REACT_LAZY_TYPE = 60116;
+    var REACT_BLOCK_TYPE = 60121;
+    var REACT_SERVER_BLOCK_TYPE = 60122;
+    var REACT_FUNDAMENTAL_TYPE = 60117;
+    var REACT_SCOPE_TYPE = 60119;
+    var REACT_OPAQUE_ID_TYPE = 60128;
+    var REACT_DEBUG_TRACING_MODE_TYPE = 60129;
+    var REACT_OFFSCREEN_TYPE = 60130;
+    var REACT_LEGACY_HIDDEN_TYPE = 60131;
+    if (typeof Symbol === 'function' && Symbol.for) {
+        var symbolFor = Symbol.for;
+        REACT_ELEMENT_TYPE = symbolFor('react.element');
+        REACT_PORTAL_TYPE = symbolFor('react.portal');
+        REACT_FRAGMENT_TYPE = symbolFor('react.fragment');
+        REACT_STRICT_MODE_TYPE = symbolFor('react.strict_mode');
+        REACT_PROFILER_TYPE = symbolFor('react.profiler');
+        REACT_PROVIDER_TYPE = symbolFor('react.provider');
+        REACT_CONTEXT_TYPE = symbolFor('react.context');
+        REACT_FORWARD_REF_TYPE = symbolFor('react.forward_ref');
+        REACT_SUSPENSE_TYPE = symbolFor('react.suspense');
+        REACT_SUSPENSE_LIST_TYPE = symbolFor('react.suspense_list');
+        REACT_MEMO_TYPE = symbolFor('react.memo');
+        REACT_LAZY_TYPE = symbolFor('react.lazy');
+        REACT_BLOCK_TYPE = symbolFor('react.block');
+        REACT_SERVER_BLOCK_TYPE = symbolFor('react.server.block');
+        REACT_FUNDAMENTAL_TYPE = symbolFor('react.fundamental');
+        REACT_SCOPE_TYPE = symbolFor('react.scope');
+        REACT_OPAQUE_ID_TYPE = symbolFor('react.opaque.id');
+        REACT_DEBUG_TRACING_MODE_TYPE = symbolFor('react.debug_trace_mode');
+        REACT_OFFSCREEN_TYPE = symbolFor('react.offscreen');
+        REACT_LEGACY_HIDDEN_TYPE = symbolFor('react.legacy_hidden');
+    }
+    // Filter certain DOM attributes (e.g. src, href) if their values are empty strings.
+    var enableScopeAPI = false; // Experimental Create Event Handle API.
+    function isValidElementType(type) {
+        if (typeof type === 'string' || typeof type === 'function') return true;
+         // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
+        if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_DEBUG_TRACING_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_LEGACY_HIDDEN_TYPE || enableScopeAPI) return true;
+        if (typeof type === 'object' && type !== null) {
+            if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_BLOCK_TYPE || type[0] === REACT_SERVER_BLOCK_TYPE) return true;
+        }
+        return false;
+    }
+    function typeOf(object) {
+        if (typeof object === 'object' && object !== null) {
+            var $$typeof = object.$$typeof;
+            switch($$typeof){
+                case REACT_ELEMENT_TYPE:
+                    var type = object.type;
+                    switch(type){
+                        case REACT_FRAGMENT_TYPE:
+                        case REACT_PROFILER_TYPE:
+                        case REACT_STRICT_MODE_TYPE:
+                        case REACT_SUSPENSE_TYPE:
+                        case REACT_SUSPENSE_LIST_TYPE:
+                            return type;
+                        default:
+                            var $$typeofType = type && type.$$typeof;
+                            switch($$typeofType){
+                                case REACT_CONTEXT_TYPE:
+                                case REACT_FORWARD_REF_TYPE:
+                                case REACT_LAZY_TYPE:
+                                case REACT_MEMO_TYPE:
+                                case REACT_PROVIDER_TYPE:
+                                    return $$typeofType;
+                                default:
+                                    return $$typeof;
+                            }
+                    }
+                case REACT_PORTAL_TYPE:
+                    return $$typeof;
+            }
+        }
+        return undefined;
+    }
+    var ContextConsumer = REACT_CONTEXT_TYPE;
+    var ContextProvider = REACT_PROVIDER_TYPE;
+    var Element1 = REACT_ELEMENT_TYPE;
+    var ForwardRef = REACT_FORWARD_REF_TYPE;
+    var Fragment = REACT_FRAGMENT_TYPE;
+    var Lazy = REACT_LAZY_TYPE;
+    var Memo = REACT_MEMO_TYPE;
+    var Portal = REACT_PORTAL_TYPE;
+    var Profiler = REACT_PROFILER_TYPE;
+    var StrictMode = REACT_STRICT_MODE_TYPE;
+    var Suspense = REACT_SUSPENSE_TYPE;
+    var hasWarnedAboutDeprecatedIsAsyncMode = false;
+    var hasWarnedAboutDeprecatedIsConcurrentMode = false; // AsyncMode should be deprecated
+    function isAsyncMode(object) {
+        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+            hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+            console['warn']("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 18+.");
+        }
+        return false;
+    }
+    function isConcurrentMode(object) {
+        if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
+            hasWarnedAboutDeprecatedIsConcurrentMode = true; // Using console['warn'] to evade Babel and ESLint
+            console['warn']("The ReactIs.isConcurrentMode() alias has been deprecated, and will be removed in React 18+.");
+        }
+        return false;
+    }
+    function isContextConsumer(object) {
+        return typeOf(object) === REACT_CONTEXT_TYPE;
+    }
+    function isContextProvider(object) {
+        return typeOf(object) === REACT_PROVIDER_TYPE;
+    }
+    function isElement(object) {
+        return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+    }
+    function isForwardRef(object) {
+        return typeOf(object) === REACT_FORWARD_REF_TYPE;
+    }
+    function isFragment(object) {
+        return typeOf(object) === REACT_FRAGMENT_TYPE;
+    }
+    function isLazy(object) {
+        return typeOf(object) === REACT_LAZY_TYPE;
+    }
+    function isMemo(object) {
+        return typeOf(object) === REACT_MEMO_TYPE;
+    }
+    function isPortal(object) {
+        return typeOf(object) === REACT_PORTAL_TYPE;
+    }
+    function isProfiler(object) {
+        return typeOf(object) === REACT_PROFILER_TYPE;
+    }
+    function isStrictMode(object) {
+        return typeOf(object) === REACT_STRICT_MODE_TYPE;
+    }
+    function isSuspense(object) {
+        return typeOf(object) === REACT_SUSPENSE_TYPE;
+    }
+    exports.ContextConsumer = ContextConsumer;
+    exports.ContextProvider = ContextProvider;
+    exports.Element = Element1;
+    exports.ForwardRef = ForwardRef;
+    exports.Fragment = Fragment;
+    exports.Lazy = Lazy;
+    exports.Memo = Memo;
+    exports.Portal = Portal;
+    exports.Profiler = Profiler;
+    exports.StrictMode = StrictMode;
+    exports.Suspense = Suspense;
+    exports.isAsyncMode = isAsyncMode;
+    exports.isConcurrentMode = isConcurrentMode;
+    exports.isContextConsumer = isContextConsumer;
+    exports.isContextProvider = isContextProvider;
+    exports.isElement = isElement;
+    exports.isForwardRef = isForwardRef;
+    exports.isFragment = isFragment;
+    exports.isLazy = isLazy;
+    exports.isMemo = isMemo;
+    exports.isPortal = isPortal;
+    exports.isProfiler = isProfiler;
+    exports.isStrictMode = isStrictMode;
+    exports.isSuspense = isSuspense;
+    exports.isValidElementType = isValidElementType;
+    exports.typeOf = typeOf;
+})();
+
+},{}],"9zpXe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+// different options opens up some testing and extensibility scenarios
+parcelHelpers.export(exports, "createConnect", ()=>createConnect
+);
+var _extends = require("@babel/runtime/helpers/esm/extends");
+var _extendsDefault = parcelHelpers.interopDefault(_extends);
+var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
+var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
+var _connectAdvanced = require("../components/connectAdvanced");
+var _connectAdvancedDefault = parcelHelpers.interopDefault(_connectAdvanced);
+var _shallowEqual = require("../utils/shallowEqual");
+var _shallowEqualDefault = parcelHelpers.interopDefault(_shallowEqual);
+var _mapDispatchToProps = require("./mapDispatchToProps");
+var _mapDispatchToPropsDefault = parcelHelpers.interopDefault(_mapDispatchToProps);
+var _mapStateToProps = require("./mapStateToProps");
+var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
+var _mergeProps = require("./mergeProps");
+var _mergePropsDefault = parcelHelpers.interopDefault(_mergeProps);
+var _selectorFactory = require("./selectorFactory");
+var _selectorFactoryDefault = parcelHelpers.interopDefault(_selectorFactory);
+var _excluded = [
+    "pure",
+    "areStatesEqual",
+    "areOwnPropsEqual",
+    "areStatePropsEqual",
+    "areMergedPropsEqual"
+];
+/*
+  connect is a facade over connectAdvanced. It turns its args into a compatible
+  selectorFactory, which has the signature:
+
+    (dispatch, options) => (nextState, nextOwnProps) => nextFinalProps
+  
+  connect passes its args to connectAdvanced as options, which will in turn pass them to
+  selectorFactory each time a Connect component instance is instantiated or hot reloaded.
+
+  selectorFactory returns a final props selector from its mapStateToProps,
+  mapStateToPropsFactories, mapDispatchToProps, mapDispatchToPropsFactories, mergeProps,
+  mergePropsFactories, and pure args.
+
+  The resulting final props selector is called by the Connect component instance whenever
+  it receives new props or store state.
+ */ function match(arg, factories, name) {
+    for(var i = factories.length - 1; i >= 0; i--){
+        var result = factories[i](arg);
+        if (result) return result;
+    }
+    return function(dispatch, options) {
+        throw new Error("Invalid value of type " + typeof arg + " for " + name + " argument when connecting component " + options.wrappedComponentName + ".");
+    };
+}
+function strictEqual(a, b) {
+    return a === b;
+} // createConnect with default args builds the 'official' connect behavior. Calling it with
+function createConnect(_temp) {
+    var _ref = _temp === void 0 ? {
+    } : _temp, _ref$connectHOC = _ref.connectHOC, connectHOC = _ref$connectHOC === void 0 ? _connectAdvancedDefault.default : _ref$connectHOC, _ref$mapStateToPropsF = _ref.mapStateToPropsFactories, mapStateToPropsFactories = _ref$mapStateToPropsF === void 0 ? _mapStateToPropsDefault.default : _ref$mapStateToPropsF, _ref$mapDispatchToPro = _ref.mapDispatchToPropsFactories, mapDispatchToPropsFactories = _ref$mapDispatchToPro === void 0 ? _mapDispatchToPropsDefault.default : _ref$mapDispatchToPro, _ref$mergePropsFactor = _ref.mergePropsFactories, mergePropsFactories = _ref$mergePropsFactor === void 0 ? _mergePropsDefault.default : _ref$mergePropsFactor, _ref$selectorFactory = _ref.selectorFactory, selectorFactory = _ref$selectorFactory === void 0 ? _selectorFactoryDefault.default : _ref$selectorFactory;
+    return function connect(mapStateToProps, mapDispatchToProps, mergeProps, _ref2) {
+        if (_ref2 === void 0) _ref2 = {
+        };
+        var _ref3 = _ref2, _ref3$pure = _ref3.pure, pure = _ref3$pure === void 0 ? true : _ref3$pure, _ref3$areStatesEqual = _ref3.areStatesEqual, areStatesEqual = _ref3$areStatesEqual === void 0 ? strictEqual : _ref3$areStatesEqual, _ref3$areOwnPropsEqua = _ref3.areOwnPropsEqual, areOwnPropsEqual = _ref3$areOwnPropsEqua === void 0 ? _shallowEqualDefault.default : _ref3$areOwnPropsEqua, _ref3$areStatePropsEq = _ref3.areStatePropsEqual, areStatePropsEqual = _ref3$areStatePropsEq === void 0 ? _shallowEqualDefault.default : _ref3$areStatePropsEq, _ref3$areMergedPropsE = _ref3.areMergedPropsEqual, areMergedPropsEqual = _ref3$areMergedPropsE === void 0 ? _shallowEqualDefault.default : _ref3$areMergedPropsE, extraOptions = _objectWithoutPropertiesLooseDefault.default(_ref3, _excluded);
+        var initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
+        var initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
+        var initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
+        return connectHOC(selectorFactory, _extendsDefault.default({
+            // used in error messages
+            methodName: 'connect',
+            // used to compute Connect's displayName from the wrapped component's displayName.
+            getDisplayName: function getDisplayName(name) {
+                return "Connect(" + name + ")";
+            },
+            // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+            shouldHandleStateChanges: Boolean(mapStateToProps),
+            // passed through to selectorFactory
+            initMapStateToProps: initMapStateToProps,
+            initMapDispatchToProps: initMapDispatchToProps,
+            initMergeProps: initMergeProps,
+            pure: pure,
+            areStatesEqual: areStatesEqual,
+            areOwnPropsEqual: areOwnPropsEqual,
+            areStatePropsEqual: areStatePropsEqual,
+            areMergedPropsEqual: areMergedPropsEqual
+        }, extraOptions));
+    };
+}
+exports.default = /*#__PURE__*/ createConnect();
+
+},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","../components/connectAdvanced":"5cRBV","../utils/shallowEqual":"leLul","./mapDispatchToProps":"5WOJW","./mapStateToProps":"fi6QF","./mergeProps":"j48TE","./selectorFactory":"2XZ1a","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"leLul":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function is(x, y) {
+    if (x === y) return x !== 0 || y !== 0 || 1 / x === 1 / y;
+    else return x !== x && y !== y;
+}
+function shallowEqual(objA, objB) {
+    if (is(objA, objB)) return true;
+    if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) return false;
+    var keysA = Object.keys(objA);
+    var keysB = Object.keys(objB);
+    if (keysA.length !== keysB.length) return false;
+    for(var i = 0; i < keysA.length; i++){
+        if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) return false;
+    }
+    return true;
+}
+exports.default = shallowEqual;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"5WOJW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "whenMapDispatchToPropsIsFunction", ()=>whenMapDispatchToPropsIsFunction
+);
+parcelHelpers.export(exports, "whenMapDispatchToPropsIsMissing", ()=>whenMapDispatchToPropsIsMissing
+);
+parcelHelpers.export(exports, "whenMapDispatchToPropsIsObject", ()=>whenMapDispatchToPropsIsObject
+);
+var _bindActionCreators = require("../utils/bindActionCreators");
+var _bindActionCreatorsDefault = parcelHelpers.interopDefault(_bindActionCreators);
+var _wrapMapToProps = require("./wrapMapToProps");
+function whenMapDispatchToPropsIsFunction(mapDispatchToProps) {
+    return typeof mapDispatchToProps === 'function' ? _wrapMapToProps.wrapMapToPropsFunc(mapDispatchToProps, 'mapDispatchToProps') : undefined;
+}
+function whenMapDispatchToPropsIsMissing(mapDispatchToProps) {
+    return !mapDispatchToProps ? _wrapMapToProps.wrapMapToPropsConstant(function(dispatch) {
+        return {
+            dispatch: dispatch
+        };
+    }) : undefined;
+}
+function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
+    return mapDispatchToProps && typeof mapDispatchToProps === 'object' ? _wrapMapToProps.wrapMapToPropsConstant(function(dispatch) {
+        return _bindActionCreatorsDefault.default(mapDispatchToProps, dispatch);
+    }) : undefined;
+}
+exports.default = [
+    whenMapDispatchToPropsIsFunction,
+    whenMapDispatchToPropsIsMissing,
+    whenMapDispatchToPropsIsObject
+];
+
+},{"../utils/bindActionCreators":"dTgYQ","./wrapMapToProps":"cK0KG","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"dTgYQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function bindActionCreators(actionCreators, dispatch) {
+    var boundActionCreators = {
+    };
+    var _loop = function _loop1(key) {
+        var actionCreator = actionCreators[key];
+        if (typeof actionCreator === 'function') boundActionCreators[key] = function() {
+            return dispatch(actionCreator.apply(void 0, arguments));
+        };
+    };
+    for(var key in actionCreators)_loop(key);
+    return boundActionCreators;
+}
+exports.default = bindActionCreators;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"cK0KG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "wrapMapToPropsConstant", ()=>wrapMapToPropsConstant
+) // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
+;
+// to the mapToProps function being wrapped. It is also used by makePurePropsSelector to determine
+// whether mapToProps needs to be invoked when props have changed.
+//
+// A length of one signals that mapToProps does not depend on props from the parent component.
+// A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
+// therefore not reporting its length accurately..
+parcelHelpers.export(exports, "getDependsOnOwnProps", ()=>getDependsOnOwnProps
+) // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
+;
+// this function wraps mapToProps in a proxy function which does several things:
+//
+//  * Detects whether the mapToProps function being called depends on props, which
+//    is used by selectorFactory to decide if it should reinvoke on props changes.
+//
+//  * On first call, handles mapToProps if returns another function, and treats that
+//    new function as the true mapToProps for subsequent calls.
+//
+//  * On first call, verifies the first result is a plain object, in order to warn
+//    the developer that their mapToProps function is not returning a valid result.
+//
+parcelHelpers.export(exports, "wrapMapToPropsFunc", ()=>wrapMapToPropsFunc
+);
+var _verifyPlainObject = require("../utils/verifyPlainObject");
+var _verifyPlainObjectDefault = parcelHelpers.interopDefault(_verifyPlainObject);
+function wrapMapToPropsConstant(getConstant) {
+    return function initConstantSelector(dispatch, options) {
+        var constant = getConstant(dispatch, options);
+        function constantSelector() {
+            return constant;
+        }
+        constantSelector.dependsOnOwnProps = false;
+        return constantSelector;
+    };
+}
+function getDependsOnOwnProps(mapToProps) {
+    return mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1;
+}
+function wrapMapToPropsFunc(mapToProps, methodName) {
+    return function initProxySelector(dispatch, _ref) {
+        var displayName = _ref.displayName;
+        var proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+            return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch);
+        }; // allow detectFactoryAndVerify to get ownProps
+        proxy.dependsOnOwnProps = true;
+        proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+            proxy.mapToProps = mapToProps;
+            proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
+            var props = proxy(stateOrDispatch, ownProps);
+            if (typeof props === 'function') {
+                proxy.mapToProps = props;
+                proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
+                props = proxy(stateOrDispatch, ownProps);
+            }
+            _verifyPlainObjectDefault.default(props, displayName, methodName);
+            return props;
+        };
+        return proxy;
+    };
+}
+
+},{"../utils/verifyPlainObject":"8txK0","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"8txK0":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _isPlainObject = require("./isPlainObject");
+var _isPlainObjectDefault = parcelHelpers.interopDefault(_isPlainObject);
+var _warning = require("./warning");
+var _warningDefault = parcelHelpers.interopDefault(_warning);
+function verifyPlainObject(value, displayName, methodName) {
+    if (!_isPlainObjectDefault.default(value)) _warningDefault.default(methodName + "() in " + displayName + " must return a plain object. Instead received " + value + ".");
+}
+exports.default = verifyPlainObject;
+
+},{"./isPlainObject":"awooc","./warning":"fl0jd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"awooc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function isPlainObject(obj) {
+    if (typeof obj !== 'object' || obj === null) return false;
+    var proto = Object.getPrototypeOf(obj);
+    if (proto === null) return true;
+    var baseProto = proto;
+    while(Object.getPrototypeOf(baseProto) !== null)baseProto = Object.getPrototypeOf(baseProto);
+    return proto === baseProto;
+}
+exports.default = isPlainObject;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fl0jd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+function warning(message) {
+    /* eslint-disable no-console */ if (typeof console !== 'undefined' && typeof console.error === 'function') console.error(message);
+    /* eslint-enable no-console */ try {
+        // This error was thrown as a convenience so that if you enable
+        // "break on all exceptions" in your console,
+        // it would pause the execution at this line.
+        throw new Error(message);
+    /* eslint-disable no-empty */ } catch (e) {
+    }
+/* eslint-enable no-empty */ }
+exports.default = warning;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fi6QF":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "whenMapStateToPropsIsFunction", ()=>whenMapStateToPropsIsFunction
+);
+parcelHelpers.export(exports, "whenMapStateToPropsIsMissing", ()=>whenMapStateToPropsIsMissing
+);
+var _wrapMapToProps = require("./wrapMapToProps");
+function whenMapStateToPropsIsFunction(mapStateToProps) {
+    return typeof mapStateToProps === 'function' ? _wrapMapToProps.wrapMapToPropsFunc(mapStateToProps, 'mapStateToProps') : undefined;
+}
+function whenMapStateToPropsIsMissing(mapStateToProps) {
+    return !mapStateToProps ? _wrapMapToProps.wrapMapToPropsConstant(function() {
+        return {
+        };
+    }) : undefined;
+}
+exports.default = [
+    whenMapStateToPropsIsFunction,
+    whenMapStateToPropsIsMissing
+];
+
+},{"./wrapMapToProps":"cK0KG","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"j48TE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "defaultMergeProps", ()=>defaultMergeProps
+);
+parcelHelpers.export(exports, "wrapMergePropsFunc", ()=>wrapMergePropsFunc
+);
+parcelHelpers.export(exports, "whenMergePropsIsFunction", ()=>whenMergePropsIsFunction
+);
+parcelHelpers.export(exports, "whenMergePropsIsOmitted", ()=>whenMergePropsIsOmitted
+);
+var _extends = require("@babel/runtime/helpers/esm/extends");
+var _extendsDefault = parcelHelpers.interopDefault(_extends);
+var _verifyPlainObject = require("../utils/verifyPlainObject");
+var _verifyPlainObjectDefault = parcelHelpers.interopDefault(_verifyPlainObject);
+function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+    return _extendsDefault.default({
+    }, ownProps, stateProps, dispatchProps);
+}
+function wrapMergePropsFunc(mergeProps) {
+    return function initMergePropsProxy(dispatch, _ref) {
+        var displayName = _ref.displayName, pure = _ref.pure, areMergedPropsEqual = _ref.areMergedPropsEqual;
+        var hasRunOnce = false;
+        var mergedProps;
+        return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
+            var nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+            if (hasRunOnce) {
+                if (!pure || !areMergedPropsEqual(nextMergedProps, mergedProps)) mergedProps = nextMergedProps;
+            } else {
+                hasRunOnce = true;
+                mergedProps = nextMergedProps;
+                _verifyPlainObjectDefault.default(mergedProps, displayName, 'mergeProps');
+            }
+            return mergedProps;
+        };
+    };
+}
+function whenMergePropsIsFunction(mergeProps) {
+    return typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
+}
+function whenMergePropsIsOmitted(mergeProps) {
+    return !mergeProps ? function() {
+        return defaultMergeProps;
+    } : undefined;
+}
+exports.default = [
+    whenMergePropsIsFunction,
+    whenMergePropsIsOmitted
+];
+
+},{"@babel/runtime/helpers/esm/extends":"bKAu6","../utils/verifyPlainObject":"8txK0","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2XZ1a":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "impureFinalPropsSelectorFactory", ()=>impureFinalPropsSelectorFactory
+);
+parcelHelpers.export(exports, "pureFinalPropsSelectorFactory", ()=>pureFinalPropsSelectorFactory
+) // TODO: Add more comments
+;
+var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
+var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
+var _verifySubselectors = require("./verifySubselectors");
+var _verifySubselectorsDefault = parcelHelpers.interopDefault(_verifySubselectors);
+var _excluded = [
+    "initMapStateToProps",
+    "initMapDispatchToProps",
+    "initMergeProps"
+];
+function impureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch) {
+    return function impureFinalPropsSelector(state, ownProps) {
+        return mergeProps(mapStateToProps(state, ownProps), mapDispatchToProps(dispatch, ownProps), ownProps);
+    };
+}
+function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, _ref) {
+    var areStatesEqual = _ref.areStatesEqual, areOwnPropsEqual = _ref.areOwnPropsEqual, areStatePropsEqual = _ref.areStatePropsEqual;
+    var hasRunAtLeastOnce = false;
+    var state;
+    var ownProps;
+    var stateProps;
+    var dispatchProps;
+    var mergedProps;
+    function handleFirstCall(firstState, firstOwnProps) {
+        state = firstState;
+        ownProps = firstOwnProps;
+        stateProps = mapStateToProps(state, ownProps);
+        dispatchProps = mapDispatchToProps(dispatch, ownProps);
+        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+        hasRunAtLeastOnce = true;
+        return mergedProps;
+    }
+    function handleNewPropsAndNewState() {
+        stateProps = mapStateToProps(state, ownProps);
+        if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+        return mergedProps;
+    }
+    function handleNewProps() {
+        if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps);
+        if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+        return mergedProps;
+    }
+    function handleNewState() {
+        var nextStateProps = mapStateToProps(state, ownProps);
+        var statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps);
+        stateProps = nextStateProps;
+        if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+        return mergedProps;
+    }
+    function handleSubsequentCalls(nextState, nextOwnProps) {
+        var propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
+        var stateChanged = !areStatesEqual(nextState, state, nextOwnProps, ownProps);
+        state = nextState;
+        ownProps = nextOwnProps;
+        if (propsChanged && stateChanged) return handleNewPropsAndNewState();
+        if (propsChanged) return handleNewProps();
+        if (stateChanged) return handleNewState();
+        return mergedProps;
+    }
+    return function pureFinalPropsSelector(nextState, nextOwnProps) {
+        return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
+    };
+}
+function finalPropsSelectorFactory(dispatch, _ref2) {
+    var initMapStateToProps = _ref2.initMapStateToProps, initMapDispatchToProps = _ref2.initMapDispatchToProps, initMergeProps = _ref2.initMergeProps, options = _objectWithoutPropertiesLooseDefault.default(_ref2, _excluded);
+    var mapStateToProps = initMapStateToProps(dispatch, options);
+    var mapDispatchToProps = initMapDispatchToProps(dispatch, options);
+    var mergeProps = initMergeProps(dispatch, options);
+    _verifySubselectorsDefault.default(mapStateToProps, mapDispatchToProps, mergeProps, options.displayName);
+    var selectorFactory = options.pure ? pureFinalPropsSelectorFactory : impureFinalPropsSelectorFactory;
+    return selectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
+}
+exports.default = finalPropsSelectorFactory;
+
+},{"@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","./verifySubselectors":"lInRo","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"lInRo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _warning = require("../utils/warning");
+var _warningDefault = parcelHelpers.interopDefault(_warning);
+function verify(selector, methodName, displayName) {
+    if (!selector) throw new Error("Unexpected value for " + methodName + " in " + displayName + ".");
+    else if (methodName === 'mapStateToProps' || methodName === 'mapDispatchToProps') {
+        if (!Object.prototype.hasOwnProperty.call(selector, 'dependsOnOwnProps')) _warningDefault.default("The selector for " + methodName + " of " + displayName + " did not specify a value for dependsOnOwnProps.");
+    }
+}
+function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, displayName) {
+    verify(mapStateToProps, 'mapStateToProps', displayName);
+    verify(mapDispatchToProps, 'mapDispatchToProps', displayName);
+    verify(mergeProps, 'mergeProps', displayName);
+}
+exports.default = verifySubselectors;
+
+},{"../utils/warning":"fl0jd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2CDvn":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Hook factory, which creates a `useDispatch` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useDispatch` hook bound to the specified context.
+ */ parcelHelpers.export(exports, "createDispatchHook", ()=>createDispatchHook
+);
+parcelHelpers.export(exports, "useDispatch", ()=>useDispatch
+);
+var _context = require("../components/Context");
+var _useStore = require("./useStore");
+function createDispatchHook(context) {
+    if (context === void 0) context = _context.ReactReduxContext;
+    var useStore = context === _context.ReactReduxContext ? _useStore.useStore : _useStore.createStoreHook(context);
+    return function useDispatch() {
+        var store = useStore();
+        return store.dispatch;
+    };
+}
+var useDispatch = /*#__PURE__*/ createDispatchHook();
+
+},{"../components/Context":"gT1Jg","./useStore":"fDPAT","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fDPAT":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Hook factory, which creates a `useStore` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useStore` hook bound to the specified context.
+ */ parcelHelpers.export(exports, "createStoreHook", ()=>createStoreHook
+);
+parcelHelpers.export(exports, "useStore", ()=>useStore
+);
+var _react = require("react");
+var _context = require("../components/Context");
+var _useReduxContext = require("./useReduxContext");
+function createStoreHook(context) {
+    if (context === void 0) context = _context.ReactReduxContext;
+    var useReduxContext = context === _context.ReactReduxContext ? _useReduxContext.useReduxContext : function() {
+        return _react.useContext(context);
+    };
+    return function useStore() {
+        var _useReduxContext1 = useReduxContext(), store = _useReduxContext1.store;
+        return store;
+    };
+}
+var useStore = /*#__PURE__*/ createStoreHook();
+
+},{"react":"6TuXu","../components/Context":"gT1Jg","./useReduxContext":"516XC","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"516XC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * A hook to access the value of the `ReactReduxContext`. This is a low-level
+ * hook that you should usually not need to call directly.
+ *
+ * @returns {any} the value of the `ReactReduxContext`
+ *
+ * @example
+ *
+ * import React from 'react'
+ * import { useReduxContext } from 'react-redux'
+ *
+ * export const CounterComponent = ({ value }) => {
+ *   const { store } = useReduxContext()
+ *   return <div>{store.getState()}</div>
+ * }
+ */ parcelHelpers.export(exports, "useReduxContext", ()=>useReduxContext
+);
+var _react = require("react");
+var _context = require("../components/Context");
+function useReduxContext() {
+    var contextValue = _react.useContext(_context.ReactReduxContext);
+    if (!contextValue) throw new Error('could not find react-redux context value; please ensure the component is wrapped in a <Provider>');
+    return contextValue;
+}
+
+},{"react":"6TuXu","../components/Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"27k1i":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Hook factory, which creates a `useSelector` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useSelector` hook bound to the specified context.
+ */ parcelHelpers.export(exports, "createSelectorHook", ()=>createSelectorHook
+);
+parcelHelpers.export(exports, "useSelector", ()=>useSelector
+);
+var _react = require("react");
+var _useReduxContext = require("./useReduxContext");
+var _subscription = require("../utils/Subscription");
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+var _context = require("../components/Context");
+var refEquality = function refEquality1(a, b) {
+    return a === b;
+};
+function useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub) {
+    var _useReducer = _react.useReducer(function(s) {
+        return s + 1;
+    }, 0), forceRender = _useReducer[1];
+    var subscription = _react.useMemo(function() {
+        return _subscription.createSubscription(store, contextSub);
+    }, [
+        store,
+        contextSub
+    ]);
+    var latestSubscriptionCallbackError = _react.useRef();
+    var latestSelector = _react.useRef();
+    var latestStoreState = _react.useRef();
+    var latestSelectedState = _react.useRef();
+    var storeState = store.getState();
+    var selectedState;
+    try {
+        if (selector !== latestSelector.current || storeState !== latestStoreState.current || latestSubscriptionCallbackError.current) {
+            var newSelectedState = selector(storeState); // ensure latest selected state is reused so that a custom equality function can result in identical references
+            if (latestSelectedState.current === undefined || !equalityFn(newSelectedState, latestSelectedState.current)) selectedState = newSelectedState;
+            else selectedState = latestSelectedState.current;
+        } else selectedState = latestSelectedState.current;
+    } catch (err) {
+        if (latestSubscriptionCallbackError.current) err.message += "\nThe error may be correlated with this previous error:\n" + latestSubscriptionCallbackError.current.stack + "\n\n";
+        throw err;
+    }
+    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
+        latestSelector.current = selector;
+        latestStoreState.current = storeState;
+        latestSelectedState.current = selectedState;
+        latestSubscriptionCallbackError.current = undefined;
+    });
+    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
+        function checkForUpdates() {
+            try {
+                var newStoreState = store.getState(); // Avoid calling selector multiple times if the store's state has not changed
+                if (newStoreState === latestStoreState.current) return;
+                var _newSelectedState = latestSelector.current(newStoreState);
+                if (equalityFn(_newSelectedState, latestSelectedState.current)) return;
+                latestSelectedState.current = _newSelectedState;
+                latestStoreState.current = newStoreState;
+            } catch (err) {
+                // we ignore all errors here, since when the component
+                // is re-rendered, the selectors are called again, and
+                // will throw again, if neither props nor store state
+                // changed
+                latestSubscriptionCallbackError.current = err;
+            }
+            forceRender();
+        }
+        subscription.onStateChange = checkForUpdates;
+        subscription.trySubscribe();
+        checkForUpdates();
+        return function() {
+            return subscription.tryUnsubscribe();
+        };
+    }, [
+        store,
+        subscription
+    ]);
+    return selectedState;
+}
+function createSelectorHook(context) {
+    if (context === void 0) context = _context.ReactReduxContext;
+    var useReduxContext = context === _context.ReactReduxContext ? _useReduxContext.useReduxContext : function() {
+        return _react.useContext(context);
+    };
+    return function useSelector(selector, equalityFn) {
+        if (equalityFn === void 0) equalityFn = refEquality;
+        if (!selector) throw new Error("You must pass a selector to useSelector");
+        if (typeof selector !== 'function') throw new Error("You must pass a function as a selector to useSelector");
+        if (typeof equalityFn !== 'function') throw new Error("You must pass a function as an equality function to useSelector");
+        var _useReduxContext1 = useReduxContext(), store = _useReduxContext1.store, contextSub = _useReduxContext1.subscription;
+        var selectedState = useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub);
+        _react.useDebugValue(selectedState);
+        return selectedState;
+    };
+}
+var useSelector = /*#__PURE__*/ createSelectorHook();
+
+},{"react":"6TuXu","./useReduxContext":"516XC","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","../components/Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"kaP8a":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/* eslint-disable import/no-unresolved */ parcelHelpers.export(exports, "unstable_batchedUpdates", ()=>_reactDom.unstable_batchedUpdates
+);
+var _reactDom = require("react-dom");
+
+},{"react-dom":"gkWJK","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"h2YVd":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Accordion", ()=>_accordionDefault.default
@@ -22822,6 +25674,8 @@ parcelHelpers.export(exports, "Modal", ()=>_modalDefault.default
 parcelHelpers.export(exports, "ModalBody", ()=>_modalBodyDefault.default
 );
 parcelHelpers.export(exports, "ModalDialog", ()=>_modalDialogDefault.default
+);
+parcelHelpers.export(exports, "ModalHeader", ()=>_modalHeaderDefault.default
 );
 parcelHelpers.export(exports, "ModalFooter", ()=>_modalFooterDefault.default
 );
@@ -22989,6 +25843,8 @@ var _modalBody = require("./ModalBody");
 var _modalBodyDefault = parcelHelpers.interopDefault(_modalBody);
 var _modalDialog = require("./ModalDialog");
 var _modalDialogDefault = parcelHelpers.interopDefault(_modalDialog);
+var _modalHeader = require("./ModalHeader");
+var _modalHeaderDefault = parcelHelpers.interopDefault(_modalHeader);
 var _modalFooter = require("./ModalFooter");
 var _modalFooterDefault = parcelHelpers.interopDefault(_modalFooter);
 var _modalTitle = require("./ModalTitle");
@@ -23074,7 +25930,7 @@ var _toggleButtonGroupDefault = parcelHelpers.interopDefault(_toggleButtonGroup)
 var _tooltip = require("./Tooltip");
 var _tooltipDefault = parcelHelpers.interopDefault(_tooltip);
 
-},{"./Accordion":"4CUf9","./AccordionContext":"5P6qw","./AccordionCollapse":"7EQRw","./AccordionButton":"k5nOg","./Alert":"d0bvJ","./Anchor":"j0oK8","./Badge":"jCDqd","./Breadcrumb":"9ph0G","./BreadcrumbItem":"9JOlD","./Button":"9CzHT","./ButtonGroup":"hMSWw","./ButtonToolbar":"jytOm","./Card":"MoOk8","./CardImg":"5GKOF","./CardGroup":"lNZc4","./Carousel":"kof2d","./CarouselItem":"jWDpa","./CloseButton":"9rnf2","./Col":"fbam0","./Collapse":"9TRx8","./Dropdown":"j2597","./DropdownButton":"bNmu3","./Fade":"kCN9h","./Form":"5ykgY","./FormControl":"4wb7H","./FormCheck":"27gi5","./FormFloating":"4BzVm","./FloatingLabel":"27LBy","./FormGroup":"gWNri","./FormLabel":"5QGBM","./FormText":"5jn4s","./FormSelect":"39R9R","./Container":"2PRIq","./Image":"kKVYG","./Figure":"gPWXb","./InputGroup":"h6gtx","./ListGroup":"e5zgD","./ListGroupItem":"gx9ma","./Modal":"kvv9u","./ModalBody":"hKlZJ","./ModalDialog":"cS9dq","./ModalFooter":"675SE","./ModalTitle":"1MLbF","./Nav":"io07g","./Navbar":"eYZQl","./NavbarBrand":"eepuz","./NavDropdown":"6IluF","./NavItem":"40AB8","./NavLink":"2vX5C","./Offcanvas":"1lxtI","./OffcanvasHeader":"6rtnc","./OffcanvasTitle":"kKoeP","./OffcanvasBody":"bMhVV","./Overlay":"8H4ea","./OverlayTrigger":"7Crz8","./PageItem":"4A0az","./Pagination":"4wTX8","./Placeholder":"kpIOE","./PlaceholderButton":"fBeoH","./Popover":"gxbm9","./PopoverHeader":"1A9Zc","./PopoverBody":"9SRTa","./ProgressBar":"jvTqc","./Ratio":"j0n2q","./Row":"c0x1x","./Spinner":"jgNtX","./SplitButton":"hHdeZ","./SSRProvider":"eiyUN","./Stack":"fWpgj","./Tab":"9Li7R","./TabContainer":"laNYg","./TabContent":"bNx28","./Table":"1T2Al","./TabPane":"cvApa","./Tabs":"2Uik6","./ThemeProvider":"eeqfi","./Toast":"lktoE","./ToastBody":"gOOuU","./ToastHeader":"h9RGw","./ToastContainer":"dk576","./ToggleButton":"lgOUD","./ToggleButtonGroup":"a2vfU","./Tooltip":"d4uW3","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"4CUf9":[function(require,module,exports) {
+},{"./Accordion":"4CUf9","./AccordionContext":"5P6qw","./AccordionCollapse":"7EQRw","./AccordionButton":"k5nOg","./Alert":"d0bvJ","./Anchor":"j0oK8","./Badge":"jCDqd","./Breadcrumb":"9ph0G","./BreadcrumbItem":"9JOlD","./Button":"9CzHT","./ButtonGroup":"hMSWw","./ButtonToolbar":"jytOm","./Card":"MoOk8","./CardImg":"5GKOF","./CardGroup":"lNZc4","./Carousel":"kof2d","./CarouselItem":"jWDpa","./CloseButton":"9rnf2","./Col":"fbam0","./Collapse":"9TRx8","./Dropdown":"j2597","./DropdownButton":"bNmu3","./Fade":"kCN9h","./Form":"5ykgY","./FormControl":"4wb7H","./FormCheck":"27gi5","./FormFloating":"4BzVm","./FloatingLabel":"27LBy","./FormGroup":"gWNri","./FormLabel":"5QGBM","./FormText":"5jn4s","./FormSelect":"39R9R","./Container":"2PRIq","./Image":"kKVYG","./Figure":"gPWXb","./InputGroup":"h6gtx","./ListGroup":"e5zgD","./ListGroupItem":"gx9ma","./Modal":"kvv9u","./ModalBody":"hKlZJ","./ModalDialog":"cS9dq","./ModalHeader":"8Z4Mx","./ModalFooter":"675SE","./ModalTitle":"1MLbF","./Nav":"io07g","./Navbar":"eYZQl","./NavbarBrand":"eepuz","./NavDropdown":"6IluF","./NavItem":"40AB8","./NavLink":"2vX5C","./Offcanvas":"1lxtI","./OffcanvasHeader":"6rtnc","./OffcanvasTitle":"kKoeP","./OffcanvasBody":"bMhVV","./Overlay":"8H4ea","./OverlayTrigger":"7Crz8","./PageItem":"4A0az","./Pagination":"4wTX8","./Placeholder":"kpIOE","./PlaceholderButton":"fBeoH","./Popover":"gxbm9","./PopoverHeader":"1A9Zc","./PopoverBody":"9SRTa","./ProgressBar":"jvTqc","./Ratio":"j0n2q","./Row":"c0x1x","./Spinner":"jgNtX","./SplitButton":"hHdeZ","./SSRProvider":"eiyUN","./Stack":"fWpgj","./Tab":"9Li7R","./TabContainer":"laNYg","./TabContent":"bNx28","./Table":"1T2Al","./TabPane":"cvApa","./Tabs":"2Uik6","./ThemeProvider":"eeqfi","./Toast":"lktoE","./ToastBody":"gOOuU","./ToastHeader":"h9RGw","./ToastContainer":"dk576","./ToggleButton":"lgOUD","./ToggleButtonGroup":"a2vfU","./Tooltip":"d4uW3","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"4CUf9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
@@ -23133,6 +25989,7 @@ exports.default = Object.assign(Accordion, {
 (function() {
     var hasOwn = {
     }.hasOwnProperty;
+    var nativeCodeString = '[native code]';
     function classNames() {
         var classes = [];
         for(var i = 0; i < arguments.length; i++){
@@ -23146,9 +26003,11 @@ exports.default = Object.assign(Accordion, {
                     if (inner) classes.push(inner);
                 }
             } else if (argType === 'object') {
-                if (arg.toString === Object.prototype.toString) {
-                    for(var key in arg)if (hasOwn.call(arg, key) && arg[key]) classes.push(key);
-                } else classes.push(arg.toString());
+                if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+                    classes.push(arg.toString());
+                    continue;
+                }
+                for(var key in arg)if (hasOwn.call(arg, key) && arg[key]) classes.push(key);
             }
         }
         return classes.join(' ');
@@ -23241,73 +26100,7 @@ function useUncontrolled(props, config) {
 }
 exports.default = useUncontrolled;
 
-},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","react":"6TuXu","./utils":"fcg1Z","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bKAu6":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function _extends() {
-    _extends = Object.assign || function(target) {
-        for(var i = 1; i < arguments.length; i++){
-            var source = arguments[i];
-            for(var key in source)if (Object.prototype.hasOwnProperty.call(source, key)) target[key] = source[key];
-        }
-        return target;
-    };
-    return _extends.apply(this, arguments);
-}
-exports.default = _extends;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6PVVw":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule') return;
-        // Skip duplicate re-exports when they have the same value.
-        if (key in dest && dest[key] === source[key]) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"3Rubg":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function _objectWithoutPropertiesLoose(source, excluded) {
-    if (source == null) return {
-    };
-    var target = {
-    };
-    var sourceKeys = Object.keys(source);
-    var key, i;
-    for(i = 0; i < sourceKeys.length; i++){
-        key = sourceKeys[i];
-        if (excluded.indexOf(key) >= 0) continue;
-        target[key] = source[key];
-    }
-    return target;
-}
-exports.default = _objectWithoutPropertiesLoose;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fcg1Z":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","react":"6TuXu","./utils":"fcg1Z","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fcg1Z":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "uncontrolledPropTypes", ()=>uncontrolledPropTypes
@@ -23571,7 +26364,7 @@ exports.default = _inheritsLoose;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf1(o1, p1) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf1(o1, p1) {
         o1.__proto__ = p1;
         return o1;
     };
@@ -23676,7 +26469,15 @@ function polyfill(Component) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"eeqfi":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DEFAULT_BREAKPOINTS", ()=>DEFAULT_BREAKPOINTS
+);
+parcelHelpers.export(exports, "DEFAULT_MIN_BREAKPOINT", ()=>DEFAULT_MIN_BREAKPOINT
+);
 parcelHelpers.export(exports, "useBootstrapPrefix", ()=>useBootstrapPrefix
+);
+parcelHelpers.export(exports, "useBootstrapBreakpoints", ()=>useBootstrapBreakpoints
+);
+parcelHelpers.export(exports, "useBootstrapMinBreakpoint", ()=>useBootstrapMinBreakpoint
 );
 parcelHelpers.export(exports, "useIsRTL", ()=>useIsRTL
 );
@@ -23686,21 +26487,36 @@ parcelHelpers.export(exports, "ThemeConsumer", ()=>Consumer
 );
 var _react = require("react");
 var _jsxRuntime = require("react/jsx-runtime");
+const DEFAULT_BREAKPOINTS = [
+    'xxl',
+    'xl',
+    'lg',
+    'md',
+    'sm',
+    'xs'
+];
+const DEFAULT_MIN_BREAKPOINT = 'xs';
 const ThemeContext = /*#__PURE__*/ _react.createContext({
     prefixes: {
-    }
+    },
+    breakpoints: DEFAULT_BREAKPOINTS,
+    minBreakpoint: DEFAULT_MIN_BREAKPOINT
 });
 const { Consumer , Provider  } = ThemeContext;
 function ThemeProvider({ prefixes ={
-} , dir , children  }) {
+} , breakpoints =DEFAULT_BREAKPOINTS , minBreakpoint =DEFAULT_MIN_BREAKPOINT , dir , children  }) {
     const contextValue = _react.useMemo(()=>({
             prefixes: {
                 ...prefixes
             },
+            breakpoints,
+            minBreakpoint,
             dir
         })
     , [
         prefixes,
+        breakpoints,
+        minBreakpoint,
         dir
     ]);
     return(/*#__PURE__*/ _jsxRuntime.jsx(Provider, {
@@ -23711,6 +26527,14 @@ function ThemeProvider({ prefixes ={
 function useBootstrapPrefix(prefix, defaultPrefix) {
     const { prefixes  } = _react.useContext(ThemeContext);
     return prefix || prefixes[defaultPrefix] || defaultPrefix;
+}
+function useBootstrapBreakpoints() {
+    const { breakpoints  } = _react.useContext(ThemeContext);
+    return breakpoints;
+}
+function useBootstrapMinBreakpoint() {
+    const { minBreakpoint  } = _react.useContext(ThemeContext);
+    return minBreakpoint;
 }
 function useIsRTL() {
     const { dir  } = _react.useContext(ThemeContext);
@@ -23775,7 +26599,9 @@ var _collapseDefault = parcelHelpers.interopDefault(_collapse);
 var _accordionContext = require("./AccordionContext");
 var _accordionContextDefault = parcelHelpers.interopDefault(_accordionContext);
 var _jsxRuntime = require("react/jsx-runtime");
-const AccordionCollapse = /*#__PURE__*/ _react.forwardRef(({ as: Component = 'div' , bsPrefix , className , children , eventKey , ...props }, ref)=>{
+/**
+ * This component accepts all of [`Collapse`'s props](/utilities/transitions/#collapse-props).
+ */ const AccordionCollapse = /*#__PURE__*/ _react.forwardRef(({ as: Component = 'div' , bsPrefix , className , children , eventKey , ...props }, ref)=>{
     const { activeEventKey  } = _react.useContext(_accordionContextDefault.default);
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'accordion-collapse');
     return(/*#__PURE__*/ _jsxRuntime.jsx(_collapseDefault.default, {
@@ -24509,701 +27335,7 @@ Transition1.ENTERED = ENTERED;
 Transition1.EXITING = EXITING;
 exports.default = Transition1;
 
-},{"@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","@babel/runtime/helpers/esm/inheritsLoose":"eO0be","prop-types":"1tgq3","react":"6TuXu","react-dom":"gkWJK","./config":"eRNqr","./utils/PropTypes":"da2hb","./TransitionGroupContext":"7XbAv","./utils/reflow":"ayLW8","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"1tgq3":[function(require,module,exports) {
-var ReactIs = require('react-is');
-// By explicitly using `prop-types` you are opting into new development behavior.
-// http://fb.me/prop-types-in-prod
-var throwOnDirectAccess = true;
-module.exports = require('./factoryWithTypeCheckers')(ReactIs.isElement, throwOnDirectAccess);
-
-},{"react-is":"5wFcP","./factoryWithTypeCheckers":"gMSjX"}],"5wFcP":[function(require,module,exports) {
-'use strict';
-module.exports = require('./cjs/react-is.development.js');
-
-},{"./cjs/react-is.development.js":"dxS2U"}],"dxS2U":[function(require,module,exports) {
-/** @license React v16.13.1
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */ 'use strict';
-(function() {
-    // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-    // nor polyfill, then a plain number is used for performance.
-    var hasSymbol = typeof Symbol === 'function' && Symbol.for;
-    var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 60103;
-    var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 60106;
-    var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 60107;
-    var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 60108;
-    var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 60114;
-    var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 60109;
-    var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 60110; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
-    // (unstable) APIs that have been removed. Can we remove the symbols?
-    var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 60111;
-    var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 60111;
-    var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 60112;
-    var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 60113;
-    var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 60120;
-    var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 60115;
-    var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 60116;
-    var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 60121;
-    var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 60117;
-    var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 60118;
-    var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 60119;
-    function isValidElementType(type) {
-        return typeof type === 'string' || typeof type === 'function' || type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
-    }
-    function typeOf(object) {
-        if (typeof object === 'object' && object !== null) {
-            var $$typeof = object.$$typeof;
-            switch($$typeof){
-                case REACT_ELEMENT_TYPE:
-                    var type = object.type;
-                    switch(type){
-                        case REACT_ASYNC_MODE_TYPE:
-                        case REACT_CONCURRENT_MODE_TYPE:
-                        case REACT_FRAGMENT_TYPE:
-                        case REACT_PROFILER_TYPE:
-                        case REACT_STRICT_MODE_TYPE:
-                        case REACT_SUSPENSE_TYPE:
-                            return type;
-                        default:
-                            var $$typeofType = type && type.$$typeof;
-                            switch($$typeofType){
-                                case REACT_CONTEXT_TYPE:
-                                case REACT_FORWARD_REF_TYPE:
-                                case REACT_LAZY_TYPE:
-                                case REACT_MEMO_TYPE:
-                                case REACT_PROVIDER_TYPE:
-                                    return $$typeofType;
-                                default:
-                                    return $$typeof;
-                            }
-                    }
-                case REACT_PORTAL_TYPE:
-                    return $$typeof;
-            }
-        }
-        return undefined;
-    } // AsyncMode is deprecated along with isAsyncMode
-    var AsyncMode = REACT_ASYNC_MODE_TYPE;
-    var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
-    var ContextConsumer = REACT_CONTEXT_TYPE;
-    var ContextProvider = REACT_PROVIDER_TYPE;
-    var Element1 = REACT_ELEMENT_TYPE;
-    var ForwardRef = REACT_FORWARD_REF_TYPE;
-    var Fragment = REACT_FRAGMENT_TYPE;
-    var Lazy = REACT_LAZY_TYPE;
-    var Memo = REACT_MEMO_TYPE;
-    var Portal = REACT_PORTAL_TYPE;
-    var Profiler = REACT_PROFILER_TYPE;
-    var StrictMode = REACT_STRICT_MODE_TYPE;
-    var Suspense = REACT_SUSPENSE_TYPE;
-    var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
-    function isAsyncMode(object) {
-        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-            hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-            console['warn']("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 17+. Update your code to use ReactIs.isConcurrentMode() instead. It has the exact same API.");
-        }
-        return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
-    }
-    function isConcurrentMode(object) {
-        return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
-    }
-    function isContextConsumer(object) {
-        return typeOf(object) === REACT_CONTEXT_TYPE;
-    }
-    function isContextProvider(object) {
-        return typeOf(object) === REACT_PROVIDER_TYPE;
-    }
-    function isElement(object) {
-        return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-    }
-    function isForwardRef(object) {
-        return typeOf(object) === REACT_FORWARD_REF_TYPE;
-    }
-    function isFragment(object) {
-        return typeOf(object) === REACT_FRAGMENT_TYPE;
-    }
-    function isLazy(object) {
-        return typeOf(object) === REACT_LAZY_TYPE;
-    }
-    function isMemo(object) {
-        return typeOf(object) === REACT_MEMO_TYPE;
-    }
-    function isPortal(object) {
-        return typeOf(object) === REACT_PORTAL_TYPE;
-    }
-    function isProfiler(object) {
-        return typeOf(object) === REACT_PROFILER_TYPE;
-    }
-    function isStrictMode(object) {
-        return typeOf(object) === REACT_STRICT_MODE_TYPE;
-    }
-    function isSuspense(object) {
-        return typeOf(object) === REACT_SUSPENSE_TYPE;
-    }
-    exports.AsyncMode = AsyncMode;
-    exports.ConcurrentMode = ConcurrentMode;
-    exports.ContextConsumer = ContextConsumer;
-    exports.ContextProvider = ContextProvider;
-    exports.Element = Element1;
-    exports.ForwardRef = ForwardRef;
-    exports.Fragment = Fragment;
-    exports.Lazy = Lazy;
-    exports.Memo = Memo;
-    exports.Portal = Portal;
-    exports.Profiler = Profiler;
-    exports.StrictMode = StrictMode;
-    exports.Suspense = Suspense;
-    exports.isAsyncMode = isAsyncMode;
-    exports.isConcurrentMode = isConcurrentMode;
-    exports.isContextConsumer = isContextConsumer;
-    exports.isContextProvider = isContextProvider;
-    exports.isElement = isElement;
-    exports.isForwardRef = isForwardRef;
-    exports.isFragment = isFragment;
-    exports.isLazy = isLazy;
-    exports.isMemo = isMemo;
-    exports.isPortal = isPortal;
-    exports.isProfiler = isProfiler;
-    exports.isStrictMode = isStrictMode;
-    exports.isSuspense = isSuspense;
-    exports.isValidElementType = isValidElementType;
-    exports.typeOf = typeOf;
-})();
-
-},{}],"gMSjX":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */ 'use strict';
-var ReactIs = require('react-is');
-var assign = require('object-assign');
-var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
-var has = require('./lib/has');
-var checkPropTypes = require('./checkPropTypes');
-var printWarning = function() {
-};
-printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') console.error(message);
-    try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-    } catch (x) {
-    }
-};
-function emptyFunctionThatReturnsNull() {
-    return null;
-}
-module.exports = function(isValidElement, throwOnDirectAccess) {
-    /* global Symbol */ var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-    var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-    /**
-   * Returns the iterator method function contained on the iterable object.
-   *
-   * Be sure to invoke the function with the iterable as context:
-   *
-   *     var iteratorFn = getIteratorFn(myIterable);
-   *     if (iteratorFn) {
-   *       var iterator = iteratorFn.call(myIterable);
-   *       ...
-   *     }
-   *
-   * @param {?object} maybeIterable
-   * @return {?function}
-   */ function getIteratorFn(maybeIterable) {
-        var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
-        if (typeof iteratorFn === 'function') return iteratorFn;
-    }
-    /**
-   * Collection of methods that allow declaration and validation of props that are
-   * supplied to React components. Example usage:
-   *
-   *   var Props = require('ReactPropTypes');
-   *   var MyArticle = React.createClass({
-   *     propTypes: {
-   *       // An optional string prop named "description".
-   *       description: Props.string,
-   *
-   *       // A required enum prop named "category".
-   *       category: Props.oneOf(['News','Photos']).isRequired,
-   *
-   *       // A prop named "dialog" that requires an instance of Dialog.
-   *       dialog: Props.instanceOf(Dialog).isRequired
-   *     },
-   *     render: function() { ... }
-   *   });
-   *
-   * A more formal specification of how these methods are used:
-   *
-   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
-   *   decl := ReactPropTypes.{type}(.isRequired)?
-   *
-   * Each and every declaration produces a function with the same signature. This
-   * allows the creation of custom validation functions. For example:
-   *
-   *  var MyLink = React.createClass({
-   *    propTypes: {
-   *      // An optional string or URI prop named "href".
-   *      href: function(props, propName, componentName) {
-   *        var propValue = props[propName];
-   *        if (propValue != null && typeof propValue !== 'string' &&
-   *            !(propValue instanceof URI)) {
-   *          return new Error(
-   *            'Expected a string or an URI for ' + propName + ' in ' +
-   *            componentName
-   *          );
-   *        }
-   *      }
-   *    },
-   *    render: function() {...}
-   *  });
-   *
-   * @internal
-   */ var ANONYMOUS = '<<anonymous>>';
-    // Important!
-    // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
-    var ReactPropTypes = {
-        array: createPrimitiveTypeChecker('array'),
-        bigint: createPrimitiveTypeChecker('bigint'),
-        bool: createPrimitiveTypeChecker('boolean'),
-        func: createPrimitiveTypeChecker('function'),
-        number: createPrimitiveTypeChecker('number'),
-        object: createPrimitiveTypeChecker('object'),
-        string: createPrimitiveTypeChecker('string'),
-        symbol: createPrimitiveTypeChecker('symbol'),
-        any: createAnyTypeChecker(),
-        arrayOf: createArrayOfTypeChecker,
-        element: createElementTypeChecker(),
-        elementType: createElementTypeTypeChecker(),
-        instanceOf: createInstanceTypeChecker,
-        node: createNodeChecker(),
-        objectOf: createObjectOfTypeChecker,
-        oneOf: createEnumTypeChecker,
-        oneOfType: createUnionTypeChecker,
-        shape: createShapeTypeChecker,
-        exact: createStrictShapeTypeChecker
-    };
-    /**
-   * inlined Object.is polyfill to avoid requiring consumers ship their own
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
-   */ /*eslint-disable no-self-compare*/ function is(x, y) {
-        // SameValue algorithm
-        if (x === y) // Steps 1-5, 7-10
-        // Steps 6.b-6.e: +0 != -0
-        return x !== 0 || 1 / x === 1 / y;
-        else // Step 6.a: NaN == NaN
-        return x !== x && y !== y;
-    }
-    /*eslint-enable no-self-compare*/ /**
-   * We use an Error-like object for backward compatibility as people may call
-   * PropTypes directly and inspect their output. However, we don't use real
-   * Errors anymore. We don't inspect their stack anyway, and creating them
-   * is prohibitively expensive if they are created too often, such as what
-   * happens in oneOfType() for any type before the one that matched.
-   */ function PropTypeError(message, data) {
-        this.message = message;
-        this.data = data && typeof data === 'object' ? data : {
-        };
-        this.stack = '';
-    }
-    // Make `instanceof Error` still work for returned errors.
-    PropTypeError.prototype = Error.prototype;
-    function createChainableTypeChecker(validate) {
-        var manualPropTypeCallCache = {
-        };
-        var manualPropTypeWarningCount = 0;
-        function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
-            componentName = componentName || ANONYMOUS;
-            propFullName = propFullName || propName;
-            if (secret !== ReactPropTypesSecret) {
-                if (throwOnDirectAccess) {
-                    // New behavior only for users of `prop-types` package
-                    var err = new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use `PropTypes.checkPropTypes()` to call them. Read more at http://fb.me/use-check-prop-types");
-                    err.name = 'Invariant Violation';
-                    throw err;
-                } else if (typeof console !== 'undefined') {
-                    // Old behavior for people using React.PropTypes
-                    var cacheKey = componentName + ':' + propName;
-                    if (!manualPropTypeCallCache[cacheKey] && // Avoid spamming the console because they are often not actionable except for lib authors
-                    manualPropTypeWarningCount < 3) {
-                        printWarning("You are manually calling a React.PropTypes validation function for the `" + propFullName + '` prop on `' + componentName + '`. This is deprecated ' + 'and will throw in the standalone `prop-types` package. ' + 'You may be seeing this warning due to a third-party PropTypes ' + 'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.');
-                        manualPropTypeCallCache[cacheKey] = true;
-                        manualPropTypeWarningCount++;
-                    }
-                }
-            }
-            if (props[propName] == null) {
-                if (isRequired) {
-                    if (props[propName] === null) return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
-                    return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
-                }
-                return null;
-            } else return validate(props, propName, componentName, location, propFullName);
-        }
-        var chainedCheckType = checkType.bind(null, false);
-        chainedCheckType.isRequired = checkType.bind(null, true);
-        return chainedCheckType;
-    }
-    function createPrimitiveTypeChecker(expectedType) {
-        function validate(props, propName, componentName, location, propFullName, secret) {
-            var propValue = props[propName];
-            var propType = getPropType(propValue);
-            if (propType !== expectedType) {
-                // `propValue` being instance of, say, date/regexp, pass the 'object'
-                // check, but we can offer a more precise error message here rather than
-                // 'of type `object`'.
-                var preciseType = getPreciseType(propValue);
-                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'), {
-                    expectedType: expectedType
-                });
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createAnyTypeChecker() {
-        return createChainableTypeChecker(emptyFunctionThatReturnsNull);
-    }
-    function createArrayOfTypeChecker(typeChecker) {
-        function validate(props, propName, componentName, location, propFullName) {
-            if (typeof typeChecker !== 'function') return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
-            var propValue = props[propName];
-            if (!Array.isArray(propValue)) {
-                var propType = getPropType(propValue);
-                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
-            }
-            for(var i = 0; i < propValue.length; i++){
-                var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
-                if (error instanceof Error) return error;
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createElementTypeChecker() {
-        function validate(props, propName, componentName, location, propFullName) {
-            var propValue = props[propName];
-            if (!isValidElement(propValue)) {
-                var propType = getPropType(propValue);
-                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createElementTypeTypeChecker() {
-        function validate(props, propName, componentName, location, propFullName) {
-            var propValue = props[propName];
-            if (!ReactIs.isValidElementType(propValue)) {
-                var propType = getPropType(propValue);
-                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createInstanceTypeChecker(expectedClass) {
-        function validate(props, propName, componentName, location, propFullName) {
-            if (!(props[propName] instanceof expectedClass)) {
-                var expectedClassName = expectedClass.name || ANONYMOUS;
-                var actualClassName = getClassName(props[propName]);
-                return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createEnumTypeChecker(expectedValues) {
-        if (!Array.isArray(expectedValues)) {
-            {
-                if (arguments.length > 1) printWarning('Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' + 'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).');
-                else printWarning('Invalid argument supplied to oneOf, expected an array.');
-            }
-            return emptyFunctionThatReturnsNull;
-        }
-        function validate(props, propName, componentName, location, propFullName) {
-            var propValue = props[propName];
-            for(var i = 0; i < expectedValues.length; i++){
-                if (is(propValue, expectedValues[i])) return null;
-            }
-            var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
-                var type = getPreciseType(value);
-                if (type === 'symbol') return String(value);
-                return value;
-            });
-            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createObjectOfTypeChecker(typeChecker) {
-        function validate(props, propName, componentName, location, propFullName) {
-            if (typeof typeChecker !== 'function') return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
-            var propValue = props[propName];
-            var propType = getPropType(propValue);
-            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
-            for(var key in propValue)if (has(propValue, key)) {
-                var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-                if (error instanceof Error) return error;
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createUnionTypeChecker(arrayOfTypeCheckers) {
-        if (!Array.isArray(arrayOfTypeCheckers)) {
-            printWarning('Invalid argument supplied to oneOfType, expected an instance of array.');
-            return emptyFunctionThatReturnsNull;
-        }
-        for(var i = 0; i < arrayOfTypeCheckers.length; i++){
-            var checker = arrayOfTypeCheckers[i];
-            if (typeof checker !== 'function') {
-                printWarning("Invalid argument supplied to oneOfType. Expected an array of check functions, but received " + getPostfixForTypeWarning(checker) + ' at index ' + i + '.');
-                return emptyFunctionThatReturnsNull;
-            }
-        }
-        function validate(props, propName, componentName, location, propFullName) {
-            var expectedTypes = [];
-            for(var i1 = 0; i1 < arrayOfTypeCheckers.length; i1++){
-                var checker = arrayOfTypeCheckers[i1];
-                var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
-                if (checkerResult == null) return null;
-                if (checkerResult.data && has(checkerResult.data, 'expectedType')) expectedTypes.push(checkerResult.data.expectedType);
-            }
-            var expectedTypesMessage = expectedTypes.length > 0 ? ', expected one of type [' + expectedTypes.join(', ') + ']' : '';
-            return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createNodeChecker() {
-        function validate(props, propName, componentName, location, propFullName) {
-            if (!isNode(props[propName])) return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function invalidValidatorError(componentName, location, propFullName, key, type) {
-        return new PropTypeError((componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + type + '`.');
-    }
-    function createShapeTypeChecker(shapeTypes) {
-        function validate(props, propName, componentName, location, propFullName) {
-            var propValue = props[propName];
-            var propType = getPropType(propValue);
-            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-            for(var key in shapeTypes){
-                var checker = shapeTypes[key];
-                if (typeof checker !== 'function') return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
-                var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-                if (error) return error;
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function createStrictShapeTypeChecker(shapeTypes) {
-        function validate(props, propName, componentName, location, propFullName) {
-            var propValue = props[propName];
-            var propType = getPropType(propValue);
-            if (propType !== 'object') return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
-            // We need to check all keys in case some are required but missing from props.
-            var allKeys = assign({
-            }, props[propName], shapeTypes);
-            for(var key in allKeys){
-                var checker = shapeTypes[key];
-                if (has(shapeTypes, key) && typeof checker !== 'function') return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
-                if (!checker) return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' + '\nBad object: ' + JSON.stringify(props[propName], null, '  ') + '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  '));
-                var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
-                if (error) return error;
-            }
-            return null;
-        }
-        return createChainableTypeChecker(validate);
-    }
-    function isNode(propValue) {
-        switch(typeof propValue){
-            case 'number':
-            case 'string':
-            case 'undefined':
-                return true;
-            case 'boolean':
-                return !propValue;
-            case 'object':
-                if (Array.isArray(propValue)) return propValue.every(isNode);
-                if (propValue === null || isValidElement(propValue)) return true;
-                var iteratorFn = getIteratorFn(propValue);
-                if (iteratorFn) {
-                    var iterator = iteratorFn.call(propValue);
-                    var step;
-                    if (iteratorFn !== propValue.entries) while(!(step = iterator.next()).done){
-                        if (!isNode(step.value)) return false;
-                    }
-                    else // Iterator will provide entry [k,v] tuples rather than values.
-                    while(!(step = iterator.next()).done){
-                        var entry = step.value;
-                        if (entry) {
-                            if (!isNode(entry[1])) return false;
-                        }
-                    }
-                } else return false;
-                return true;
-            default:
-                return false;
-        }
-    }
-    function isSymbol(propType, propValue) {
-        // Native Symbol.
-        if (propType === 'symbol') return true;
-        // falsy value can't be a Symbol
-        if (!propValue) return false;
-        // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
-        if (propValue['@@toStringTag'] === 'Symbol') return true;
-        // Fallback for non-spec compliant Symbols which are polyfilled.
-        if (typeof Symbol === 'function' && propValue instanceof Symbol) return true;
-        return false;
-    }
-    // Equivalent of `typeof` but with special handling for array and regexp.
-    function getPropType(propValue) {
-        var propType = typeof propValue;
-        if (Array.isArray(propValue)) return 'array';
-        if (propValue instanceof RegExp) // Old webkits (at least until Android 4.0) return 'function' rather than
-        // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
-        // passes PropTypes.object.
-        return 'object';
-        if (isSymbol(propType, propValue)) return 'symbol';
-        return propType;
-    }
-    // This handles more types than `getPropType`. Only used for error messages.
-    // See `createPrimitiveTypeChecker`.
-    function getPreciseType(propValue) {
-        if (typeof propValue === 'undefined' || propValue === null) return '' + propValue;
-        var propType = getPropType(propValue);
-        if (propType === 'object') {
-            if (propValue instanceof Date) return 'date';
-            else if (propValue instanceof RegExp) return 'regexp';
-        }
-        return propType;
-    }
-    // Returns a string that is postfixed to a warning about an invalid type.
-    // For example, "undefined" or "of type array"
-    function getPostfixForTypeWarning(value) {
-        var type = getPreciseType(value);
-        switch(type){
-            case 'array':
-            case 'object':
-                return 'an ' + type;
-            case 'boolean':
-            case 'date':
-            case 'regexp':
-                return 'a ' + type;
-            default:
-                return type;
-        }
-    }
-    // Returns class name of the object, if any.
-    function getClassName(propValue) {
-        if (!propValue.constructor || !propValue.constructor.name) return ANONYMOUS;
-        return propValue.constructor.name;
-    }
-    ReactPropTypes.checkPropTypes = checkPropTypes;
-    ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
-    ReactPropTypes.PropTypes = ReactPropTypes;
-    return ReactPropTypes;
-};
-
-},{"react-is":"5wFcP","object-assign":"jzTFF","./lib/ReactPropTypesSecret":"lYuBM","./lib/has":"9e9z2","./checkPropTypes":"3evPV"}],"lYuBM":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */ 'use strict';
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
-module.exports = ReactPropTypesSecret;
-
-},{}],"9e9z2":[function(require,module,exports) {
-module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
-
-},{}],"3evPV":[function(require,module,exports) {
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */ 'use strict';
-var printWarning = function() {
-};
-var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
-var loggedTypeFailures = {
-};
-var has = require('./lib/has');
-printWarning = function(text) {
-    var message = 'Warning: ' + text;
-    if (typeof console !== 'undefined') console.error(message);
-    try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-    } catch (x) {
-    }
-};
-/**
- * Assert that the values match with the type specs.
- * Error messages are memorized and will only be shown once.
- *
- * @param {object} typeSpecs Map of name to a ReactPropType
- * @param {object} values Runtime values that need to be type-checked
- * @param {string} location e.g. "prop", "context", "child context"
- * @param {string} componentName Name of the component for error messages.
- * @param {?Function} getStack Returns the component stack.
- * @private
- */ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-    for(var typeSpecName in typeSpecs)if (has(typeSpecs, typeSpecName)) {
-        var error;
-        // Prop type validation may throw. In case they do, we don't want to
-        // fail the render phase where it didn't fail before. So we log it.
-        // After these have been cleaned up, we'll let them throw.
-        try {
-            // This is intentionally an invariant that gets caught. It's the same
-            // behavior as without this statement except with a better message.
-            if (typeof typeSpecs[typeSpecName] !== 'function') {
-                var err = Error((componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' + 'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' + 'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.');
-                err.name = 'Invariant Violation';
-                throw err;
-            }
-            error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
-        } catch (ex) {
-            error = ex;
-        }
-        if (error && !(error instanceof Error)) printWarning((componentName || 'React class') + ': type specification of ' + location + ' `' + typeSpecName + '` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a ' + typeof error + '. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).');
-        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
-            // Only monitor this failure once because there tends to be a lot of the
-            // same error.
-            loggedTypeFailures[error.message] = true;
-            var stack = getStack ? getStack() : '';
-            printWarning('Failed ' + location + ' type: ' + error.message + (stack != null ? stack : ''));
-        }
-    }
-}
-/**
- * Resets warning cache when testing.
- *
- * @private
- */ checkPropTypes.resetWarningCache = function() {
-    loggedTypeFailures = {
-    };
-};
-module.exports = checkPropTypes;
-
-},{"./lib/ReactPropTypesSecret":"lYuBM","./lib/has":"9e9z2"}],"eRNqr":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","@babel/runtime/helpers/esm/inheritsLoose":"eO0be","prop-types":"1tgq3","react":"6TuXu","react-dom":"gkWJK","./config":"eRNqr","./utils/PropTypes":"da2hb","./TransitionGroupContext":"7XbAv","./utils/reflow":"ayLW8","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"eRNqr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 exports.default = {
@@ -25873,7 +28005,7 @@ function isTrivialHref(href) {
         buttonProps.onKeyDown(e);
         onKeyDown == null || onKeyDown(e);
     });
-    if (isTrivialHref(props.href) && !props.role || props.role === 'button') return(/*#__PURE__*/ _jsxRuntime.jsx("a", Object.assign({
+    if (isTrivialHref(props.href) || props.role === 'button') return(/*#__PURE__*/ _jsxRuntime.jsx("a", Object.assign({
         ref: ref
     }, props, buttonProps, {
         onKeyDown: handleKeyDown
@@ -26133,6 +28265,7 @@ function useMounted() {
         return mounted.current;
     });
     _react.useEffect(function() {
+        mounted.current = true;
         return function() {
             mounted.current = false;
         };
@@ -26281,7 +28414,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 function isTrivialHref(href) {
     return !href || href.trim() === '#';
 }
-function useButtonProps({ tagName , disabled , href , target , rel , onClick , tabIndex =0 , type  }) {
+function useButtonProps({ tagName , disabled , href , target , rel , role , onClick , tabIndex =0 , type  }) {
     if (!tagName) {
         if (href != null || target != null || rel != null) tagName = 'a';
         else tagName = 'button';
@@ -26310,14 +28443,19 @@ function useButtonProps({ tagName , disabled , href , target , rel , onClick , t
             handleClick(event);
         }
     };
+    if (tagName === 'a') {
+        // Ensure there's a href so Enter can trigger anchor button.
+        href || (href = '#');
+        if (disabled) href = undefined;
+    }
     return [
         {
-            role: 'button',
+            role: role != null ? role : 'button',
             // explicitly undefined so that it overrides the props disabled in a spread
             // e.g. <Tag {...props} {...hookProps} />
             disabled: undefined,
             tabIndex: disabled ? undefined : tabIndex,
-            href: tagName === 'a' && disabled ? undefined : href,
+            href,
             target: tagName === 'a' ? target : undefined,
             'aria-disabled': !disabled ? undefined : disabled,
             rel: tagName === 'a' ? rel : undefined,
@@ -26400,8 +28538,8 @@ var _classnames = require("classnames");
 var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _jsxRuntime = require("react/jsx-runtime");
 const propTypes = {
-    'aria-label': _propTypesDefault.default.string,
-    onClick: _propTypesDefault.default.func,
+    /** An accessible label indicating the relevant information about the Close Button. */ 'aria-label': _propTypesDefault.default.string,
+    /** A callback fired after the Close Button is clicked. */ onClick: _propTypesDefault.default.func,
     /**
    * Render different color variant for the button.
    *
@@ -26606,8 +28744,8 @@ const Button = /*#__PURE__*/ _react.forwardRef(({ as , bsPrefix , variant , size
     });
     const Component = tagName;
     return(/*#__PURE__*/ _jsxRuntime.jsx(Component, {
-        ...props,
         ...buttonProps,
+        ...props,
         ref: ref,
         className: _classnamesDefault.default(className, prefix, active && 'active', variant && `${prefix}-${variant}`, size && `${prefix}-${size}`, props.href && props.disabled && 'disabled')
     }));
@@ -26864,12 +29002,19 @@ const Carousel = /*#__PURE__*/ _react.forwardRef((uncontrolledProps, ref)=>{
     const [paused, setPaused] = _react.useState(false);
     const [isSliding, setIsSliding] = _react.useState(false);
     const [renderedActiveIndex, setRenderedActiveIndex] = _react.useState(activeIndex || 0);
-    if (!isSliding && activeIndex !== renderedActiveIndex) {
-        if (nextDirectionRef.current) setDirection(nextDirectionRef.current);
-        else setDirection((activeIndex || 0) > renderedActiveIndex ? 'next' : 'prev');
-        if (slide) setIsSliding(true);
-        setRenderedActiveIndex(activeIndex || 0);
-    }
+    _react.useEffect(()=>{
+        if (!isSliding && activeIndex !== renderedActiveIndex) {
+            if (nextDirectionRef.current) setDirection(nextDirectionRef.current);
+            else setDirection((activeIndex || 0) > renderedActiveIndex ? 'next' : 'prev');
+            if (slide) setIsSliding(true);
+            setRenderedActiveIndex(activeIndex || 0);
+        }
+    }, [
+        activeIndex,
+        isSliding,
+        renderedActiveIndex,
+        slide
+    ]);
     _react.useEffect(()=>{
         if (nextDirectionRef.current) nextDirectionRef.current = null;
     });
@@ -27318,19 +29463,13 @@ var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _react = require("react");
 var _themeProvider = require("./ThemeProvider");
 var _jsxRuntime = require("react/jsx-runtime");
-const DEVICE_SIZES = [
-    'xxl',
-    'xl',
-    'lg',
-    'md',
-    'sm',
-    'xs'
-];
 function useCol({ as , bsPrefix , className , ...props }) {
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'col');
+    const breakpoints = _themeProvider.useBootstrapBreakpoints();
+    const minBreakpoint = _themeProvider.useBootstrapMinBreakpoint();
     const spans = [];
     const classes = [];
-    DEVICE_SIZES.forEach((brkPoint)=>{
+    breakpoints.forEach((brkPoint)=>{
         const propValue = props[brkPoint];
         delete props[brkPoint];
         let span;
@@ -27338,7 +29477,7 @@ function useCol({ as , bsPrefix , className , ...props }) {
         let order;
         if (typeof propValue === 'object' && propValue != null) ({ span , offset , order  } = propValue);
         else span = propValue;
-        const infix = brkPoint !== 'xs' ? `-${brkPoint}` : '';
+        const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
         if (span) spans.push(span === true ? `${bsPrefix}${infix}` : `${bsPrefix}${infix}-${span}`);
         if (order != null) classes.push(`order${infix}-${order}`);
         if (offset != null) classes.push(`offset${infix}-${offset}`);
@@ -30227,6 +32366,11 @@ function isModifiedEvent(event) {
 }
 const getRefTarget = (ref)=>ref && ('current' in ref ? ref.current : ref)
 ;
+const InitialTriggerEvents = {
+    click: 'mousedown',
+    mouseup: 'mousedown',
+    pointerup: 'pointerdown'
+};
 /**
  * The `useClickOutside` hook registers your callback on the document that fires
  * when a pointer event is registered outside of the provided ref or element.
@@ -30239,13 +32383,19 @@ const getRefTarget = (ref)=>ref && ('current' in ref ? ref.current : ref)
  */ function useClickOutside(ref, onClickOutside = noop, { disabled , clickTrigger ='click'  } = {
 }) {
     const preventMouseClickOutsideRef = _react.useRef(false);
+    const waitingForTrigger = _react.useRef(false);
     const handleMouseCapture = _react.useCallback((e)=>{
         const currentTarget = getRefTarget(ref);
         _warningDefault.default(!!currentTarget, "ClickOutside captured a close event but does not have a ref to compare it to. useClickOutside(), should be passed a ref that resolves to a DOM node");
-        preventMouseClickOutsideRef.current = !currentTarget || isModifiedEvent(e) || !isLeftClickEvent(e) || !!_containsDefault.default(currentTarget, e.target);
+        preventMouseClickOutsideRef.current = !currentTarget || isModifiedEvent(e) || !isLeftClickEvent(e) || !!_containsDefault.default(currentTarget, e.target) || waitingForTrigger.current;
+        waitingForTrigger.current = false;
     }, [
         ref
     ]);
+    const handleInitialMouse = _useEventCallbackDefault.default((e)=>{
+        const currentTarget = getRefTarget(ref);
+        if (currentTarget && _containsDefault.default(currentTarget, e.target)) waitingForTrigger.current = true;
+    });
     const handleMouse = _useEventCallbackDefault.default((e)=>{
         if (!preventMouseClickOutsideRef.current) onClickOutside(e);
     });
@@ -30253,7 +32403,10 @@ const getRefTarget = (ref)=>ref && ('current' in ref ? ref.current : ref)
         if (disabled || ref == null) return undefined;
         const doc = _ownerDocumentDefault.default(getRefTarget(ref)); // Store the current event to avoid triggering handlers immediately
         // https://github.com/facebook/react/issues/20074
-        let currentEvent = (doc.defaultView || window).event; // Use capture for this listener so it fires before React's listener, to
+        let currentEvent = (doc.defaultView || window).event;
+        let removeInitialTriggerListener = null;
+        if (InitialTriggerEvents[clickTrigger]) removeInitialTriggerListener = _listenDefault.default(doc, InitialTriggerEvents[clickTrigger], handleInitialMouse, true);
+         // Use capture for this listener so it fires before React's listener, to
         // avoid false positives in the contains() check below if the target DOM
         // element is removed in the React mouse callback.
         const removeMouseCaptureListener = _listenDefault.default(doc, clickTrigger, handleMouseCapture, true);
@@ -30269,6 +32422,7 @@ const getRefTarget = (ref)=>ref && ('current' in ref ? ref.current : ref)
         if ('ontouchstart' in doc.documentElement) mobileSafariHackListeners = [].slice.call(doc.body.children).map((el)=>_listenDefault.default(el, 'mousemove', noop)
         );
         return ()=>{
+            removeInitialTriggerListener == null || removeInitialTriggerListener();
             removeMouseCaptureListener();
             removeMouseListener();
             mobileSafariHackListeners.forEach((remove)=>remove()
@@ -30279,6 +32433,7 @@ const getRefTarget = (ref)=>ref && ('current' in ref ? ref.current : ref)
         disabled,
         clickTrigger,
         handleMouseCapture,
+        handleInitialMouse,
         handleMouse
     ]);
 }
@@ -30367,7 +32522,7 @@ function toModifierArray(map = {
 }
 function mergeOptionsWithPopperConfig({ enabled , enableEvents , placement , flip , offset , fixed , containerPadding , arrowElement , popperConfig ={
 }  }) {
-    var _modifiers$preventOve, _modifiers$preventOve2, _modifiers$offset, _modifiers$arrow;
+    var _modifiers$eventListe, _modifiers$preventOve, _modifiers$preventOve2, _modifiers$offset, _modifiers$arrow;
     const modifiers = toModifierMap(popperConfig.modifiers);
     return Object.assign({
     }, popperConfig, {
@@ -30377,7 +32532,8 @@ function mergeOptionsWithPopperConfig({ enabled , enableEvents , placement , fli
         modifiers: toModifierArray(Object.assign({
         }, modifiers, {
             eventListeners: {
-                enabled: enableEvents
+                enabled: enableEvents,
+                options: (_modifiers$eventListe = modifiers.eventListeners) == null ? void 0 : _modifiers$eventListe.options
             },
             preventOverflow: Object.assign({
             }, modifiers.preventOverflow, {
@@ -30898,7 +33054,8 @@ const alignPropType = _propTypesDefault.default.oneOfType([
     }),
     _propTypesDefault.default.shape({
         xxl: alignDirection
-    })
+    }),
+    _propTypesDefault.default.object
 ]);
 
 },{"prop-types":"1tgq3","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fMXXT":[function(require,module,exports) {
@@ -30982,6 +33139,11 @@ const propTypes = {
    */ menuVariant: _propTypesDefault.default.oneOf([
         'dark'
     ]),
+    /**
+   * Allow Dropdown to flip in case of an overlapping on the reference element. For more information refer to
+   * Popper.js's flip [docs](https://popper.js.org/docs/v2/modifiers/flip/).
+   *
+   */ flip: _propTypesDefault.default.bool,
     /** @ignore */ bsPrefix: _propTypesDefault.default.string,
     /** @ignore */ variant: _propTypesDefault.default.string,
     /** @ignore */ size: _propTypesDefault.default.string
@@ -30994,7 +33156,7 @@ const propTypes = {
  * _All unknown props are passed through to the `Dropdown` component._ Only
  * the Button `variant`, `size` and `bsPrefix` props are passed to the toggle,
  * along with menu-related props are passed to the `Dropdown.Menu`
- */ const DropdownButton = /*#__PURE__*/ _react.forwardRef(({ title , children , bsPrefix , rootCloseEvent , variant , size , menuRole , renderMenuOnMount , disabled , href , id , menuVariant , ...props }, ref)=>/*#__PURE__*/ _jsxRuntime.jsxs(_dropdownDefault.default, {
+ */ const DropdownButton = /*#__PURE__*/ _react.forwardRef(({ title , children , bsPrefix , rootCloseEvent , variant , size , menuRole , renderMenuOnMount , disabled , href , id , menuVariant , flip , ...props }, ref)=>/*#__PURE__*/ _jsxRuntime.jsxs(_dropdownDefault.default, {
         ref: ref,
         ...props,
         children: [
@@ -31012,6 +33174,7 @@ const propTypes = {
                 renderOnMount: renderMenuOnMount,
                 rootCloseEvent: rootCloseEvent,
                 variant: menuVariant,
+                flip: flip,
                 children: children
             })
         ]
@@ -31104,7 +33267,7 @@ var _formContextDefault = parcelHelpers.interopDefault(_formContext);
 var _themeProvider = require("./ThemeProvider");
 var _elementChildren = require("./ElementChildren");
 var _jsxRuntime = require("react/jsx-runtime");
-const FormCheck = /*#__PURE__*/ _react.forwardRef(({ id , bsPrefix , bsSwitchPrefix , inline =false , disabled =false , isValid =false , isInvalid =false , feedbackTooltip =false , feedback , feedbackType , className , style , title ='' , type ='checkbox' , label , children , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+const FormCheck = /*#__PURE__*/ _react.forwardRef(({ id , bsPrefix , bsSwitchPrefix , inline =false , reverse =false , disabled =false , isValid =false , isInvalid =false , feedbackTooltip =false , feedback , feedbackType , className , style , title ='' , type ='checkbox' , label , children , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
 as ='input' , ...props }, ref)=>{
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'form-check');
     bsSwitchPrefix = _themeProvider.useBootstrapPrefix(bsSwitchPrefix, 'form-switch');
@@ -31130,7 +33293,7 @@ as ='input' , ...props }, ref)=>{
         value: innerFormContext,
         children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
             style: style,
-            className: _classnamesDefault.default(className, hasLabel && bsPrefix, inline && `${bsPrefix}-inline`, type === 'switch' && bsSwitchPrefix),
+            className: _classnamesDefault.default(className, hasLabel && bsPrefix, inline && `${bsPrefix}-inline`, reverse && `${bsPrefix}-reverse`, type === 'switch' && bsSwitchPrefix),
             children: children || /*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
                 children: [
                     input,
@@ -31759,7 +33922,7 @@ const Nav = /*#__PURE__*/ _react.forwardRef((_ref, ref)=>{
         if (!currentListNode) return null;
         const items = _querySelectorAllDefault.default(currentListNode, `[${EVENT_KEY_ATTR}]:not([aria-disabled=true])`);
         const activeChild = currentListNode.querySelector('[aria-selected=true]');
-        if (!activeChild) return null;
+        if (!activeChild || activeChild !== document.activeElement) return null;
         const index = items.indexOf(activeChild);
         if (index === -1) return null;
         let nextIndex = index + offset;
@@ -31848,6 +34011,8 @@ var _selectableContextDefault = parcelHelpers.interopDefault(_selectableContext)
 var _button = require("./Button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
 var _dataKey = require("./DataKey");
+var _tabContext = require("./TabContext");
+var _tabContextDefault = parcelHelpers.interopDefault(_tabContext);
 var _jsxRuntime = require("react/jsx-runtime");
 const _excluded = [
     "as",
@@ -31871,6 +34036,7 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 function useNavItem({ key , onClick , active , id , role , disabled  }) {
     const parentOnSelect = _react.useContext(_selectableContextDefault.default);
     const navContext = _react.useContext(_navContextDefault.default);
+    const tabContext = _react.useContext(_tabContextDefault.default);
     let isActive = active;
     const props = {
         role
@@ -31881,16 +34047,24 @@ function useNavItem({ key , onClick , active , id , role , disabled  }) {
         const contextControlledId = navContext.getControlledId(key != null ? key : null); // @ts-ignore
         props[_dataKey.dataAttr('event-key')] = key;
         props.id = contextControllerId || id;
-        props['aria-controls'] = contextControlledId;
         isActive = active == null && key != null ? navContext.activeKey === key : active;
+        /**
+     * Simplified scenario for `mountOnEnter`.
+     *
+     * While it would make sense to keep 'aria-controls' for tabs that have been mounted at least
+     * once, it would also complicate the code quite a bit, for very little gain.
+     * The following implementation is probably good enough.
+     *
+     * @see https://github.com/react-restart/ui/pull/40#issuecomment-1009971561
+     */ if (isActive || !(tabContext != null && tabContext.unmountOnExit) && !(tabContext != null && tabContext.mountOnEnter)) props['aria-controls'] = contextControlledId;
     }
     if (props.role === 'tab') {
+        props['aria-selected'] = isActive;
+        if (!isActive) props.tabIndex = -1;
         if (disabled) {
             props.tabIndex = -1;
             props['aria-disabled'] = true;
         }
-        if (isActive) props['aria-selected'] = isActive;
-        else props.tabIndex = -1;
     }
     props.onClick = _useEventCallbackDefault.default((e)=>{
         if (disabled) return;
@@ -31920,12 +34094,14 @@ const NavItem = /*#__PURE__*/ _react.forwardRef((_ref, ref)=>{
 NavItem.displayName = 'NavItem';
 exports.default = NavItem;
 
-},{"react":"6TuXu","@restart/hooks/useEventCallback":"lDj1q","./NavContext":"khqpz","./SelectableContext":"9e25D","./Button":"fBjIr","./DataKey":"7L8oE","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"gx9ma":[function(require,module,exports) {
+},{"react":"6TuXu","@restart/hooks/useEventCallback":"lDj1q","./NavContext":"khqpz","./SelectableContext":"9e25D","./Button":"fBjIr","./DataKey":"7L8oE","./TabContext":"fKwcy","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"gx9ma":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
 var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _react = require("react");
+var _warning = require("warning");
+var _warningDefault = parcelHelpers.interopDefault(_warning);
 var _useEventCallback = require("@restart/hooks/useEventCallback");
 var _useEventCallbackDefault = parcelHelpers.interopDefault(_useEventCallback);
 var _navItem = require("@restart/ui/NavItem");
@@ -31952,6 +34128,7 @@ const ListGroupItem = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , active , dis
         props['aria-disabled'] = true;
     } // eslint-disable-next-line no-nested-ternary
     const Component = as || (action ? props.href ? 'a' : 'button' : 'div');
+    _warningDefault.default(as || !(!action && props.href), '`action=false` and `href` should not be used together.');
     return(/*#__PURE__*/ _jsxRuntime.jsx(Component, {
         ref: ref,
         ...props,
@@ -31963,7 +34140,7 @@ const ListGroupItem = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , active , dis
 ListGroupItem.displayName = 'ListGroupItem';
 exports.default = ListGroupItem;
 
-},{"classnames":"bOXOh","react":"6TuXu","@restart/hooks/useEventCallback":"lDj1q","@restart/ui/NavItem":"hIuK4","@restart/ui/SelectableContext":"9e25D","./ThemeProvider":"eeqfi","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"kvv9u":[function(require,module,exports) {
+},{"classnames":"bOXOh","react":"6TuXu","warning":"dbfUS","@restart/hooks/useEventCallback":"lDj1q","@restart/ui/NavItem":"hIuK4","@restart/ui/SelectableContext":"9e25D","./ThemeProvider":"eeqfi","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"kvv9u":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
@@ -32030,7 +34207,7 @@ function BackdropTransition(props) {
         timeout: null
     }));
 }
-/* eslint-enable no-use-before-define */ const Modal = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , style , dialogClassName , contentClassName , children , dialogAs: Dialog , 'aria-labelledby': ariaLabelledby , /* BaseModal props */ show , animation , backdrop , keyboard , onEscapeKeyDown , onShow , onHide , container , autoFocus , enforceFocus , restoreFocus , restoreFocusOptions , onEntered , onExit , onExiting , onEnter , onEntering , onExited , backdropClassName , manager: propsManager , ...props }, ref)=>{
+/* eslint-enable no-use-before-define */ const Modal = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , style , dialogClassName , contentClassName , children , dialogAs: Dialog , 'aria-labelledby': ariaLabelledby , 'aria-describedby': ariaDescribedby , 'aria-label': ariaLabel , /* BaseModal props */ show , animation , backdrop , keyboard , onEscapeKeyDown , onShow , onHide , container , autoFocus , enforceFocus , restoreFocus , restoreFocusOptions , onEntered , onExit , onExiting , onEnter , onEntering , onExited , backdropClassName , manager: propsManager , ...props }, ref)=>{
     const [modalStyle, setStyle] = _react.useState({
     });
     const [animateStaticModal, setAnimateStaticModal] = _react.useState(false);
@@ -32109,10 +34286,7 @@ function BackdropTransition(props) {
         } else if (keyboard && onEscapeKeyDown) onEscapeKeyDown(e);
     };
     const handleEnter = (node, isAppearing)=>{
-        if (node) {
-            node.style.display = 'block';
-            updateDialogStyle(node);
-        }
+        if (node) updateDialogStyle(node);
         onEnter == null || onEnter(node, isAppearing);
     };
     const handleExit = (node)=>{
@@ -32140,16 +34314,19 @@ function BackdropTransition(props) {
     const baseModalStyle = {
         ...style,
         ...modalStyle
-    }; // Sets `display` always block when `animation` is false
-    if (!animation) baseModalStyle.display = 'block';
+    }; // If `display` is not set to block, autoFocus inside the modal fails
+    // https://github.com/react-bootstrap/react-bootstrap/issues/5102
+    baseModalStyle.display = 'block';
     const renderDialog = (dialogProps)=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
             role: "dialog",
             ...dialogProps,
             style: baseModalStyle,
-            className: _classnamesDefault.default(className, bsPrefix, animateStaticModal && `${bsPrefix}-static`),
+            className: _classnamesDefault.default(className, bsPrefix, animateStaticModal && `${bsPrefix}-static`, !animation && 'show'),
             onClick: backdrop ? handleClick : undefined,
             onMouseUp: handleMouseUp,
+            "aria-label": ariaLabel,
             "aria-labelledby": ariaLabelledby,
+            "aria-describedby": ariaDescribedby,
             children: /*#__PURE__*/ _jsxRuntime.jsx(Dialog, {
                 ...props,
                 onMouseDown: handleDialogMouseDown,
@@ -32604,12 +34781,11 @@ var _react = require("react");
 var _useWindow = require("./useWindow");
 var _useWindowDefault = parcelHelpers.interopDefault(_useWindow);
 const resolveContainerRef = (ref, document)=>{
-    var _ref;
     if (!_canUseDOMDefault.default) return null;
     if (ref == null) return (document || _ownerDocumentDefault.default()).body;
     if (typeof ref === 'function') ref = ref();
     if (ref && 'current' in ref) ref = ref.current;
-    if ((_ref = ref) != null && _ref.nodeType) return ref || null;
+    if (ref && ('nodeType' in ref || ref.getBoundingClientRect)) return ref;
     return null;
 };
 function useWaitForDOMRef(ref, onResolved) {
@@ -33094,11 +35270,13 @@ const Navbar = /*#__PURE__*/ _react.forwardRef((props, ref)=>{
             onToggle: ()=>onToggle == null ? void 0 : onToggle(!expanded)
             ,
             bsPrefix,
-            expanded: !!expanded
+            expanded: !!expanded,
+            expand
         })
     , [
         bsPrefix,
         expanded,
+        expand,
         onToggle
     ]);
     return(/*#__PURE__*/ _jsxRuntime.jsx(_navbarContextDefault.default.Provider, {
@@ -33223,7 +35401,8 @@ const NavbarOffcanvas = /*#__PURE__*/ _react.forwardRef((props, ref)=>{
     return(/*#__PURE__*/ _jsxRuntime.jsx(_offcanvasDefault.default, {
         ref: ref,
         show: !!(context != null && context.expanded),
-        ...props
+        ...props,
+        renderStaticNode: true
     }));
 });
 NavbarOffcanvas.displayName = 'NavbarOffcanvas';
@@ -33234,6 +35413,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
 var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
+var _useBreakpoint = require("@restart/hooks/useBreakpoint");
+var _useBreakpointDefault = parcelHelpers.interopDefault(_useBreakpoint);
 var _useEventCallback = require("@restart/hooks/useEventCallback");
 var _useEventCallbackDefault = parcelHelpers.interopDefault(_useEventCallback);
 var _react = require("react");
@@ -33265,7 +35446,8 @@ const defaultProps = {
     autoFocus: true,
     enforceFocus: true,
     restoreFocus: true,
-    placement: 'start'
+    placement: 'start',
+    renderStaticNode: false
 };
 function DialogTransition(props) {
     return(/*#__PURE__*/ _jsxRuntime.jsx(_offcanvasTogglingDefault.default, {
@@ -33277,11 +35459,22 @@ function BackdropTransition(props) {
         ...props
     }));
 }
-const Offcanvas = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , children , 'aria-labelledby': ariaLabelledby , placement , /* BaseModal props */ show , backdrop , keyboard , scroll , onEscapeKeyDown , onShow , onHide , container , autoFocus , enforceFocus , restoreFocus , restoreFocusOptions , onEntered , onExit , onExiting , onEnter , onEntering , onExited , backdropClassName , manager: propsManager , ...props }, ref)=>{
+const Offcanvas = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , children , 'aria-labelledby': ariaLabelledby , placement , responsive , /* BaseModal props */ show , backdrop , keyboard , scroll , onEscapeKeyDown , onShow , onHide , container , autoFocus , enforceFocus , restoreFocus , restoreFocusOptions , onEntered , onExit , onExiting , onEnter , onEntering , onExited , backdropClassName , manager: propsManager , renderStaticNode , ...props }, ref)=>{
     const modalManager = _react.useRef();
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'offcanvas');
     const { onToggle  } = _react.useContext(_navbarContextDefault.default) || {
     };
+    const [showOffcanvas, setShowOffcanvas] = _react.useState(false);
+    const hideResponsiveOffcanvas = _useBreakpointDefault.default(responsive || 'xs', 'up');
+    _react.useEffect(()=>{
+        // Handles the case where screen is resized while the responsive
+        // offcanvas is shown. If `responsive` not provided, just use `show`.
+        setShowOffcanvas(responsive ? show && !hideResponsiveOffcanvas : show);
+    }, [
+        show,
+        responsive,
+        hideResponsiveOffcanvas
+    ]);
     const handleHide = _useEventCallbackDefault.default(()=>{
         onToggle == null || onToggle();
         onHide == null || onHide();
@@ -33321,41 +35514,46 @@ const Offcanvas = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , chil
         bsPrefix
     ]);
     const renderDialog = (dialogProps)=>/*#__PURE__*/ _jsxRuntime.jsx("div", {
-            role: "dialog",
             ...dialogProps,
             ...props,
-            className: _classnamesDefault.default(className, bsPrefix, `${bsPrefix}-${placement}`),
+            className: _classnamesDefault.default(className, responsive ? `${bsPrefix}-${responsive}` : bsPrefix, `${bsPrefix}-${placement}`),
             "aria-labelledby": ariaLabelledby,
             children: children
         })
     ;
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_modalContextDefault.default.Provider, {
-        value: modalContext,
-        children: /*#__PURE__*/ _jsxRuntime.jsx(_modalDefault.default, {
-            show: show,
-            ref: ref,
-            backdrop: backdrop,
-            container: container,
-            keyboard: keyboard,
-            autoFocus: autoFocus,
-            enforceFocus: enforceFocus && !scroll,
-            restoreFocus: restoreFocus,
-            restoreFocusOptions: restoreFocusOptions,
-            onEscapeKeyDown: onEscapeKeyDown,
-            onShow: onShow,
-            onHide: handleHide,
-            onEnter: handleEnter,
-            onEntering: onEntering,
-            onEntered: onEntered,
-            onExit: onExit,
-            onExiting: onExiting,
-            onExited: handleExited,
-            manager: getModalManager(),
-            transition: DialogTransition,
-            backdropTransition: BackdropTransition,
-            renderBackdrop: renderBackdrop,
-            renderDialog: renderDialog
-        })
+    return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
+        children: [
+            !showOffcanvas && (responsive || renderStaticNode) && renderDialog({
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx(_modalContextDefault.default.Provider, {
+                value: modalContext,
+                children: /*#__PURE__*/ _jsxRuntime.jsx(_modalDefault.default, {
+                    show: showOffcanvas,
+                    ref: ref,
+                    backdrop: backdrop,
+                    container: container,
+                    keyboard: keyboard,
+                    autoFocus: autoFocus,
+                    enforceFocus: enforceFocus && !scroll,
+                    restoreFocus: restoreFocus,
+                    restoreFocusOptions: restoreFocusOptions,
+                    onEscapeKeyDown: onEscapeKeyDown,
+                    onShow: onShow,
+                    onHide: handleHide,
+                    onEnter: handleEnter,
+                    onEntering: onEntering,
+                    onEntered: onEntered,
+                    onExit: onExit,
+                    onExiting: onExiting,
+                    onExited: handleExited,
+                    manager: getModalManager(),
+                    transition: DialogTransition,
+                    backdropTransition: BackdropTransition,
+                    renderBackdrop: renderBackdrop,
+                    renderDialog: renderDialog
+                })
+            })
+        ]
     }));
 });
 Offcanvas.displayName = 'Offcanvas';
@@ -33366,7 +35564,155 @@ exports.default = Object.assign(Offcanvas, {
     Title: _offcanvasTitleDefault.default
 });
 
-},{"classnames":"bOXOh","@restart/hooks/useEventCallback":"lDj1q","react":"6TuXu","@restart/ui/Modal":"ghCE7","./Fade":"kCN9h","./OffcanvasBody":"bMhVV","./OffcanvasToggling":"hkyY7","./ModalContext":"6MOow","./NavbarContext":"iFmid","./OffcanvasHeader":"6rtnc","./OffcanvasTitle":"kKoeP","./ThemeProvider":"eeqfi","./BootstrapModalManager":"4xdeS","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bMhVV":[function(require,module,exports) {
+},{"classnames":"bOXOh","@restart/hooks/useBreakpoint":"lyFN8","@restart/hooks/useEventCallback":"lDj1q","react":"6TuXu","@restart/ui/Modal":"ghCE7","./Fade":"kCN9h","./OffcanvasBody":"bMhVV","./OffcanvasToggling":"hkyY7","./ModalContext":"6MOow","./NavbarContext":"iFmid","./OffcanvasHeader":"6rtnc","./OffcanvasTitle":"kKoeP","./ThemeProvider":"eeqfi","./BootstrapModalManager":"4xdeS","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"lyFN8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Create a responsive hook we a set of breakpoint names and widths.
+ * You can use any valid css units as well as a numbers (for pixels).
+ *
+ * **NOTE:** The object key order is important! it's assumed to be in order from smallest to largest
+ *
+ * ```ts
+ * const useBreakpoint = createBreakpointHook({
+ *  xs: 0,
+ *  sm: 576,
+ *  md: 768,
+ *  lg: 992,
+ *  xl: 1200,
+ * })
+ * ```
+ *
+ * **Watch out!** using string values will sometimes construct media queries using css `calc()` which
+ * is NOT supported in media queries by all browsers at the moment. use numbers for
+ * the widest range of browser support.
+ *
+ * @param breakpointValues A object hash of names to breakpoint dimensions
+ */ parcelHelpers.export(exports, "createBreakpointHook", ()=>createBreakpointHook
+);
+var _useMediaQuery = require("./useMediaQuery");
+var _useMediaQueryDefault = parcelHelpers.interopDefault(_useMediaQuery);
+var _react = require("react");
+function createBreakpointHook(breakpointValues) {
+    var names = Object.keys(breakpointValues);
+    function and(query, next) {
+        if (query === next) return next;
+        return query ? query + " and " + next : next;
+    }
+    function getNext(breakpoint) {
+        return names[Math.min(names.indexOf(breakpoint) + 1, names.length - 1)];
+    }
+    function getMaxQuery(breakpoint) {
+        var next = getNext(breakpoint);
+        var value = breakpointValues[next];
+        if (typeof value === 'number') value = value - 0.2 + "px";
+        else value = "calc(" + value + " - 0.2px)";
+        return "(max-width: " + value + ")";
+    }
+    function getMinQuery(breakpoint) {
+        var value = breakpointValues[breakpoint];
+        if (typeof value === 'number') value = value + "px";
+        return "(min-width: " + value + ")";
+    }
+    /**
+   * Match a set of breakpoints
+   *
+   * ```tsx
+   * const MidSizeOnly = () => {
+   *   const isMid = useBreakpoint({ lg: 'down', sm: 'up' });
+   *
+   *   if (isMid) return <div>On a Reasonable sized Screen!</div>
+   *   return null;
+   * }
+   * ```
+   * @param breakpointMap An object map of breakpoints and directions, queries are constructed using "and" to join
+   * breakpoints together
+   * @param window Optionally specify the target window to match against (useful when rendering into iframes)
+   */ function useBreakpoint(breakpointOrMap, direction, window) {
+        var breakpointMap;
+        if (typeof breakpointOrMap === 'object') {
+            breakpointMap = breakpointOrMap;
+            window = direction;
+            direction = true;
+        } else {
+            var _breakpointMap;
+            direction = direction || true;
+            breakpointMap = (_breakpointMap = {
+            }, _breakpointMap[breakpointOrMap] = direction, _breakpointMap);
+        }
+        var query = _react.useMemo(function() {
+            return Object.entries(breakpointMap).reduce(function(query1, _ref) {
+                var key = _ref[0], direction1 = _ref[1];
+                if (direction1 === 'up' || direction1 === true) query1 = and(query1, getMinQuery(key));
+                if (direction1 === 'down' || direction1 === true) query1 = and(query1, getMaxQuery(key));
+                return query1;
+            }, '');
+        }, [
+            JSON.stringify(breakpointMap)
+        ]);
+        return _useMediaQueryDefault.default(query, window);
+    }
+    return useBreakpoint;
+}
+var useBreakpoint = createBreakpointHook({
+    xs: 0,
+    sm: 576,
+    md: 768,
+    lg: 992,
+    xl: 1200,
+    xxl: 1400
+});
+exports.default = useBreakpoint;
+
+},{"./useMediaQuery":"cmkGi","react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"cmkGi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _useIsomorphicEffect = require("./useIsomorphicEffect");
+var _useIsomorphicEffectDefault = parcelHelpers.interopDefault(_useIsomorphicEffect);
+var _react = require("react");
+var matchersByWindow = new WeakMap();
+var getMatcher = function getMatcher1(query, targetWindow) {
+    if (!query || !targetWindow) return undefined;
+    var matchers = matchersByWindow.get(targetWindow) || new Map();
+    matchersByWindow.set(targetWindow, matchers);
+    var mql = matchers.get(query);
+    if (!mql) {
+        mql = targetWindow.matchMedia(query);
+        mql.refCount = 0;
+        matchers.set(mql.media, mql);
+    }
+    return mql;
+};
+function useMediaQuery(query, targetWindow) {
+    if (targetWindow === void 0) targetWindow = typeof window === 'undefined' ? undefined : window;
+    var mql = getMatcher(query, targetWindow);
+    var _useState = _react.useState(function() {
+        return mql ? mql.matches : false;
+    }), matches = _useState[0], setMatches = _useState[1];
+    _useIsomorphicEffectDefault.default(function() {
+        var mql1 = getMatcher(query, targetWindow);
+        if (!mql1) return setMatches(false);
+        var matchers = matchersByWindow.get(targetWindow);
+        var handleChange = function handleChange1() {
+            setMatches(mql1.matches);
+        };
+        mql1.refCount++;
+        mql1.addListener(handleChange);
+        handleChange();
+        return function() {
+            mql1.removeListener(handleChange);
+            mql1.refCount--;
+            if (mql1.refCount <= 0) matchers == null || matchers.delete(mql1.media);
+            mql1 = undefined;
+        };
+    }, [
+        query
+    ]);
+    return matches;
+}
+exports.default = useMediaQuery;
+
+},{"./useIsomorphicEffect":"3psbV","react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bMhVV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _createWithBsPrefix = require("./createWithBsPrefix");
@@ -33505,6 +35851,12 @@ var _classnames = require("classnames");
 var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _overlay = require("@restart/ui/Overlay");
 var _overlayDefault = parcelHelpers.interopDefault(_overlay);
+var _useCallbackRef = require("@restart/hooks/useCallbackRef");
+var _useCallbackRefDefault = parcelHelpers.interopDefault(_useCallbackRef);
+var _useEventCallback = require("@restart/hooks/useEventCallback");
+var _useEventCallbackDefault = parcelHelpers.interopDefault(_useEventCallback);
+var _useIsomorphicEffect = require("@restart/hooks/useIsomorphicEffect");
+var _useIsomorphicEffectDefault = parcelHelpers.interopDefault(_useIsomorphicEffect);
 var _useMergedRefs = require("@restart/hooks/useMergedRefs");
 var _useMergedRefsDefault = parcelHelpers.interopDefault(_useMergedRefs);
 var _useOverlayOffset = require("./useOverlayOffset");
@@ -33532,29 +35884,41 @@ const Overlay = /*#__PURE__*/ _react.forwardRef(({ children: overlay , transitio
 } , ...outerProps }, outerRef)=>{
     const popperRef = _react.useRef({
     });
-    const [ref, modifiers] = _useOverlayOffsetDefault.default();
+    const [firstRenderedState, setFirstRenderedState] = _useCallbackRefDefault.default();
+    const [ref, modifiers] = _useOverlayOffsetDefault.default(outerProps.offset);
     const mergedRef = _useMergedRefsDefault.default(outerRef, ref);
     const actualTransition = transition === true ? _fadeDefault.default : transition || undefined;
+    const handleFirstUpdate = _useEventCallbackDefault.default((state)=>{
+        setFirstRenderedState(state);
+        popperConfig == null || popperConfig.onFirstUpdate == null || popperConfig.onFirstUpdate(state);
+    });
+    _useIsomorphicEffectDefault.default(()=>{
+        if (firstRenderedState) popperRef.current.scheduleUpdate == null || popperRef.current.scheduleUpdate();
+    }, [
+        firstRenderedState
+    ]);
     return(/*#__PURE__*/ _jsxRuntime.jsx(_overlayDefault.default, {
         ...outerProps,
         ref: mergedRef,
         popperConfig: {
             ...popperConfig,
-            modifiers: modifiers.concat(popperConfig.modifiers || [])
+            modifiers: modifiers.concat(popperConfig.modifiers || []),
+            onFirstUpdate: handleFirstUpdate
         },
         transition: actualTransition,
-        children: (overlayProps, { arrowProps , placement , popper: popperObj , show  })=>{
+        children: (overlayProps, { arrowProps , popper: popperObj , show  })=>{
             var _popperObj$state, _popperObj$state$modi;
-            wrapRefs(overlayProps, arrowProps);
+            wrapRefs(overlayProps, arrowProps); // Need to get placement from popper object, handling case when overlay is flipped using 'flip' prop
+            const updatedPlacement = popperObj == null ? void 0 : popperObj.placement;
             const popper = Object.assign(popperRef.current, {
                 state: popperObj == null ? void 0 : popperObj.state,
                 scheduleUpdate: popperObj == null ? void 0 : popperObj.update,
-                placement,
+                placement: updatedPlacement,
                 outOfBoundaries: (popperObj == null ? void 0 : (_popperObj$state = popperObj.state) == null ? void 0 : (_popperObj$state$modi = _popperObj$state.modifiersData.hide) == null ? void 0 : _popperObj$state$modi.isReferenceHidden) || false
             });
             if (typeof overlay === 'function') return overlay({
                 ...overlayProps,
-                placement,
+                placement: updatedPlacement,
                 show,
                 ...!transition && show && {
                     className: 'show'
@@ -33564,7 +35928,7 @@ const Overlay = /*#__PURE__*/ _react.forwardRef(({ children: overlay , transitio
             });
             return(/*#__PURE__*/ _react.cloneElement(overlay, {
                 ...overlayProps,
-                placement,
+                placement: updatedPlacement,
                 arrowProps,
                 popper,
                 className: _classnamesDefault.default(overlay.props.className, !transition && show && 'show'),
@@ -33580,7 +35944,7 @@ Overlay.displayName = 'Overlay';
 Overlay.defaultProps = defaultProps;
 exports.default = Overlay;
 
-},{"react":"6TuXu","classnames":"bOXOh","@restart/ui/Overlay":"dV8Ec","@restart/hooks/useMergedRefs":"2sLYB","./useOverlayOffset":"iAMDl","./Fade":"kCN9h","./safeFindDOMNode":"jTe8c","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"dV8Ec":[function(require,module,exports) {
+},{"react":"6TuXu","classnames":"bOXOh","@restart/ui/Overlay":"dV8Ec","@restart/hooks/useCallbackRef":"hKgxU","@restart/hooks/useEventCallback":"lDj1q","@restart/hooks/useIsomorphicEffect":"3psbV","@restart/hooks/useMergedRefs":"2sLYB","./useOverlayOffset":"iAMDl","./Fade":"kCN9h","./safeFindDOMNode":"jTe8c","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"dV8Ec":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _react = require("react");
@@ -33736,15 +36100,15 @@ var _hasClassDefault = parcelHelpers.interopDefault(_hasClass);
 var _themeProvider = require("./ThemeProvider");
 var _popover = require("./Popover"); // This is meant for internal use.
 var _popoverDefault = parcelHelpers.interopDefault(_popover);
-function useOverlayOffset() {
+function useOverlayOffset(customOffset) {
     const overlayRef = _react.useRef(null);
     const popoverClass = _themeProvider.useBootstrapPrefix(undefined, 'popover');
     const offset = _react.useMemo(()=>({
             name: 'offset',
             options: {
                 offset: ()=>{
-                    if (overlayRef.current && _hasClassDefault.default(overlayRef.current, popoverClass)) return _popoverDefault.default.POPPER_OFFSET;
-                    return [
+                    if (overlayRef.current && _hasClassDefault.default(overlayRef.current, popoverClass)) return customOffset || _popoverDefault.default.POPPER_OFFSET;
+                    return customOffset || [
                         0,
                         0
                     ];
@@ -33752,6 +36116,7 @@ function useOverlayOffset() {
             }
         })
     , [
+        customOffset,
         popoverClass
     ]);
     return [
@@ -34029,7 +36394,6 @@ const PageItem = /*#__PURE__*/ _react.forwardRef(({ active , disabled , classNam
         }),
         children: /*#__PURE__*/ _jsxRuntime.jsxs(Component, {
             className: "page-link",
-            disabled: disabled,
             ...props,
             children: [
                 children,
@@ -34045,9 +36409,9 @@ PageItem.defaultProps = defaultProps;
 PageItem.displayName = 'PageItem';
 exports.default = PageItem;
 function createButton(name, defaultValue, label = name) {
-    function Button({ children , ...props }) {
-        return(/*#__PURE__*/ _jsxRuntime.jsxs(PageItem, {
+    const Button = /*#__PURE__*/ _react.forwardRef(({ children , ...props }, ref)=>/*#__PURE__*/ _jsxRuntime.jsxs(PageItem, {
             ...props,
+            ref: ref,
             children: [
                 /*#__PURE__*/ _jsxRuntime.jsx("span", {
                     "aria-hidden": "true",
@@ -34058,8 +36422,8 @@ function createButton(name, defaultValue, label = name) {
                     children: label
                 })
             ]
-        }));
-    }
+        })
+    );
     Button.displayName = name;
     return Button;
 }
@@ -34302,26 +36666,20 @@ var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _react = require("react");
 var _themeProvider = require("./ThemeProvider");
 var _jsxRuntime = require("react/jsx-runtime");
-const DEVICE_SIZES = [
-    'xxl',
-    'xl',
-    'lg',
-    'md',
-    'sm',
-    'xs'
-];
 const Row = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
 as: Component = 'div' , ...props }, ref)=>{
     const decoratedBsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'row');
+    const breakpoints = _themeProvider.useBootstrapBreakpoints();
+    const minBreakpoint = _themeProvider.useBootstrapMinBreakpoint();
     const sizePrefix = `${decoratedBsPrefix}-cols`;
     const classes = [];
-    DEVICE_SIZES.forEach((brkPoint)=>{
+    breakpoints.forEach((brkPoint)=>{
         const propValue = props[brkPoint];
         delete props[brkPoint];
         let cols;
         if (propValue != null && typeof propValue === 'object') ({ cols  } = propValue);
         else cols = propValue;
-        const infix = brkPoint !== 'xs' ? `-${brkPoint}` : '';
+        const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
         if (cols != null) classes.push(`${sizePrefix}${infix}-${cols}`);
     });
     return(/*#__PURE__*/ _jsxRuntime.jsx(Component, {
@@ -34341,7 +36699,7 @@ var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _react = require("react");
 var _themeProvider = require("./ThemeProvider");
 var _jsxRuntime = require("react/jsx-runtime");
-const Spinner = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , variant , animation , size , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+const Spinner = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , variant , animation ='border' , size , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
 as: Component = 'div' , className , ...props }, ref)=>{
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'spinner');
     const bsSpinnerPrefix = `${bsPrefix}-${animation}`;
@@ -34397,6 +36755,11 @@ const propTypes = {
    *
    * _see [DropdownMenu](#dropdown-menu-props) for more details_
    */ rootCloseEvent: _propTypesDefault.default.string,
+    /**
+   * Allow Dropdown to flip in case of an overlapping on the reference element. For more information refer to
+   * Popper.js's flip [docs](https://popper.js.org/docs/v2/modifiers/flip/).
+   *
+   */ flip: _propTypesDefault.default.bool,
     /** @ignore */ bsPrefix: _propTypesDefault.default.string,
     /** @ignore */ variant: _propTypesDefault.default.string,
     /** @ignore */ size: _propTypesDefault.default.string
@@ -34414,7 +36777,7 @@ const defaultProps = {
  * _All unknown props are passed through to the `Dropdown` component._
  * The Button `variant`, `size` and `bsPrefix` props are passed to the button and toggle,
  * and menu-related props are passed to the `Dropdown.Menu`
- */ const SplitButton = /*#__PURE__*/ _react.forwardRef(({ id , bsPrefix , size , variant , title , type , toggleLabel , children , onClick , href , target , menuRole , renderMenuOnMount , rootCloseEvent , ...props }, ref)=>/*#__PURE__*/ _jsxRuntime.jsxs(_dropdownDefault.default, {
+ */ const SplitButton = /*#__PURE__*/ _react.forwardRef(({ id , bsPrefix , size , variant , title , type , toggleLabel , children , onClick , href , target , menuRole , renderMenuOnMount , rootCloseEvent , flip , ...props }, ref)=>/*#__PURE__*/ _jsxRuntime.jsxs(_dropdownDefault.default, {
         ref: ref,
         ...props,
         as: _buttonGroupDefault.default,
@@ -34446,6 +36809,7 @@ const defaultProps = {
                 role: menuRole,
                 renderOnMount: renderMenuOnMount,
                 rootCloseEvent: rootCloseEvent,
+                flip: flip,
                 children: children
             })
         ]
@@ -34474,11 +36838,15 @@ var _createUtilityClassesDefault = parcelHelpers.interopDefault(_createUtilityCl
 var _jsxRuntime = require("react/jsx-runtime");
 const Stack = /*#__PURE__*/ _react.forwardRef(({ as: Component = 'div' , bsPrefix , className , direction , gap , ...props }, ref)=>{
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, direction === 'horizontal' ? 'hstack' : 'vstack');
+    const breakpoints = _themeProvider.useBootstrapBreakpoints();
+    const minBreakpoint = _themeProvider.useBootstrapMinBreakpoint();
     return(/*#__PURE__*/ _jsxRuntime.jsx(Component, {
         ...props,
         ref: ref,
         className: _classnamesDefault.default(className, bsPrefix, ..._createUtilityClassesDefault.default({
-            gap
+            gap,
+            breakpoints,
+            minBreakpoint
         }))
     }));
 });
@@ -34490,10 +36858,9 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "responsivePropType", ()=>responsivePropType
 );
-parcelHelpers.export(exports, "DEVICE_SIZES", ()=>DEVICE_SIZES
-);
 var _propTypes = require("prop-types");
 var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
+var _themeProvider = require("./ThemeProvider");
 function responsivePropType(propType) {
     return _propTypesDefault.default.oneOfType([
         propType,
@@ -34507,22 +36874,14 @@ function responsivePropType(propType) {
         })
     ]);
 }
-const DEVICE_SIZES = [
-    'xxl',
-    'xl',
-    'lg',
-    'md',
-    'sm',
-    'xs'
-];
-function createUtilityClassName(utilityValues) {
+function createUtilityClassName(utilityValues, breakpoints = _themeProvider.DEFAULT_BREAKPOINTS, minBreakpoint = _themeProvider.DEFAULT_MIN_BREAKPOINT) {
     const classes = [];
     Object.entries(utilityValues).forEach(([utilName, utilValue])=>{
         if (utilValue != null) {
-            if (typeof utilValue === 'object') DEVICE_SIZES.forEach((brkPoint)=>{
+            if (typeof utilValue === 'object') breakpoints.forEach((brkPoint)=>{
                 const bpValue = utilValue[brkPoint];
                 if (bpValue != null) {
-                    const infix = brkPoint !== 'xs' ? `-${brkPoint}` : '';
+                    const infix = brkPoint !== minBreakpoint ? `-${brkPoint}` : '';
                     classes.push(`${utilName}${infix}-${bpValue}`);
                 }
             });
@@ -34533,7 +36892,7 @@ function createUtilityClassName(utilityValues) {
 }
 exports.default = createUtilityClassName;
 
-},{"prop-types":"1tgq3","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"9Li7R":[function(require,module,exports) {
+},{"prop-types":"1tgq3","./ThemeProvider":"eeqfi","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"9Li7R":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _propTypes = require("prop-types");
@@ -34559,7 +36918,10 @@ var _jsxRuntime = require("react/jsx-runtime");
    */ disabled: _propTypesDefault.default.bool,
     /**
    * Class to pass to the underlying nav link.
-   */ tabClassName: _propTypesDefault.default.string
+   */ tabClassName: _propTypesDefault.default.string,
+    /**
+   * Object containing attributes to pass to underlying nav link.
+   */ tabAttrs: _propTypesDefault.default.object
 };
 const Tab = ()=>{
     throw new Error("ReactBootstrap: The `Tab` component is not meant to be rendered! It's an abstract component that is only valid as a direct Child of the `Tabs` Component. For custom tabs components use TabPane and TabsContainer directly"); // Needed otherwise docs error out.
@@ -34658,7 +37020,14 @@ const _excluded = [
     "eventKey",
     "mountOnEnter",
     "transition",
-    "unmountOnExit"
+    "unmountOnExit",
+    "role",
+    "onEnter",
+    "onEntering",
+    "onEntered",
+    "onExit",
+    "onExiting",
+    "onExited"
 ], _excluded2 = [
     "activeKey",
     "getControlledId",
@@ -34681,16 +37050,25 @@ function _objectWithoutPropertiesLoose(source, excluded) {
     return target;
 }
 function useTabPanel(_ref) {
-    let { active , eventKey , mountOnEnter , transition , unmountOnExit  } = _ref, props = _objectWithoutPropertiesLoose(_ref, _excluded);
+    let { active , eventKey , mountOnEnter , transition , unmountOnExit , role ='tabpanel' , onEnter , onEntering , onEntered , onExit , onExiting , onExited  } = _ref, props = _objectWithoutPropertiesLoose(_ref, _excluded);
     const context = _react.useContext(_tabContextDefault.default);
     if (!context) return [
-        props,
+        Object.assign({
+        }, props, {
+            role
+        }),
         {
             eventKey,
             isActive: active,
             mountOnEnter,
             transition,
-            unmountOnExit
+            unmountOnExit,
+            onEnter,
+            onEntering,
+            onEntered,
+            onExit,
+            onExiting,
+            onExited
         }
     ];
     const { activeKey , getControlledId , getControllerId  } = context, rest = _objectWithoutPropertiesLoose(context, _excluded2);
@@ -34698,6 +37076,7 @@ function useTabPanel(_ref) {
     return [
         Object.assign({
         }, props, {
+            role,
             id: getControlledId(eventKey),
             'aria-labelledby': getControllerId(eventKey)
         }),
@@ -34706,7 +37085,13 @@ function useTabPanel(_ref) {
             isActive: active == null && key != null ? _selectableContext.makeEventKey(activeKey) === key : active,
             transition: transition || rest.transition,
             mountOnEnter: mountOnEnter != null ? mountOnEnter : rest.mountOnEnter,
-            unmountOnExit: unmountOnExit != null ? unmountOnExit : rest.unmountOnExit
+            unmountOnExit: unmountOnExit != null ? unmountOnExit : rest.unmountOnExit,
+            onEnter,
+            onEntering,
+            onEntered,
+            onExit,
+            onExiting,
+            onExited
         }
     ];
 }
@@ -34731,7 +37116,6 @@ const TabPanel = /*#__PURE__*/ _react.forwardRef((_ref2, ref)=>{
                 children: /*#__PURE__*/ _jsxRuntime.jsx(Component, Object.assign({
                 }, tabPanelProps, {
                     ref: ref,
-                    role: "tabpanel",
                     hidden: !isActive,
                     "aria-hidden": !isActive
                 }))
@@ -34767,15 +37151,17 @@ exports.default = NoopTransition;
 },{"react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"973h8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _noopTransition = require("@restart/ui/NoopTransition");
+var _noopTransitionDefault = parcelHelpers.interopDefault(_noopTransition);
 var _fade = require("./Fade");
 var _fadeDefault = parcelHelpers.interopDefault(_fade);
 function getTabTransitionComponent(transition) {
-    if (typeof transition === 'boolean') return transition ? _fadeDefault.default : undefined;
+    if (typeof transition === 'boolean') return transition ? _fadeDefault.default : _noopTransitionDefault.default;
     return transition;
 }
 exports.default = getTabTransitionComponent;
 
-},{"./Fade":"kCN9h","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bNx28":[function(require,module,exports) {
+},{"@restart/ui/NoopTransition":"hMa0z","./Fade":"kCN9h","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bNx28":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _createWithBsPrefix = require("./createWithBsPrefix");
@@ -34788,20 +37174,20 @@ parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
 var _classnamesDefault = parcelHelpers.interopDefault(_classnames);
 var _react = require("react");
-var _noopTransition = require("@restart/ui/NoopTransition");
-var _noopTransitionDefault = parcelHelpers.interopDefault(_noopTransition);
 var _selectableContext = require("@restart/ui/SelectableContext");
 var _selectableContextDefault = parcelHelpers.interopDefault(_selectableContext);
 var _tabContext = require("@restart/ui/TabContext");
 var _tabContextDefault = parcelHelpers.interopDefault(_tabContext);
 var _tabPanel = require("@restart/ui/TabPanel");
 var _themeProvider = require("./ThemeProvider");
+var _fade = require("./Fade");
+var _fadeDefault = parcelHelpers.interopDefault(_fade);
 var _getTabTransitionComponent = require("./getTabTransitionComponent");
 var _getTabTransitionComponentDefault = parcelHelpers.interopDefault(_getTabTransitionComponent);
 var _jsxRuntime = require("react/jsx-runtime");
 const TabPane = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , transition , ...props }, ref)=>{
     const [{ className , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-    as: Component = 'div' , ...rest }, { isActive , onEnter , onEntering , onEntered , onExit , onExiting , onExited , mountOnEnter , unmountOnExit , transition: Transition = _noopTransitionDefault.default  }] = _tabPanel.useTabPanel({
+    as: Component = 'div' , ...rest }, { isActive , onEnter , onEntering , onEntered , onExit , onExiting , onExited , mountOnEnter , unmountOnExit , transition: Transition = _fadeDefault.default  }] = _tabPanel.useTabPanel({
         ...props,
         transition: _getTabTransitionComponentDefault.default(transition)
     });
@@ -34833,7 +37219,7 @@ const TabPane = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , transition , ...pr
 TabPane.displayName = 'TabPane';
 exports.default = TabPane;
 
-},{"classnames":"bOXOh","react":"6TuXu","@restart/ui/SelectableContext":"9e25D","@restart/ui/TabContext":"fKwcy","@restart/ui/TabPanel":"dDU2T","./ThemeProvider":"eeqfi","./getTabTransitionComponent":"973h8","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@restart/ui/NoopTransition":"hMa0z"}],"1T2Al":[function(require,module,exports) {
+},{"classnames":"bOXOh","react":"6TuXu","@restart/ui/SelectableContext":"9e25D","@restart/ui/TabContext":"fKwcy","@restart/ui/TabPanel":"dDU2T","./ThemeProvider":"eeqfi","./Fade":"kCN9h","./getTabTransitionComponent":"973h8","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"1T2Al":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _classnames = require("classnames");
@@ -34843,7 +37229,7 @@ var _themeProvider = require("./ThemeProvider");
 var _jsxRuntime = require("react/jsx-runtime");
 const Table = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , className , striped , bordered , borderless , hover , size , variant , responsive , ...props }, ref)=>{
     const decoratedBsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'table');
-    const classes = _classnamesDefault.default(className, decoratedBsPrefix, variant && `${decoratedBsPrefix}-${variant}`, size && `${decoratedBsPrefix}-${size}`, striped && `${decoratedBsPrefix}-striped`, bordered && `${decoratedBsPrefix}-bordered`, borderless && `${decoratedBsPrefix}-borderless`, hover && `${decoratedBsPrefix}-hover`);
+    const classes = _classnamesDefault.default(className, decoratedBsPrefix, variant && `${decoratedBsPrefix}-${variant}`, size && `${decoratedBsPrefix}-${size}`, striped && `${decoratedBsPrefix}-${typeof striped === 'string' ? `striped-${striped}` : 'striped'}`, bordered && `${decoratedBsPrefix}-bordered`, borderless && `${decoratedBsPrefix}-borderless`, hover && `${decoratedBsPrefix}-hover`);
     const table = /*#__PURE__*/ _jsxRuntime.jsx("table", {
         ...props,
         className: classes,
@@ -34895,7 +37281,7 @@ function getDefaultActiveKey(children) {
     return defaultActiveKey;
 }
 function renderTab(child) {
-    const { title , eventKey , disabled , tabClassName , id  } = child.props;
+    const { title , eventKey , disabled , tabClassName , tabAttrs , id  } = child.props;
     if (title == null) return null;
     return(/*#__PURE__*/ _jsxRuntime.jsx(_navItemDefault.default, {
         as: "li",
@@ -34907,6 +37293,7 @@ function renderTab(child) {
             disabled: disabled,
             id: id,
             className: tabClassName,
+            ...tabAttrs,
             children: title
         })
     }));
@@ -34937,6 +37324,7 @@ const Tabs = (props)=>{
                     delete childProps.title;
                     delete childProps.disabled;
                     delete childProps.tabClassName;
+                    delete childProps.tabAttrs;
                     return(/*#__PURE__*/ _jsxRuntime.jsx(_tabPaneDefault.default, {
                         ...childProps
                     }));
@@ -35124,13 +37512,16 @@ const positionClasses = {
     'bottom-center': 'bottom-0 start-50 translate-middle-x',
     'bottom-end': 'bottom-0 end-0'
 };
-const ToastContainer = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , position , className , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+const ToastContainer = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , position , containerPosition ='absolute' , className , // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
 as: Component = 'div' , ...props }, ref)=>{
     bsPrefix = _themeProvider.useBootstrapPrefix(bsPrefix, 'toast-container');
     return(/*#__PURE__*/ _jsxRuntime.jsx(Component, {
         ref: ref,
         ...props,
-        className: _classnamesDefault.default(bsPrefix, position && `position-absolute ${positionClasses[position]}`, className)
+        className: _classnamesDefault.default(bsPrefix, position && [
+            containerPosition ? `position-${containerPosition}` : null,
+            positionClasses[position]
+        ], className)
     }));
 });
 ToastContainer.displayName = 'ToastContainer';
@@ -35169,6 +37560,7 @@ const ToggleButton = /*#__PURE__*/ _react.forwardRef(({ bsPrefix , name , classN
                 ref: ref,
                 className: _classnamesDefault.default(className, disabled && 'disabled'),
                 type: undefined,
+                role: undefined,
                 as: "label",
                 htmlFor: id
             })
@@ -35208,7 +37600,7 @@ const ToggleButtonGroup = /*#__PURE__*/ _react.forwardRef((props, ref)=>{
         const values = getValues();
         const isActive = values.indexOf(inputVal) !== -1;
         if (type === 'radio') {
-            if (!isActive && onChange) onChange(inputVal, event);
+            if (!isActive) onChange(inputVal, event);
             return;
         }
         if (isActive) onChange(values.filter((n)=>n !== inputVal
@@ -35281,7 +37673,81 @@ Tooltip.defaultProps = defaultProps;
 Tooltip.displayName = 'Tooltip';
 exports.default = Tooltip;
 
-},{"classnames":"bOXOh","react":"6TuXu","./ThemeProvider":"eeqfi","./helpers":"S1Bw1","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2zHas":[function(require,module,exports) {
+},{"classnames":"bOXOh","react":"6TuXu","./ThemeProvider":"eeqfi","./helpers":"S1Bw1","react/jsx-runtime":"8xIwr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"8GWVf":[function(require,module,exports) {
+'use strict';
+var compose = require('redux').compose;
+exports.__esModule = true;
+exports.composeWithDevTools = typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
+    if (arguments.length === 0) return undefined;
+    if (typeof arguments[0] === 'object') return compose;
+    return compose.apply(null, arguments);
+};
+exports.devToolsEnhancer = typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__ : function() {
+    return function(noop) {
+        return noop;
+    };
+};
+
+},{"redux":"4d0QS"}],"c02pe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _redux = require("redux");
+var _constant = require("../utils/constant");
+const visibilityFilter = (state = '', action)=>{
+    switch(action.type){
+        case _constant.SET_FILTER:
+            return action.value;
+        default:
+            return state;
+    }
+};
+const movies = (state = [], action)=>{
+    switch(action.type){
+        case _constant.SET_MOVIES:
+            return action.movies;
+        default:
+            return state;
+    }
+};
+const loading = (state = false, action)=>{
+    switch(action.type){
+        case _constant.SHOW_LOADER:
+            return true;
+        case _constant.HIDE_LOADER:
+            return false;
+        default:
+            return state;
+    }
+};
+exports.default = _redux.combineReducers({
+    visibilityFilter,
+    movies,
+    loading
+});
+
+},{"redux":"4d0QS","../utils/constant":"cR822","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"cR822":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API_URL", ()=>API_URL
+);
+parcelHelpers.export(exports, "SET_MOVIES", ()=>SET_MOVIES
+);
+parcelHelpers.export(exports, "SET_FILTER", ()=>SET_FILTER
+);
+parcelHelpers.export(exports, "SHOW_LOADER", ()=>SHOW_LOADER
+);
+parcelHelpers.export(exports, "HIDE_LOADER", ()=>HIDE_LOADER
+);
+parcelHelpers.export(exports, "PER_PAGE", ()=>PER_PAGE
+);
+const API_URL = "https://myflix-firstapi-app.herokuapp.com";
+const SET_MOVIES = 'SET_MOVIES';
+const SET_FILTER = 'SET_FILTER';
+const SHOW_LOADER = 'SHOW_LOADER';
+const HIDE_LOADER = 'HIDE_LOADER';
+const PER_PAGE = 4;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2zHas":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$35bf = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -35296,8 +37762,7 @@ var _reactDefault = parcelHelpers.interopDefault(_react);
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
 var _reactRouterDom = require("react-router-dom");
-var _movieCard = require("../movie-card/movie-card");
-var _movieCardDefault = parcelHelpers.interopDefault(_movieCard);
+var _reactRedux = require("react-redux");
 var _registrationView = require("../registration-view/registration-view");
 var _registrationViewDefault = parcelHelpers.interopDefault(_registrationView);
 var _loginView = require("../login-view/login-view");
@@ -35308,19 +37773,22 @@ var _directorView = require("../director-view/director-view");
 var _directorViewDefault = parcelHelpers.interopDefault(_directorView);
 var _genreView = require("../genre-view/genre-view");
 var _genreViewDefault = parcelHelpers.interopDefault(_genreView);
-var _constant = require("../../utils/constant");
-var _reactBootstrap = require("react-bootstrap");
-var _mainViewScss = require("./main-view.scss");
 var _navBar = require("../nav-bar/nav-bar");
 var _navBarDefault = parcelHelpers.interopDefault(_navBar);
 var _profileView = require("../profile-view/profile-view");
 var _profileViewDefault = parcelHelpers.interopDefault(_profileView);
+var _movieList = require("../movie-list/movie-list");
+var _movieListDefault = parcelHelpers.interopDefault(_movieList);
+/* import PageLoader from '../page-loader/page-loader'; */ var _actions = require("../../actions");
+var _constant = require("../../utils/constant");
+var _privateRoute = require("./PrivateRoute");
+var _privateRouteDefault = parcelHelpers.interopDefault(_privateRoute);
+var _reactBootstrap = require("react-bootstrap");
+var _mainViewScss = require("./main-view.scss");
 class MainView extends _reactDefault.default.Component {
     constructor(){
         super();
         this.state = {
-            movies: [],
-            loading: false,
             user: null
         };
     }
@@ -35334,21 +37802,19 @@ class MainView extends _reactDefault.default.Component {
         }
     }
     getMovies(token) {
-        this.setState({
-            loading: true
-        });
+        this.props.dispatch(_actions.showLoader());
         _axiosDefault.default.get(`${_constant.API_URL}/movies`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }).then((response)=>{
-            this.setState({
-                movies: response.data,
-                loading: false
-            });
+            this.props.dispatch(_actions.setMovies(response.data));
         }).catch((error)=>{
             console.log(error);
         });
+        setTimeout(()=>{
+            this.props.dispatch(_actions.hideLoader());
+        }, 2000);
     }
     onLoggedIn(authData) {
         this.setState({
@@ -35365,252 +37831,147 @@ class MainView extends _reactDefault.default.Component {
             user: null
         });
     }
-    //handle fav movie btn clicked
-    addFavMovie = (movieId)=>{
-        let { user  } = this.state;
-        console.log(movieId);
-        const token = localStorage.getItem('token');
-        _axiosDefault.default.post(`${_constant.API_URL}/users/${user.Username}/movies/${movieId}`, {
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response)=>{
-            const updatedUser = response.data;
-            console.log('Movie added to fav list');
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            window.location.reload();
-        }).catch((error)=>{
-            console.log('Adding a movie to user list failed.', error);
-        });
-    };
     render() {
-        const { movies , user  } = this.state;
-        return(/*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.BrowserRouter, {
+        const { user  } = this.state;
+        const isLoggedIn = !!user;
+        const { loading  } = this.props;
+        return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.BrowserRouter, {
             __source: {
                 fileName: "src/components/main-view/main-view.jsx",
-                lineNumber: 104
+                lineNumber: 81
             },
             __self: this,
-            children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
-                className: "main-view justify-content-md-center",
-                __source: {
-                    fileName: "src/components/main-view/main-view.jsx",
-                    lineNumber: 105
-                },
-                __self: this,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        exact: true,
-                        path: "/",
-                        render: ()=>{
-                            if (!user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                className: "mt-2 mx-auto",
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
-                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
-                                })
-                            }));
-                            else return(/*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
-                                user: user
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 106
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        exact: true,
-                        path: "/",
-                        render: ()=>{
-                            if (user && movies.length === 0) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "main-view",
-                                children: "No data available to display!!!!"
-                            }));
-                            return movies.map((movie)=>/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                    md: 3,
-                                    className: "g-3",
-                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_movieCardDefault.default, {
-                                        movie: movie,
-                                        addFavMovie: this.addFavMovie.bind(this)
-                                    })
-                                }, movie._id)
-                            );
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 120
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        path: "/register",
-                        render: ()=>{
-                            if (user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Redirect, {
-                                to: "/"
-                            }));
-                            return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_registrationViewDefault.default, {
-                                })
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 142
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        path: "/movies/:movieId",
-                        render: ({ match , history  })=>{
-                            if (!user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+            children: [
+                isLoggedIn && /*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
+                    __source: {
+                        fileName: "src/components/main-view/main-view.jsx",
+                        lineNumber: 82
+                    },
+                    __self: this
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
+                    className: "main-view justify-content-md-center",
+                    __source: {
+                        fileName: "src/components/main-view/main-view.jsx",
+                        lineNumber: 83
+                    },
+                    __self: this,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx(_jsxRuntime.Fragment, {
+                        children: [
+                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
                                 className: "mt-2",
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
-                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
-                                })
-                            }));
-                            if (movies.length === 0) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "main-view",
-                                children: "No data available to display!!!!"
-                            }));
-                            return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-                                children: [
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                        md: 8,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_movieViewDefault.default, {
-                                            movie: movies.find((m)=>m._id === match.params.movieId
-                                            ),
-                                            onBackClick: ()=>history.goBack()
+                                __source: {
+                                    fileName: "src/components/main-view/main-view.jsx",
+                                    lineNumber: 87
+                                },
+                                __self: this,
+                                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Switch, {
+                                    __source: {
+                                        fileName: "src/components/main-view/main-view.jsx",
+                                        lineNumber: 88
+                                    },
+                                    __self: this,
+                                    children: [
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
+                                            exact: true,
+                                            path: "/",
+                                            render: (props)=>isLoggedIn ? /*#__PURE__*/ _jsxRuntime.jsx(_movieListDefault.default, {
+                                                    user: user
+                                                }) : /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
+                                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
+                                                })
+                                            ,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 89
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/register",
+                                            isLoggedIn: true,
+                                            component: _registrationViewDefault.default,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 100
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/movies/:movieId",
+                                            isLoggedIn: true,
+                                            component: _movieViewDefault.default,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 105
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/directors/:name",
+                                            isLoggedIn: true,
+                                            component: _directorViewDefault.default,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 110
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/genres/:name",
+                                            isLoggedIn: true,
+                                            component: _genreViewDefault.default,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 115
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/movie",
+                                            isLoggedIn: true,
+                                            component: _movieListDefault.default,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 120
+                                            },
+                                            __self: this
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_privateRouteDefault.default, {
+                                            path: "/profile",
+                                            isLoggedIn: true,
+                                            component: ()=>/*#__PURE__*/ _jsxRuntime.jsx(_profileViewDefault.default, {
+                                                    user: user
+                                                })
+                                            ,
+                                            __source: {
+                                                fileName: "src/components/main-view/main-view.jsx",
+                                                lineNumber: 121
+                                            },
+                                            __self: this
                                         })
-                                    })
-                                ]
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 154
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        path: "/directors/:name",
-                        render: ({ match , history  })=>{
-                            /* If there is no user, the LoginView is rendered. If there is a user logged in,
-       the user details are passed as a prop to the LoginView */ if (!user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
-                                    movies: movies,
-                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
+                                    ]
                                 })
-                            }));
-                            // Before the movies have been loaded
-                            if (movies.length === 0) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "main-view"
-                            }));
-                            return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-                                children: [
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                        md: 8,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_directorViewDefault.default, {
-                                            movies: movies.filter((m)=>m.Director.Name === match.params.name
-                                            ),
-                                            director: movies.find((m)=>m.Director.Name === match.params.name
-                                            ).Director,
-                                            onBackClick: ()=>history.goBack()
-                                        })
-                                    })
-                                ]
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 185
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        path: "/genres/:name",
-                        render: ({ match , history  })=>{
-                            if (!user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
-                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
-                                })
-                            }));
-                            if (movies.length === 0) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "main-view",
-                                children: "No data available to display!!!!"
-                            }));
-                            return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-                                children: [
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                        md: 8,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_genreViewDefault.default, {
-                                            movies: movies.filter((m)=>m.Genre.Name === match.params.name
-                                            ),
-                                            genre: movies.find((m)=>m.Genre.Name === match.params.name
-                                            ).Genre,
-                                            onBackClick: ()=>history.goBack()
-                                        })
-                                    })
-                                ]
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 223
-                        },
-                        __self: this
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
-                        path: "/profile",
-                        render: ()=>{
-                            if (!user) return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                children: /*#__PURE__*/ _jsxRuntime.jsx(_loginViewDefault.default, {
-                                    onLoggedIn: (user1)=>this.onLoggedIn(user1)
-                                })
-                            }));
-                            if (movies.length === 0) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "main-view",
-                                children: "No data available to display!!!!"
-                            }));
-                            return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-                                children: [
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_navBarDefault.default, {
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_profileViewDefault.default, {
-                                            user: user,
-                                            movies: movies
-                                        })
-                                    })
-                                ]
-                            }));
-                        },
-                        __source: {
-                            fileName: "src/components/main-view/main-view.jsx",
-                            lineNumber: 260
-                        },
-                        __self: this
+                            })
+                        ]
                     })
-                ]
-            })
+                })
+            ]
         }));
     }
 }
-exports.default = MainView;
+const mapStateToProps = ({ loading  })=>({
+        loading
+    })
+;
+exports.default = _reactRedux.connect(mapStateToProps)(MainView);
 
   $parcel$ReactRefreshHelpers$35bf.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","react-router-dom":"cpyQW","../movie-card/movie-card":"6EiBJ","../registration-view/registration-view":"aP2YV","../login-view/login-view":"054li","../movie-view/movie-view":"ikZdr","../director-view/director-view":"ck15y","../genre-view/genre-view":"8WCoL","../../utils/constant":"cR822","react-bootstrap":"h2YVd","./main-view.scss":"jyMAr","../nav-bar/nav-bar":"bpxKL","../profile-view/profile-view":"2E7Aw","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"iYoWk":[function(require,module,exports) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","react-router-dom":"cpyQW","react-redux":"2L0if","../registration-view/registration-view":"aP2YV","../login-view/login-view":"054li","../movie-view/movie-view":"ikZdr","../director-view/director-view":"ck15y","../genre-view/genre-view":"8WCoL","../nav-bar/nav-bar":"bpxKL","../profile-view/profile-view":"2E7Aw","../movie-list/movie-list":"6Cf7s","../../actions":"9lOAG","../../utils/constant":"cR822","./PrivateRoute":"jtutY","react-bootstrap":"h2YVd","./main-view.scss":"jyMAr","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"iYoWk":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 
 },{"./lib/axios":"3QmO2"}],"3QmO2":[function(require,module,exports) {
@@ -37238,10 +39599,10 @@ var _tinyInvariantDefault = parcelHelpers.interopDefault(_tinyInvariant);
     }
     var _proto = BrowserRouter2.prototype;
     _proto.render = function render() {
-        return _reactDefault.default.createElement(_reactRouter.Router, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(_reactRouter.Router, {
             history: this.history,
             children: this.props.children
-        });
+        }));
     };
     return BrowserRouter2;
 }(_reactDefault.default.Component);
@@ -37270,10 +39631,10 @@ BrowserRouter1.prototype.componentDidMount = function() {
     }
     var _proto = HashRouter2.prototype;
     _proto.render = function render() {
-        return _reactDefault.default.createElement(_reactRouter.Router, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(_reactRouter.Router, {
             history: this.history,
             children: this.props.children
-        });
+        }));
     };
     return HashRouter2;
 }(_reactDefault.default.Component);
@@ -37329,7 +39690,7 @@ var LinkAnchor = forwardRef(function(_ref, forwardedRef) {
     }); // React 15 compat
     if (forwardRefShim !== forwardRef) props.ref = forwardedRef || innerRef;
     else props.ref = innerRef;
-    /* eslint-disable-next-line jsx-a11y/anchor-has-content */ return _reactDefault.default.createElement("a", props);
+    /* eslint-disable-next-line jsx-a11y/anchor-has-content */ return(/*#__PURE__*/ _reactDefault.default.createElement("a", props));
 });
 LinkAnchor.displayName = "LinkAnchor";
 /**
@@ -37341,7 +39702,7 @@ LinkAnchor.displayName = "LinkAnchor";
         "to",
         "innerRef"
     ]);
-    return _reactDefault.default.createElement(_reactRouter.__RouterContext.Consumer, null, function(context) {
+    return(/*#__PURE__*/ _reactDefault.default.createElement(_reactRouter.__RouterContext.Consumer, null, function(context) {
         !context && _tinyInvariantDefault.default(false, "You should not use <Link> outside a <Router>");
         var history = context.history;
         var location = normalizeToLocation(resolveToLocation(to, context.location), context.location);
@@ -37351,14 +39712,15 @@ LinkAnchor.displayName = "LinkAnchor";
             href: href,
             navigate: function navigate() {
                 var location1 = resolveToLocation(to, context.location);
-                var method = replace ? history.replace : history.push;
+                var isDuplicateNavigation = _history.createPath(context.location) === _history.createPath(normalizeToLocation(location1));
+                var method = replace || isDuplicateNavigation ? history.replace : history.push;
                 method(location1);
             }
         }); // React 15 compat
         if (forwardRefShim !== forwardRef) props.ref = forwardedRef || innerRef;
         else props.innerRef = innerRef;
-        return _reactDefault.default.createElement(component, props);
-    });
+        return(/*#__PURE__*/ _reactDefault.default.createElement(component, props));
+    }));
 });
 var toType = _propTypesDefault.default.oneOfType([
     _propTypesDefault.default.string,
@@ -37408,7 +39770,7 @@ function joinClassnames() {
         "to",
         "innerRef"
     ]);
-    return _reactDefault.default.createElement(_reactRouter.__RouterContext.Consumer, null, function(context) {
+    return(/*#__PURE__*/ _reactDefault.default.createElement(_reactRouter.__RouterContext.Consumer, null, function(context) {
         !context && _tinyInvariantDefault.default(false, "You should not use <NavLink> outside a <Router>");
         var currentLocation = locationProp || context.location;
         var toLocation = normalizeToLocation(resolveToLocation(to, currentLocation), currentLocation);
@@ -37421,10 +39783,13 @@ function joinClassnames() {
             strict: strict
         }) : null;
         var isActive = !!(isActiveProp ? isActiveProp(match, currentLocation) : match);
-        var className = isActive ? joinClassnames(classNameProp, activeClassName) : classNameProp;
-        var style = isActive ? _extendsDefault.default({
-        }, styleProp, {
-        }, activeStyle) : styleProp;
+        var className = typeof classNameProp === "function" ? classNameProp(isActive) : classNameProp;
+        var style = typeof styleProp === "function" ? styleProp(isActive) : styleProp;
+        if (isActive) {
+            className = joinClassnames(className, activeClassName);
+            style = _extendsDefault.default({
+            }, style, activeStyle);
+        }
         var props = _extendsDefault.default({
             "aria-current": isActive && ariaCurrent || null,
             className: className,
@@ -37433,8 +39798,8 @@ function joinClassnames() {
         }, rest); // React 15 compat
         if (forwardRefShim$1 !== forwardRef$1) props.ref = forwardedRef || innerRef;
         else props.innerRef = innerRef;
-        return _reactDefault.default.createElement(Link, props);
-    });
+        return(/*#__PURE__*/ _reactDefault.default.createElement(Link, props));
+    }));
 });
 NavLink.displayName = "NavLink";
 var ariaCurrentType = _propTypesDefault.default.oneOf([
@@ -37443,20 +39808,27 @@ var ariaCurrentType = _propTypesDefault.default.oneOf([
     "location",
     "date",
     "time",
-    "true"
+    "true",
+    "false"
 ]);
 NavLink.propTypes = _extendsDefault.default({
 }, Link.propTypes, {
     "aria-current": ariaCurrentType,
     activeClassName: _propTypesDefault.default.string,
     activeStyle: _propTypesDefault.default.object,
-    className: _propTypesDefault.default.string,
+    className: _propTypesDefault.default.oneOfType([
+        _propTypesDefault.default.string,
+        _propTypesDefault.default.func
+    ]),
     exact: _propTypesDefault.default.bool,
     isActive: _propTypesDefault.default.func,
     location: _propTypesDefault.default.object,
     sensitive: _propTypesDefault.default.bool,
     strict: _propTypesDefault.default.bool,
-    style: _propTypesDefault.default.object
+    style: _propTypesDefault.default.oneOfType([
+        _propTypesDefault.default.object,
+        _propTypesDefault.default.func
+    ])
 });
 
 },{"react-router":"l4MNa","@babel/runtime/helpers/esm/inheritsLoose":"eO0be","react":"6TuXu","history":"6R8lq","prop-types":"1tgq3","tiny-warning":"4xDJt","@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","tiny-invariant":"kiE0c","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"l4MNa":[function(require,module,exports) {
@@ -37503,8 +39875,6 @@ var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
 var _history = require("history");
 var _tinyWarning = require("tiny-warning");
 var _tinyWarningDefault = parcelHelpers.interopDefault(_tinyWarning);
-var _miniCreateReactContext = require("mini-create-react-context");
-var _miniCreateReactContextDefault = parcelHelpers.interopDefault(_miniCreateReactContext);
 var _tinyInvariant = require("tiny-invariant");
 var _tinyInvariantDefault = parcelHelpers.interopDefault(_tinyInvariant);
 var _extends = require("@babel/runtime/helpers/esm/extends");
@@ -37516,20 +39886,150 @@ var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWi
 var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
 var _hoistNonReactStatics = require("hoist-non-react-statics");
 var _hoistNonReactStaticsDefault = parcelHelpers.interopDefault(_hoistNonReactStatics);
+var global = arguments[3];
+var MAX_SIGNED_31_BIT_INT = 1073741823;
+var commonjsGlobal = typeof globalThis !== "undefined" // 'global proper'
+ ? globalThis : typeof window !== "undefined" ? window // Browser
+ : typeof global !== "undefined" ? global // node.js
+ : {
+};
+function getUniqueId() {
+    var key = "__global_unique_id__";
+    return commonjsGlobal[key] = (commonjsGlobal[key] || 0) + 1;
+} // Inlined Object.is polyfill.
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+function objectIs(x, y) {
+    if (x === y) return x !== 0 || 1 / x === 1 / y;
+    else // eslint-disable-next-line no-self-compare
+    return x !== x && y !== y;
+}
+function createEventEmitter(value) {
+    var handlers = [];
+    return {
+        on: function on(handler) {
+            handlers.push(handler);
+        },
+        off: function off(handler) {
+            handlers = handlers.filter(function(h) {
+                return h !== handler;
+            });
+        },
+        get: function get() {
+            return value;
+        },
+        set: function set(newValue, changedBits) {
+            value = newValue;
+            handlers.forEach(function(handler) {
+                return handler(value, changedBits);
+            });
+        }
+    };
+}
+function onlyChild(children) {
+    return Array.isArray(children) ? children[0] : children;
+}
+function createReactContext(defaultValue, calculateChangedBits) {
+    var _Provider$childContex, _Consumer$contextType;
+    var contextProp = "__create-react-context-" + getUniqueId() + "__";
+    var Provider1 = /*#__PURE__*/ function(_React$Component) {
+        _inheritsLooseDefault.default(Provider2, _React$Component);
+        function Provider2() {
+            var _this;
+            for(var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++)args[_key] = arguments[_key];
+            _this = _React$Component.call.apply(_React$Component, [
+                this
+            ].concat(args)) || this;
+            _this.emitter = createEventEmitter(_this.props.value);
+            return _this;
+        }
+        var _proto = Provider2.prototype;
+        _proto.getChildContext = function getChildContext() {
+            var _ref;
+            return _ref = {
+            }, _ref[contextProp] = this.emitter, _ref;
+        };
+        _proto.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+            if (this.props.value !== nextProps.value) {
+                var oldValue = this.props.value;
+                var newValue = nextProps.value;
+                var changedBits;
+                if (objectIs(oldValue, newValue)) changedBits = 0; // No change
+                else {
+                    changedBits = typeof calculateChangedBits === "function" ? calculateChangedBits(oldValue, newValue) : MAX_SIGNED_31_BIT_INT;
+                    _tinyWarningDefault.default((changedBits & MAX_SIGNED_31_BIT_INT) === changedBits, "calculateChangedBits: Expected the return value to be a 31-bit integer. Instead received: " + changedBits);
+                    changedBits |= 0;
+                    if (changedBits !== 0) this.emitter.set(nextProps.value, changedBits);
+                }
+            }
+        };
+        _proto.render = function render() {
+            return this.props.children;
+        };
+        return Provider2;
+    }(_reactDefault.default.Component);
+    Provider1.childContextTypes = (_Provider$childContex = {
+    }, _Provider$childContex[contextProp] = _propTypesDefault.default.object.isRequired, _Provider$childContex);
+    var Consumer1 = /*#__PURE__*/ function(_React$Component2) {
+        _inheritsLooseDefault.default(Consumer2, _React$Component2);
+        function Consumer2() {
+            var _this2;
+            for(var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++)args[_key2] = arguments[_key2];
+            _this2 = _React$Component2.call.apply(_React$Component2, [
+                this
+            ].concat(args)) || this;
+            _this2.observedBits = void 0;
+            _this2.state = {
+                value: _this2.getValue()
+            };
+            _this2.onUpdate = function(newValue, changedBits) {
+                var observedBits = _this2.observedBits | 0;
+                if ((observedBits & changedBits) !== 0) _this2.setState({
+                    value: _this2.getValue()
+                });
+            };
+            return _this2;
+        }
+        var _proto2 = Consumer2.prototype;
+        _proto2.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+            var observedBits = nextProps.observedBits;
+            this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT // Subscribe to all changes by default
+             : observedBits;
+        };
+        _proto2.componentDidMount = function componentDidMount() {
+            if (this.context[contextProp]) this.context[contextProp].on(this.onUpdate);
+            var observedBits = this.props.observedBits;
+            this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT // Subscribe to all changes by default
+             : observedBits;
+        };
+        _proto2.componentWillUnmount = function componentWillUnmount() {
+            if (this.context[contextProp]) this.context[contextProp].off(this.onUpdate);
+        };
+        _proto2.getValue = function getValue() {
+            if (this.context[contextProp]) return this.context[contextProp].get();
+            else return defaultValue;
+        };
+        _proto2.render = function render() {
+            return onlyChild(this.props.children)(this.state.value);
+        };
+        return Consumer2;
+    }(_reactDefault.default.Component);
+    Consumer1.contextTypes = (_Consumer$contextType = {
+    }, _Consumer$contextType[contextProp] = _propTypesDefault.default.object, _Consumer$contextType);
+    return {
+        Provider: Provider1,
+        Consumer: Consumer1
+    };
+}
+// MIT License
+var createContext = _reactDefault.default.createContext || createReactContext;
 // TODO: Replace with React.createContext once we can assume React 16+
 var createNamedContext = function createNamedContext1(name) {
-    var context = _miniCreateReactContextDefault.default();
+    var context = createContext();
     context.displayName = name;
     return context;
 };
 var historyContext = /*#__PURE__*/ createNamedContext("Router-History");
-// TODO: Replace with React.createContext once we can assume React 16+
-var createNamedContext$1 = function createNamedContext2(name) {
-    var context = _miniCreateReactContextDefault.default();
-    context.displayName = name;
-    return context;
-};
-var context = /*#__PURE__*/ createNamedContext$1("Router");
+var context = /*#__PURE__*/ createNamedContext("Router");
 /**
  * The public API for putting history on context.
  */ var Router1 = /*#__PURE__*/ function(_React$Component) {
@@ -37556,35 +40056,45 @@ var context = /*#__PURE__*/ createNamedContext$1("Router");
         _this._isMounted = false;
         _this._pendingLocation = null;
         if (!props.staticContext) _this.unlisten = props.history.listen(function(location) {
-            if (_this._isMounted) _this.setState({
-                location: location
-            });
-            else _this._pendingLocation = location;
+            _this._pendingLocation = location;
         });
         return _this;
     }
     var _proto = Router2.prototype;
     _proto.componentDidMount = function componentDidMount() {
+        var _this2 = this;
         this._isMounted = true;
+        if (this.unlisten) // Any pre-mount location changes have been captured at
+        // this point, so unregister the listener.
+        this.unlisten();
+        if (!this.props.staticContext) this.unlisten = this.props.history.listen(function(location) {
+            if (_this2._isMounted) _this2.setState({
+                location: location
+            });
+        });
         if (this._pendingLocation) this.setState({
             location: this._pendingLocation
         });
     };
     _proto.componentWillUnmount = function componentWillUnmount() {
-        if (this.unlisten) this.unlisten();
+        if (this.unlisten) {
+            this.unlisten();
+            this._isMounted = false;
+            this._pendingLocation = null;
+        }
     };
     _proto.render = function render() {
-        return _reactDefault.default.createElement(context.Provider, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(context.Provider, {
             value: {
                 history: this.props.history,
                 location: this.state.location,
                 match: Router2.computeRootMatch(this.state.location.pathname),
                 staticContext: this.props.staticContext
             }
-        }, _reactDefault.default.createElement(historyContext.Provider, {
+        }, /*#__PURE__*/ _reactDefault.default.createElement(historyContext.Provider, {
             children: this.props.children || null,
             value: this.props.history
-        }));
+        })));
     };
     return Router2;
 }(_reactDefault.default.Component);
@@ -37611,10 +40121,10 @@ Router1.prototype.componentDidUpdate = function(prevProps) {
     }
     var _proto = MemoryRouter2.prototype;
     _proto.render = function render() {
-        return _reactDefault.default.createElement(Router1, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(Router1, {
             history: this.history,
             children: this.props.children
-        });
+        }));
     };
     return MemoryRouter2;
 }(_reactDefault.default.Component);
@@ -37652,11 +40162,11 @@ var Lifecycle1 = /*#__PURE__*/ function(_React$Component) {
  * The public API for prompting the user before navigating away from a screen.
  */ function Prompt(_ref) {
     var message = _ref.message, _ref$when = _ref.when, when = _ref$when === void 0 ? true : _ref$when;
-    return _reactDefault.default.createElement(context.Consumer, null, function(context1) {
+    return(/*#__PURE__*/ _reactDefault.default.createElement(context.Consumer, null, function(context1) {
         !context1 && _tinyInvariantDefault.default(false, "You should not use <Prompt> outside a <Router>");
         if (!when || context1.staticContext) return null;
         var method = context1.history.block;
-        return _reactDefault.default.createElement(Lifecycle1, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(Lifecycle1, {
             onMount: function onMount(self) {
                 self.release = method(message);
             },
@@ -37670,8 +40180,8 @@ var Lifecycle1 = /*#__PURE__*/ function(_React$Component) {
                 self.release();
             },
             message: message
-        });
-    });
+        }));
+    }));
 }
 var messageType = _propTypesDefault.default.oneOfType([
     _propTypesDefault.default.func,
@@ -37708,7 +40218,7 @@ function compilePath(path) {
  * The public API for navigating programmatically with a component.
  */ function Redirect(_ref) {
     var computedMatch = _ref.computedMatch, to = _ref.to, _ref$push = _ref.push, push = _ref$push === void 0 ? false : _ref$push;
-    return _reactDefault.default.createElement(context.Consumer, null, function(context1) {
+    return(/*#__PURE__*/ _reactDefault.default.createElement(context.Consumer, null, function(context1) {
         !context1 && _tinyInvariantDefault.default(false, "You should not use <Redirect> outside a <Router>");
         var history = context1.history, staticContext = context1.staticContext;
         var method = push ? history.push : history.replace;
@@ -37721,7 +40231,7 @@ function compilePath(path) {
             method(location);
             return null;
         }
-        return _reactDefault.default.createElement(Lifecycle1, {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(Lifecycle1, {
             onMount: function onMount() {
                 method(location);
             },
@@ -37733,8 +40243,8 @@ function compilePath(path) {
                 }))) method(location);
             },
             to: to
-        });
-    });
+        }));
+    }));
 }
 Redirect.propTypes = {
     push: _propTypesDefault.default.bool,
@@ -37821,7 +40331,7 @@ function evalChildrenDev(children, props, path) {
     var _proto = Route2.prototype;
     _proto.render = function render() {
         var _this = this;
-        return _reactDefault.default.createElement(context.Consumer, null, function(context$1) {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(context.Consumer, null, function(context$1) {
             !context$1 && _tinyInvariantDefault.default(false, "You should not use <Route> outside a <Router>");
             var location = _this.props.location || context$1.location;
             var match = _this.props.computedMatch ? _this.props.computedMatch // <Switch> already computed the match for us
@@ -37833,11 +40343,11 @@ function evalChildrenDev(children, props, path) {
             });
             var _this$props = _this.props, children = _this$props.children, component = _this$props.component, render1 = _this$props.render; // Preact uses an empty array as children by
             // default, so use null if that's the case.
-            if (Array.isArray(children) && children.length === 0) children = null;
-            return _reactDefault.default.createElement(context.Provider, {
+            if (Array.isArray(children) && isEmptyChildren(children)) children = null;
+            return(/*#__PURE__*/ _reactDefault.default.createElement(context.Provider, {
                 value: props
-            }, props.match ? children ? typeof children === "function" ? evalChildrenDev(children, props, _this.props.path) : children : component ? _reactDefault.default.createElement(component, props) : render1 ? render1(props) : null : typeof children === "function" ? evalChildrenDev(children, props, _this.props.path) : null);
-        });
+            }, props.match ? children ? typeof children === "function" ? evalChildrenDev(children, props, _this.props.path) : children : component ? /*#__PURE__*/ _reactDefault.default.createElement(component, props) : render1 ? render1(props) : null : typeof children === "function" ? evalChildrenDev(children, props, _this.props.path) : null));
+        }));
     };
     return Route2;
 }(_reactDefault.default.Component);
@@ -37953,11 +40463,11 @@ function noop() {
             listen: this.handleListen,
             block: this.handleBlock
         };
-        return _reactDefault.default.createElement(Router1, _extendsDefault.default({
+        return(/*#__PURE__*/ _reactDefault.default.createElement(Router1, _extendsDefault.default({
         }, rest, {
             history: history,
             staticContext: context1
-        }));
+        })));
     };
     return StaticRouter2;
 }(_reactDefault.default.Component);
@@ -37982,7 +40492,7 @@ StaticRouter1.prototype.componentDidMount = function() {
     var _proto = Switch2.prototype;
     _proto.render = function render() {
         var _this = this;
-        return _reactDefault.default.createElement(context.Consumer, null, function(context1) {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(context.Consumer, null, function(context1) {
             !context1 && _tinyInvariantDefault.default(false, "You should not use <Switch> outside a <Router>");
             var location = _this.props.location || context1.location;
             var element, match; // We use React.Children.forEach instead of React.Children.toArray().find()
@@ -37990,7 +40500,7 @@ StaticRouter1.prototype.componentDidMount = function() {
             // to trigger an unmount/remount for two <Route>s that render the same
             // component at different URLs.
             _reactDefault.default.Children.forEach(_this.props.children, function(child) {
-                if (match == null && _reactDefault.default.isValidElement(child)) {
+                if (match == null && /*#__PURE__*/ _reactDefault.default.isValidElement(child)) {
                     element = child;
                     var path = child.props.path || child.props.from;
                     match = path ? matchPath(location.pathname, _extendsDefault.default({
@@ -37999,11 +40509,11 @@ StaticRouter1.prototype.componentDidMount = function() {
                     })) : context1.match;
                 }
             });
-            return match ? _reactDefault.default.cloneElement(element, {
+            return match ? /*#__PURE__*/ _reactDefault.default.cloneElement(element, {
                 location: location,
                 computedMatch: match
             }) : null;
-        });
+        }));
     };
     return Switch2;
 }(_reactDefault.default.Component);
@@ -38023,13 +40533,13 @@ Switch1.prototype.componentDidUpdate = function(prevProps) {
         var wrappedComponentRef = props.wrappedComponentRef, remainingProps = _objectWithoutPropertiesLooseDefault.default(props, [
             "wrappedComponentRef"
         ]);
-        return _reactDefault.default.createElement(context.Consumer, null, function(context1) {
+        return(/*#__PURE__*/ _reactDefault.default.createElement(context.Consumer, null, function(context1) {
             !context1 && _tinyInvariantDefault.default(false, "You should not use <" + displayName + " /> outside a <Router>");
-            return _reactDefault.default.createElement(Component, _extendsDefault.default({
+            return(/*#__PURE__*/ _reactDefault.default.createElement(Component, _extendsDefault.default({
             }, remainingProps, context1, {
                 ref: wrappedComponentRef
-            }));
-        });
+            })));
+        }));
     };
     C.displayName = displayName;
     C.WrappedComponent = Component;
@@ -38064,23 +40574,23 @@ function useRouteMatch(path) {
     return path ? matchPath(location.pathname, path) : match;
 }
 if (typeof window !== "undefined") {
-    var global = window;
+    var global$1 = window;
     var key = "__react_router_build__";
     var buildNames = {
         cjs: "CommonJS",
         esm: "ES modules",
         umd: "UMD"
     };
-    if (global[key] && global[key] !== "esm") {
-        var initialBuildName = buildNames[global[key]];
+    if (global$1[key] && global$1[key] !== "esm") {
+        var initialBuildName = buildNames[global$1[key]];
         var secondaryBuildName = buildNames["esm"]; // TODO: Add link to article that explains in detail how to avoid
         // loading 2 different builds.
         throw new Error("You are loading the " + secondaryBuildName + " build of React Router " + ("on a page that is already running the " + initialBuildName + " ") + "build, so things won't work right.");
     }
-    global[key] = "esm";
+    global$1[key] = "esm";
 }
 
-},{"@babel/runtime/helpers/esm/inheritsLoose":"eO0be","react":"6TuXu","prop-types":"1tgq3","history":"6R8lq","tiny-warning":"4xDJt","tiny-invariant":"kiE0c","@babel/runtime/helpers/esm/extends":"bKAu6","path-to-regexp":"6SN7C","react-is":"5wFcP","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","hoist-non-react-statics":"jfzb6","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","mini-create-react-context":"bwjcK"}],"6R8lq":[function(require,module,exports) {
+},{"@babel/runtime/helpers/esm/inheritsLoose":"eO0be","react":"6TuXu","prop-types":"1tgq3","history":"6R8lq","tiny-warning":"4xDJt","tiny-invariant":"kiE0c","@babel/runtime/helpers/esm/extends":"bKAu6","path-to-regexp":"6SN7C","react-is":"5wFcP","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","hoist-non-react-statics":"jfzb6","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6R8lq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createBrowserHistory", ()=>createBrowserHistory
@@ -38917,7 +41427,7 @@ function invariant(condition, message) {
     if (condition) return;
     if (isProduction) throw new Error(prefix);
     var provided = typeof message === 'function' ? message() : message;
-    var value = provided ? prefix + ": " + provided : prefix;
+    var value = provided ? "".concat(prefix, ": ").concat(provided) : prefix;
     throw new Error(value);
 }
 
@@ -39229,232 +41739,6219 @@ module.exports.tokensToRegExp = tokensToRegExp;
     return stringToRegexp(path, keys, options);
 }
 
-},{"isarray":"1PYkb"}],"1PYkb":[function(require,module,exports) {
+},{"isarray":"6o9Vr"}],"6o9Vr":[function(require,module,exports) {
 module.exports = Array.isArray || function(arr) {
     return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
-},{}],"jfzb6":[function(require,module,exports) {
-'use strict';
-var reactIs = require('react-is');
-/**
- * Copyright 2015, Yahoo! Inc.
- * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
- */ var REACT_STATICS = {
-    childContextTypes: true,
-    contextType: true,
-    contextTypes: true,
-    defaultProps: true,
-    displayName: true,
-    getDefaultProps: true,
-    getDerivedStateFromError: true,
-    getDerivedStateFromProps: true,
-    mixins: true,
-    propTypes: true,
-    type: true
+},{}],"aP2YV":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$8dd4 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$8dd4.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _constant = require("../../utils/constant");
+var _validate = require("../../utils/validate");
+var _reactBootstrap = require("react-bootstrap");
+var _registrationViewScss = require("./registration-view.scss");
+var _s = $RefreshSig$();
+const RegisterationView = ()=>{
+    _s();
+    const [userData, setUserData] = _reactDefault.default.useState({
+        username: '',
+        password: '',
+        email: '',
+        dob: ''
+    });
+    const [errors, setErrors] = _react.useState({
+    });
+    const [message, setMessage] = _react.useState("");
+    const handleChange = (e)=>{
+        const { name , value  } = e.target;
+        let error = _validate.validate(name, value);
+        setErrors((prevErr)=>{
+            return {
+                ...prevErr,
+                ...error
+            };
+        });
+        setUserData((prevState)=>({
+                ...prevState,
+                [name]: value
+            })
+        );
+    };
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+        console.log(userData, new Date(userData.dob));
+        const { username , password , email , dob  } = userData;
+        _axiosDefault.default.post(`${_constant.API_URL}/users`, {
+            Username: username,
+            Password: password,
+            Email: email,
+            Birthday: new Date(dob)
+        }).then((response)=>{
+            const data = response.data;
+            setMessage("User registration was successful");
+            setUserData({
+                username: '',
+                password: '',
+                email: '',
+                dob: ''
+            });
+            data && window.open('/', '_self');
+        }).catch((error)=>{
+            setMessage("User registration failed. Plaese try later");
+            /*window.open('/', '_self');*/ console.log(`Registration failed!!! ${error}`);
+        });
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        className: "reg-container",
+        __source: {
+            fileName: "src/components/registration-view/registration-view.jsx",
+            lineNumber: 68
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/registration-view/registration-view.jsx",
+                lineNumber: 69
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
+                    as: "h2",
+                    className: "text-center",
+                    __source: {
+                        fileName: "src/components/registration-view/registration-view.jsx",
+                        lineNumber: 70
+                    },
+                    __self: undefined,
+                    children: "Registration Page"
+                }),
+                message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    className: "form-group",
+                    __source: {
+                        fileName: "src/components/registration-view/registration-view.jsx",
+                        lineNumber: 72
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        className: "alert alert-danger my-1 py-2",
+                        role: "alert",
+                        __source: {
+                            fileName: "src/components/registration-view/registration-view.jsx",
+                            lineNumber: 73
+                        },
+                        __self: undefined,
+                        children: message
+                    })
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
+                    __source: {
+                        fileName: "src/components/registration-view/registration-view.jsx",
+                        lineNumber: 78
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "username",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/registration-view/registration-view.jsx",
+                                lineNumber: 79
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 80
+                                    },
+                                    __self: undefined,
+                                    children: "Username: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "text",
+                                    name: "username",
+                                    value: userData.username || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter username here",
+                                    isInvalid: !!errors.username,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 81
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 89
+                                    },
+                                    __self: undefined,
+                                    children: errors.username
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "password",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/registration-view/registration-view.jsx",
+                                lineNumber: 93
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 94
+                                    },
+                                    __self: undefined,
+                                    children: "Password: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "password",
+                                    name: "password",
+                                    value: userData.password || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter password here",
+                                    isInvalid: !!errors.password,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 95
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 103
+                                    },
+                                    __self: undefined,
+                                    children: errors.password
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "email",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/registration-view/registration-view.jsx",
+                                lineNumber: 107
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 108
+                                    },
+                                    __self: undefined,
+                                    children: "Email: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "email",
+                                    name: "email",
+                                    value: userData.email || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter email here",
+                                    isInvalid: !!errors.email,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 109
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 117
+                                    },
+                                    __self: undefined,
+                                    children: errors.email
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "dob",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/registration-view/registration-view.jsx",
+                                lineNumber: 121
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 122
+                                    },
+                                    __self: undefined,
+                                    children: "Date of Birth: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "date",
+                                    name: "dob",
+                                    onChange: handleChange,
+                                    placeholder: "Enter date of birth here",
+                                    __source: {
+                                        fileName: "src/components/registration-view/registration-view.jsx",
+                                        lineNumber: 123
+                                    },
+                                    __self: undefined
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                            type: "submit",
+                            className: "login-btn",
+                            disabled: !userData.email && !userData.password,
+                            onClick: handleSubmit,
+                            __source: {
+                                fileName: "src/components/registration-view/registration-view.jsx",
+                                lineNumber: 129
+                            },
+                            __self: undefined,
+                            children: "Register"
+                        })
+                    ]
+                })
+            ]
+        })
+    }));
 };
-var KNOWN_STATICS = {
-    name: true,
-    length: true,
-    prototype: true,
-    caller: true,
-    callee: true,
-    arguments: true,
-    arity: true
-};
-var FORWARD_REF_STATICS = {
-    '$$typeof': true,
-    render: true,
-    defaultProps: true,
-    displayName: true,
-    propTypes: true
-};
-var MEMO_STATICS = {
-    '$$typeof': true,
-    compare: true,
-    defaultProps: true,
-    displayName: true,
-    propTypes: true,
-    type: true
-};
-var TYPE_STATICS = {
-};
-TYPE_STATICS[reactIs.ForwardRef] = FORWARD_REF_STATICS;
-TYPE_STATICS[reactIs.Memo] = MEMO_STATICS;
-function getStatics(component) {
-    // React v16.11 and below
-    if (reactIs.isMemo(component)) return MEMO_STATICS;
-     // React v16.12 and above
-    return TYPE_STATICS[component['$$typeof']] || REACT_STATICS;
+_s(RegisterationView, "4rLT+o7C0CSMFTmRzQF6+eKGR3A=");
+_c = RegisterationView;
+exports.default = RegisterationView;
+var _c;
+$RefreshReg$(_c, "RegisterationView");
+
+  $parcel$ReactRefreshHelpers$8dd4.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
 }
-var defineProperty = Object.defineProperty;
-var getOwnPropertyNames = Object.getOwnPropertyNames;
-var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-var getPrototypeOf = Object.getPrototypeOf;
-var objectPrototype = Object.prototype;
-function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
-    if (typeof sourceComponent !== 'string') {
-        // don't hoist over string (html) components
-        if (objectPrototype) {
-            var inheritedComponent = getPrototypeOf(sourceComponent);
-            if (inheritedComponent && inheritedComponent !== objectPrototype) hoistNonReactStatics(targetComponent, inheritedComponent, blacklist);
-        }
-        var keys = getOwnPropertyNames(sourceComponent);
-        if (getOwnPropertySymbols) keys = keys.concat(getOwnPropertySymbols(sourceComponent));
-        var targetStatics = getStatics(targetComponent);
-        var sourceStatics = getStatics(sourceComponent);
-        for(var i = 0; i < keys.length; ++i){
-            var key = keys[i];
-            if (!KNOWN_STATICS[key] && !(blacklist && blacklist[key]) && !(sourceStatics && sourceStatics[key]) && !(targetStatics && targetStatics[key])) {
-                var descriptor = getOwnPropertyDescriptor(sourceComponent, key);
-                try {
-                    // Avoid failures from read-only properties
-                    defineProperty(targetComponent, key, descriptor);
-                } catch (e) {
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","../../utils/constant":"cR822","../../utils/validate":"jdxGU","react-bootstrap":"h2YVd","./registration-view.scss":"fr9ZP","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"jdxGU":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "validate", ()=>validate
+);
+const validate = (fieldName, value)=>{
+    let errors = {
+    };
+    let fieldValid = '';
+    switch(fieldName){
+        case 'username':
+            if (!value) errors.username = 'Username is required';
+            else if (!/^[a-zA-Z0-9_]*$/.test(value)) errors.username = 'Username must contain alphanumeric characters only';
+            else if (value.length < 5) errors.username = 'Username must conatin atleast 5 characters';
+            else errors.username = '';
+            break;
+        case 'email':
+            fieldValid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value);
+            errors.email = fieldValid ? '' : 'Email is invalid';
+            break;
+        case 'password':
+            if (!value) errors.password = 'Password is required';
+            else if (value.length < 6) errors.password = 'Password must conatin atleast 6 characters';
+            else errors.password = '';
+            break;
+        default:
+            break;
+    }
+    return errors;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fr9ZP":[function() {},{}],"3I5Fk":[function(require,module,exports) {
+"use strict";
+var Refresh = require('react-refresh/runtime');
+function debounce(func, delay) {
+    var args;
+    var timeout = undefined;
+    return function(args1) {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            timeout = undefined;
+            func.call(null, args1);
+        }, delay);
+    };
+}
+var enqueueUpdate = debounce(function() {
+    Refresh.performReactRefresh();
+}, 30); // Everthing below is either adapted or copied from
+// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
+// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
+module.exports.prelude = function(module) {
+    window.$RefreshReg$ = function(type, id) {
+        Refresh.register(type, module.id + ' ' + id);
+    };
+    window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
+};
+module.exports.postlude = function(module) {
+    if (isReactRefreshBoundary(module.exports)) {
+        registerExportsForReactRefresh(module);
+        if (module.hot) {
+            module.hot.dispose(function(data) {
+                if (Refresh.hasUnrecoverableErrors()) window.location.reload();
+                data.prevExports = module.exports;
+            });
+            module.hot.accept(function(getParents) {
+                var prevExports = module.hot.data.prevExports;
+                var nextExports = module.exports; // Since we just executed the code for it, it's possible
+                // that the new exports make it ineligible for being a boundary.
+                var isNoLongerABoundary = !isReactRefreshBoundary(nextExports); // It can also become ineligible if its exports are incompatible
+                // with the previous exports.
+                // For example, if you add/remove/change exports, we'll want
+                // to re-execute the importing modules, and force those components
+                // to re-render. Similarly, if you convert a class component
+                // to a function, we want to invalidate the boundary.
+                var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
+                if (isNoLongerABoundary || didInvalidate) {
+                    // We'll be conservative. The only case in which we won't do a full
+                    // reload is if all parent modules are also refresh boundaries.
+                    // In that case we'll add them to the current queue.
+                    var parents = getParents();
+                    if (parents.length === 0) {
+                        // Looks like we bubbled to the root. Can't recover from that.
+                        window.location.reload();
+                        return;
+                    }
+                    return parents;
                 }
+                enqueueUpdate();
+            });
+        }
+    }
+};
+function isReactRefreshBoundary(exports) {
+    if (Refresh.isLikelyComponentType(exports)) return true;
+    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
+    return false;
+    var hasExports = false;
+    var areAllExportsComponents = true;
+    let isESM = '__esModule' in exports;
+    for(var key in exports){
+        hasExports = true;
+        if (key === '__esModule') continue;
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) // Don't invoke getters for CJS as they may have side effects.
+        return false;
+        var exportValue = exports[key];
+        if (!Refresh.isLikelyComponentType(exportValue)) areAllExportsComponents = false;
+    }
+    return hasExports && areAllExportsComponents;
+}
+function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
+    var prevSignature = getRefreshBoundarySignature(prevExports);
+    var nextSignature = getRefreshBoundarySignature(nextExports);
+    if (prevSignature.length !== nextSignature.length) return true;
+    for(var i = 0; i < nextSignature.length; i++){
+        if (prevSignature[i] !== nextSignature[i]) return true;
+    }
+    return false;
+} // When this signature changes, it's unsafe to stop at this refresh boundary.
+function getRefreshBoundarySignature(exports) {
+    var signature = [];
+    signature.push(Refresh.getFamilyByType(exports));
+    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return signature;
+    let isESM = '__esModule' in exports;
+    for(var key in exports){
+        if (key === '__esModule') continue;
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) continue;
+        var exportValue = exports[key];
+        signature.push(key);
+        signature.push(Refresh.getFamilyByType(exportValue));
+    }
+    return signature;
+}
+function registerExportsForReactRefresh(module) {
+    var exports = module.exports, id = module.id;
+    Refresh.register(exports, id + ' %exports%');
+    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return;
+    let isESM = '__esModule' in exports;
+    for(var key in exports){
+        var desc = Object.getOwnPropertyDescriptor(exports, key);
+        if (desc && desc.get && !isESM) continue;
+        var exportValue = exports[key];
+        Refresh.register(exportValue, id + ' %exports% ' + key);
+    }
+}
+
+},{"react-refresh/runtime":"j7ppG"}],"054li":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$02dd = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$02dd.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _constant = require("../../utils/constant");
+var _propTypes = require("prop-types");
+var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _reactBootstrap = require("react-bootstrap");
+var _validate = require("../../utils/validate");
+var _reactRouterDom = require("react-router-dom");
+var _loginViewScss = require("./login-view.scss");
+var _s = $RefreshSig$();
+const LoginView = ({ onLoggedIn  })=>{
+    _s();
+    const [userData, setUserData] = _reactDefault.default.useState({
+        username: '',
+        password: ''
+    });
+    const [errors, setErrors] = _react.useState({
+    });
+    const [message, setMessage] = _react.useState("");
+    const handleChange = (e)=>{
+        const { name , value  } = e.target;
+        let error = _validate.validate(name, value);
+        setErrors((prevErr)=>{
+            return {
+                ...prevErr,
+                ...error
+            };
+        });
+        setUserData((prevState)=>({
+                ...prevState,
+                [name]: value
+            })
+        );
+    };
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+        const { username: Username , password: Password  } = userData;
+        //form can be submitted if there are no validation errors. 
+        let isValid = Object.values(errors).every((error)=>error.length === 0
+        );
+        isValid && _axiosDefault.default.post(`${_constant.API_URL}/login`, {
+            Username,
+            Password
+        }).then((response)=>{
+            const data = response.data;
+            data && onLoggedIn(data);
+        }).catch((error)=>{
+            setMessage("User doesn't exists. Check username or password.");
+            console.log(`no such user exists!!! ${error}`);
+        });
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        className: "login-container",
+        __source: {
+            fileName: "src/components/login-view/login-view.jsx",
+            lineNumber: 59
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/login-view/login-view.jsx",
+                lineNumber: 60
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
+                    as: "h2",
+                    className: "text-center",
+                    __source: {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 61
+                    },
+                    __self: undefined,
+                    children: "Login Page"
+                }),
+                message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    className: "form-group",
+                    __source: {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 63
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        className: "alert alert-danger my-1 py-2",
+                        role: "alert",
+                        __source: {
+                            fileName: "src/components/login-view/login-view.jsx",
+                            lineNumber: 64
+                        },
+                        __self: undefined,
+                        children: message
+                    })
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
+                    __source: {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 69
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "username",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/login-view/login-view.jsx",
+                                lineNumber: 70
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 71
+                                    },
+                                    __self: undefined,
+                                    children: "Username: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "text",
+                                    name: "username",
+                                    value: userData.username || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter username here",
+                                    isInvalid: !!errors.username,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 72
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 80
+                                    },
+                                    __self: undefined,
+                                    children: errors.username
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "password",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/login-view/login-view.jsx",
+                                lineNumber: 84
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 85
+                                    },
+                                    __self: undefined,
+                                    children: "Password: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "password",
+                                    name: "password",
+                                    value: userData.password || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter password here",
+                                    isInvalid: !!errors.password,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 86
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/login-view/login-view.jsx",
+                                        lineNumber: 94
+                                    },
+                                    __self: undefined,
+                                    children: errors.password
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                            type: "submit",
+                            className: "login-btn",
+                            disabled: !userData.email && !userData.password,
+                            onClick: handleSubmit,
+                            __source: {
+                                fileName: "src/components/login-view/login-view.jsx",
+                                lineNumber: 98
+                            },
+                            __self: undefined,
+                            children: "Login"
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
+                            to: "/register",
+                            __source: {
+                                fileName: "src/components/login-view/login-view.jsx",
+                                lineNumber: 105
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                variant: "link",
+                                className: "d-flex mx-auto",
+                                __source: {
+                                    fileName: "src/components/login-view/login-view.jsx",
+                                    lineNumber: 106
+                                },
+                                __self: undefined,
+                                children: "New User! Signup"
+                            })
+                        })
+                    ]
+                })
+            ]
+        })
+    }));
+};
+_s(LoginView, "ZSy3NefDFoG22hXh5Z3tB54uqIA=");
+_c = LoginView;
+LoginView.propTypes = {
+    onLoggedIn: _propTypesDefault.default.func.isRequired
+};
+exports.default = LoginView;
+var _c;
+$RefreshReg$(_c, "LoginView");
+
+  $parcel$ReactRefreshHelpers$02dd.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../../utils/constant":"cR822","prop-types":"1tgq3","axios":"iYoWk","react-bootstrap":"h2YVd","../../utils/validate":"jdxGU","react-router-dom":"cpyQW","./login-view.scss":"lS4BK","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"lS4BK":[function() {},{}],"ikZdr":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$3741 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$3741.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _propTypes = require("prop-types");
+var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
+var _reactRedux = require("react-redux");
+var _reactRouterDom = require("react-router-dom");
+var _reactBootstrap = require("react-bootstrap");
+var _movieViewScss = require("./movie-view.scss");
+var _s = $RefreshSig$();
+const MovieView = ({ movie  })=>{
+    _s();
+    const history = _reactRouterDom.useHistory();
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        className: "mt-4 mx-auto",
+        style: {
+            width: '80%'
+        },
+        __source: {
+            fileName: "src/components/movie-view/movie-view.jsx",
+            lineNumber: 13
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
+            __source: {
+                fileName: "src/components/movie-view/movie-view.jsx",
+                lineNumber: 14
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                    lg: 6,
+                    md: 5,
+                    sm: 12,
+                    __source: {
+                        fileName: "src/components/movie-view/movie-view.jsx",
+                        lineNumber: 15
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Img, {
+                        variant: "top",
+                        src: movie.ImageURL,
+                        className: "movie-poster",
+                        alt: "movie-poster",
+                        style: {
+                            height: 540
+                        },
+                        __source: {
+                            fileName: "src/components/movie-view/movie-view.jsx",
+                            lineNumber: 16
+                        },
+                        __self: undefined
+                    })
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                    className: "movie-view px-1",
+                    __source: {
+                        fileName: "src/components/movie-view/movie-view.jsx",
+                        lineNumber: 24
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+                        __source: {
+                            fileName: "src/components/movie-view/movie-view.jsx",
+                            lineNumber: 25
+                        },
+                        __self: undefined,
+                        children: [
+                            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                                className: "movie-title",
+                                __source: {
+                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                    lineNumber: 26
+                                },
+                                __self: undefined,
+                                children: [
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "label",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 27
+                                        },
+                                        __self: undefined,
+                                        children: "Title: "
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "value",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 28
+                                        },
+                                        __self: undefined,
+                                        children: movie.Title
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                                className: "movie-director",
+                                __source: {
+                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                    lineNumber: 30
+                                },
+                                __self: undefined,
+                                children: [
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "label",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 31
+                                        },
+                                        __self: undefined,
+                                        children: "Director: "
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "value",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 32
+                                        },
+                                        __self: undefined,
+                                        children: movie.Director.Name
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                                className: "movie-genre",
+                                __source: {
+                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                    lineNumber: 34
+                                },
+                                __self: undefined,
+                                children: [
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "label",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 35
+                                        },
+                                        __self: undefined,
+                                        children: "Genre: "
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "value",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 36
+                                        },
+                                        __self: undefined,
+                                        children: movie.Genre.Name
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                                className: "movie-description",
+                                __source: {
+                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                    lineNumber: 38
+                                },
+                                __self: undefined,
+                                children: [
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "label",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 39
+                                        },
+                                        __self: undefined,
+                                        children: "Description: "
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                                        className: "value",
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 40
+                                        },
+                                        __self: undefined,
+                                        children: movie.Description
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                                className: "movie-footer text-center align-items-end pt-4",
+                                __source: {
+                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                    lineNumber: 42
+                                },
+                                __self: undefined,
+                                children: [
+                                    /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Button, {
+                                        variant: "success link",
+                                        onClick: history.goBack,
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 43
+                                        },
+                                        __self: undefined,
+                                        children: [
+                                            /*#__PURE__*/ _jsxRuntime.jsx("i", {
+                                                className: "fa fa-arrow-left",
+                                                __source: {
+                                                    fileName: "src/components/movie-view/movie-view.jsx",
+                                                    lineNumber: 44
+                                                },
+                                                __self: undefined
+                                            }),
+                                            " Back"
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
+                                        to: `/directors/${movie.Director.Name}`,
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 46
+                                        },
+                                        __self: undefined,
+                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                            variant: "success link",
+                                            __source: {
+                                                fileName: "src/components/movie-view/movie-view.jsx",
+                                                lineNumber: 47
+                                            },
+                                            __self: undefined,
+                                            children: "Director"
+                                        })
+                                    }),
+                                    /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
+                                        to: `/genres/${movie.Genre.Name}`,
+                                        __source: {
+                                            fileName: "src/components/movie-view/movie-view.jsx",
+                                            lineNumber: 49
+                                        },
+                                        __self: undefined,
+                                        children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                            variant: "success link",
+                                            __source: {
+                                                fileName: "src/components/movie-view/movie-view.jsx",
+                                                lineNumber: 50
+                                            },
+                                            __self: undefined,
+                                            children: "Genre"
+                                        })
+                                    })
+                                ]
+                            })
+                        ]
+                    })
+                })
+            ]
+        })
+    }));
+};
+_s(MovieView, "9cZfZ04734qoCGIctmKX7+sX6eU=", false, function() {
+    return [_reactRouterDom.useHistory];
+});
+_c = MovieView;
+MovieView.propTypes = {
+    movie: _propTypesDefault.default.shape({
+        Title: _propTypesDefault.default.string.isRequired,
+        Description: _propTypesDefault.default.string.isRequired,
+        Genre: _propTypesDefault.default.shape({
+            Name: _propTypesDefault.default.string.isRequired,
+            Description: _propTypesDefault.default.string.isRequired
+        }),
+        Director: _propTypesDefault.default.shape({
+            Name: _propTypesDefault.default.string.isRequired,
+            Bio: _propTypesDefault.default.string.isRequired,
+            Birth: _propTypesDefault.default.string.isRequired,
+            Death: _propTypesDefault.default.string
+        }),
+        ImageURL: _propTypesDefault.default.string.isRequired
+    }).isRequired
+};
+const mapStateToProps = (props, ownProps)=>{
+    const movie = props.movies.find((m)=>m._id === ownProps.match.params.movieId
+    );
+    return {
+        movie
+    };
+};
+exports.default = _reactRedux.connect(mapStateToProps)(MovieView);
+var _c;
+$RefreshReg$(_c, "MovieView");
+
+  $parcel$ReactRefreshHelpers$3741.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","prop-types":"1tgq3","react-redux":"2L0if","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","./movie-view.scss":"kvL93","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"kvL93":[function() {},{}],"ck15y":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$f8cc = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$f8cc.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRedux = require("react-redux");
+var _reactRouterDom = require("react-router-dom");
+var _moment = require("moment");
+var _momentDefault = parcelHelpers.interopDefault(_moment);
+var _reactBootstrap = require("react-bootstrap");
+var _s = $RefreshSig$();
+const DirectorView = ({ director , moviesByDirector  })=>{
+    _s();
+    const history = _reactRouterDom.useHistory();
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        className: "mt-4 mx-auto",
+        style: {
+            width: '80%'
+        },
+        __source: {
+            fileName: "src/components/director-view/director-view.jsx",
+            lineNumber: 11
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/director-view/director-view.jsx",
+                lineNumber: 12
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
+                    as: "h4",
+                    className: "text-center label",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 13
+                    },
+                    __self: undefined,
+                    children: "Personal Info"
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "director-name",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 16
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "label",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 17
+                            },
+                            __self: undefined,
+                            children: "Name: "
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "value",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 18
+                            },
+                            __self: undefined,
+                            children: director.Name
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "director-bio",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 20
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "label",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 21
+                            },
+                            __self: undefined,
+                            children: "Biography: "
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "value",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 22
+                            },
+                            __self: undefined,
+                            children: director.Bio
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "director-birthyear",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 24
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "label",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 25
+                            },
+                            __self: undefined,
+                            children: "Birth: "
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "value",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 26
+                            },
+                            __self: undefined,
+                            children: _momentDefault.default(director.Birth).format('MM-DD-YYYY')
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "text-center align-items-end pt-4",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 30
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Button, {
+                            variant: "success link",
+                            onClick: history.goBack,
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 31
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx("i", {
+                                    className: "fa fa-arrow-left",
+                                    __source: {
+                                        fileName: "src/components/director-view/director-view.jsx",
+                                        lineNumber: 32
+                                    },
+                                    __self: undefined
+                                }),
+                                " Back"
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
+                            to: "/",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 34
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                variant: "success link mx-2",
+                                __source: {
+                                    fileName: "src/components/director-view/director-view.jsx",
+                                    lineNumber: 35
+                                },
+                                __self: undefined,
+                                children: "Back to Movie List"
+                            })
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Title, {
+                    as: "h4",
+                    className: "label pt-5",
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 38
+                    },
+                    __self: undefined,
+                    children: [
+                        "Movies dirrected by ",
+                        director.Name,
+                        ' '
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
+                    __source: {
+                        fileName: "src/components/director-view/director-view.jsx",
+                        lineNumber: 41
+                    },
+                    __self: undefined,
+                    children: !!moviesByDirector ? moviesByDirector.map((movie)=>!!movie && /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                            xs: 12,
+                            md: 6,
+                            lg: 4,
+                            className: "fav-movie",
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 46
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
+                                __source: {
+                                    fileName: "src/components/director-view/director-view.jsx",
+                                    lineNumber: 53
+                                },
+                                __self: undefined,
+                                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
+                                    to: `/movies/${movie._id}`,
+                                    __source: {
+                                        fileName: "src/components/director-view/director-view.jsx",
+                                        lineNumber: 54
+                                    },
+                                    __self: undefined,
+                                    children: [
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
+                                            src: movie.ImagePath,
+                                            alt: movie.Title,
+                                            crossOrigin: "anonymous",
+                                            __source: {
+                                                fileName: "src/components/director-view/director-view.jsx",
+                                                lineNumber: 55
+                                            },
+                                            __self: undefined
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
+                                            __source: {
+                                                fileName: "src/components/director-view/director-view.jsx",
+                                                lineNumber: 60
+                                            },
+                                            __self: undefined,
+                                            children: movie.Title
+                                        })
+                                    ]
+                                })
+                            })
+                        }, movie._id)
+                    ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        __source: {
+                            fileName: "src/components/director-view/director-view.jsx",
+                            lineNumber: 67
+                        },
+                        __self: undefined,
+                        children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                            __source: {
+                                fileName: "src/components/director-view/director-view.jsx",
+                                lineNumber: 68
+                            },
+                            __self: undefined,
+                            children: "No movies"
+                        })
+                    })
+                })
+            ]
+        })
+    }));
+};
+_s(DirectorView, "9cZfZ04734qoCGIctmKX7+sX6eU=", false, function() {
+    return [_reactRouterDom.useHistory];
+});
+_c = DirectorView;
+const mapStateToProps = ({ movies  }, ownProps)=>{
+    const moviesByDirector = movies.filter((m)=>m.Director.Name === ownProps.match.params.name
+    );
+    const director = movies.find((m)=>m.Director.Name === ownProps.match.params.name
+    ).Director;
+    return {
+        director,
+        moviesByDirector
+    };
+};
+exports.default = _reactRedux.connect(mapStateToProps)(DirectorView);
+var _c;
+$RefreshReg$(_c, "DirectorView");
+
+  $parcel$ReactRefreshHelpers$f8cc.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-redux":"2L0if","react-router-dom":"cpyQW","moment":"5Keig","react-bootstrap":"h2YVd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"5Keig":[function(require,module,exports) {
+(function(global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.moment = factory();
+})(this, function() {
+    'use strict';
+    var hookCallback;
+    function hooks() {
+        return hookCallback.apply(null, arguments);
+    }
+    // This is done to register the method called with moment()
+    // without creating circular dependencies.
+    function setHookCallback(callback) {
+        hookCallback = callback;
+    }
+    function isArray(input) {
+        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+    }
+    function isObject(input) {
+        // IE8 will treat undefined and null as object if it wasn't for
+        // input != null
+        return input != null && Object.prototype.toString.call(input) === '[object Object]';
+    }
+    function hasOwnProp(a, b) {
+        return Object.prototype.hasOwnProperty.call(a, b);
+    }
+    function isObjectEmpty(obj) {
+        if (Object.getOwnPropertyNames) return Object.getOwnPropertyNames(obj).length === 0;
+        else {
+            var k;
+            for(k in obj){
+                if (hasOwnProp(obj, k)) return false;
+            }
+            return true;
+        }
+    }
+    function isUndefined(input) {
+        return input === void 0;
+    }
+    function isNumber(input) {
+        return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+    }
+    function isDate(input) {
+        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+    }
+    function map(arr, fn) {
+        var res = [], i, arrLen = arr.length;
+        for(i = 0; i < arrLen; ++i)res.push(fn(arr[i], i));
+        return res;
+    }
+    function extend(a, b) {
+        for(var i in b)if (hasOwnProp(b, i)) a[i] = b[i];
+        if (hasOwnProp(b, 'toString')) a.toString = b.toString;
+        if (hasOwnProp(b, 'valueOf')) a.valueOf = b.valueOf;
+        return a;
+    }
+    function createUTC(input, format, locale, strict) {
+        return createLocalOrUTC(input, format, locale, strict, true).utc();
+    }
+    function defaultParsingFlags() {
+        // We need to deep clone this object.
+        return {
+            empty: false,
+            unusedTokens: [],
+            unusedInput: [],
+            overflow: -2,
+            charsLeftOver: 0,
+            nullInput: false,
+            invalidEra: null,
+            invalidMonth: null,
+            invalidFormat: false,
+            userInvalidated: false,
+            iso: false,
+            parsedDateParts: [],
+            era: null,
+            meridiem: null,
+            rfc2822: false,
+            weekdayMismatch: false
+        };
+    }
+    function getParsingFlags(m) {
+        if (m._pf == null) m._pf = defaultParsingFlags();
+        return m._pf;
+    }
+    var some;
+    if (Array.prototype.some) some = Array.prototype.some;
+    else some = function(fun) {
+        var t = Object(this), len = t.length >>> 0, i;
+        for(i = 0; i < len; i++){
+            if (i in t && fun.call(this, t[i], i, t)) return true;
+        }
+        return false;
+    };
+    function isValid(m) {
+        if (m._isValid == null) {
+            var flags = getParsingFlags(m), parsedParts = some.call(flags.parsedDateParts, function(i) {
+                return i != null;
+            }), isNowValid = !isNaN(m._d.getTime()) && flags.overflow < 0 && !flags.empty && !flags.invalidEra && !flags.invalidMonth && !flags.invalidWeekday && !flags.weekdayMismatch && !flags.nullInput && !flags.invalidFormat && !flags.userInvalidated && (!flags.meridiem || flags.meridiem && parsedParts);
+            if (m._strict) isNowValid = isNowValid && flags.charsLeftOver === 0 && flags.unusedTokens.length === 0 && flags.bigHour === undefined;
+            if (Object.isFrozen == null || !Object.isFrozen(m)) m._isValid = isNowValid;
+            else return isNowValid;
+        }
+        return m._isValid;
+    }
+    function createInvalid(flags) {
+        var m = createUTC(NaN);
+        if (flags != null) extend(getParsingFlags(m), flags);
+        else getParsingFlags(m).userInvalidated = true;
+        return m;
+    }
+    // Plugins that add properties should also add the key here (null value),
+    // so we can properly clone ourselves.
+    var momentProperties = hooks.momentProperties = [], updateInProgress = false;
+    function copyConfig(to, from) {
+        var i, prop, val, momentPropertiesLen = momentProperties.length;
+        if (!isUndefined(from._isAMomentObject)) to._isAMomentObject = from._isAMomentObject;
+        if (!isUndefined(from._i)) to._i = from._i;
+        if (!isUndefined(from._f)) to._f = from._f;
+        if (!isUndefined(from._l)) to._l = from._l;
+        if (!isUndefined(from._strict)) to._strict = from._strict;
+        if (!isUndefined(from._tzm)) to._tzm = from._tzm;
+        if (!isUndefined(from._isUTC)) to._isUTC = from._isUTC;
+        if (!isUndefined(from._offset)) to._offset = from._offset;
+        if (!isUndefined(from._pf)) to._pf = getParsingFlags(from);
+        if (!isUndefined(from._locale)) to._locale = from._locale;
+        if (momentPropertiesLen > 0) for(i = 0; i < momentPropertiesLen; i++){
+            prop = momentProperties[i];
+            val = from[prop];
+            if (!isUndefined(val)) to[prop] = val;
+        }
+        return to;
+    }
+    // Moment prototype object
+    function Moment(config) {
+        copyConfig(this, config);
+        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+        if (!this.isValid()) this._d = new Date(NaN);
+        // Prevent infinite loop in case updateOffset creates new moment
+        // objects.
+        if (updateInProgress === false) {
+            updateInProgress = true;
+            hooks.updateOffset(this);
+            updateInProgress = false;
+        }
+    }
+    function isMoment(obj) {
+        return obj instanceof Moment || obj != null && obj._isAMomentObject != null;
+    }
+    function warn(msg) {
+        if (hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) console.warn('Deprecation warning: ' + msg);
+    }
+    function deprecate(msg, fn) {
+        var firstTime = true;
+        return extend(function() {
+            if (hooks.deprecationHandler != null) hooks.deprecationHandler(null, msg);
+            if (firstTime) {
+                var args = [], arg, i, key, argLen = arguments.length;
+                for(i = 0; i < argLen; i++){
+                    arg = '';
+                    if (typeof arguments[i] === 'object') {
+                        arg += '\n[' + i + '] ';
+                        for(key in arguments[0])if (hasOwnProp(arguments[0], key)) arg += key + ': ' + arguments[0][key] + ', ';
+                        arg = arg.slice(0, -2); // Remove trailing comma and space
+                    } else arg = arguments[i];
+                    args.push(arg);
+                }
+                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + new Error().stack);
+                firstTime = false;
+            }
+            return fn.apply(this, arguments);
+        }, fn);
+    }
+    var deprecations = {
+    };
+    function deprecateSimple(name, msg) {
+        if (hooks.deprecationHandler != null) hooks.deprecationHandler(name, msg);
+        if (!deprecations[name]) {
+            warn(msg);
+            deprecations[name] = true;
+        }
+    }
+    hooks.suppressDeprecationWarnings = false;
+    hooks.deprecationHandler = null;
+    function isFunction(input) {
+        return typeof Function !== 'undefined' && input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+    }
+    function set(config) {
+        var prop, i;
+        for(i in config)if (hasOwnProp(config, i)) {
+            prop = config[i];
+            if (isFunction(prop)) this[i] = prop;
+            else this['_' + i] = prop;
+        }
+        this._config = config;
+        // Lenient ordinal parsing accepts just a number in addition to
+        // number + (possibly) stuff coming from _dayOfMonthOrdinalParse.
+        // TODO: Remove "ordinalParse" fallback in next major release.
+        this._dayOfMonthOrdinalParseLenient = new RegExp((this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) + '|' + /\d{1,2}/.source);
+    }
+    function mergeConfigs(parentConfig, childConfig) {
+        var res = extend({
+        }, parentConfig), prop;
+        for(prop in childConfig)if (hasOwnProp(childConfig, prop)) {
+            if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+                res[prop] = {
+                };
+                extend(res[prop], parentConfig[prop]);
+                extend(res[prop], childConfig[prop]);
+            } else if (childConfig[prop] != null) res[prop] = childConfig[prop];
+            else delete res[prop];
+        }
+        for(prop in parentConfig)if (hasOwnProp(parentConfig, prop) && !hasOwnProp(childConfig, prop) && isObject(parentConfig[prop])) // make sure changes to properties don't modify parent config
+        res[prop] = extend({
+        }, res[prop]);
+        return res;
+    }
+    function Locale(config) {
+        if (config != null) this.set(config);
+    }
+    var keys;
+    if (Object.keys) keys = Object.keys;
+    else keys = function(obj) {
+        var i, res = [];
+        for(i in obj)if (hasOwnProp(obj, i)) res.push(i);
+        return res;
+    };
+    var defaultCalendar = {
+        sameDay: '[Today at] LT',
+        nextDay: '[Tomorrow at] LT',
+        nextWeek: 'dddd [at] LT',
+        lastDay: '[Yesterday at] LT',
+        lastWeek: '[Last] dddd [at] LT',
+        sameElse: 'L'
+    };
+    function calendar(key, mom, now) {
+        var output = this._calendar[key] || this._calendar['sameElse'];
+        return isFunction(output) ? output.call(mom, now) : output;
+    }
+    function zeroFill(number, targetLength, forceSign) {
+        var absNumber = '' + Math.abs(number), zerosToFill = targetLength - absNumber.length, sign = number >= 0;
+        return (sign ? forceSign ? '+' : '' : '-') + Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
+    }
+    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|N{1,5}|YYYYYY|YYYYY|YYYY|YY|y{2,4}|yo?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g, localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, formatFunctions = {
+    }, formatTokenFunctions = {
+    };
+    // token:    'M'
+    // padded:   ['MM', 2]
+    // ordinal:  'Mo'
+    // callback: function () { this.month() + 1 }
+    function addFormatToken(token, padded, ordinal, callback) {
+        var func = callback;
+        if (typeof callback === 'string') func = function() {
+            return this[callback]();
+        };
+        if (token) formatTokenFunctions[token] = func;
+        if (padded) formatTokenFunctions[padded[0]] = function() {
+            return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
+        };
+        if (ordinal) formatTokenFunctions[ordinal] = function() {
+            return this.localeData().ordinal(func.apply(this, arguments), token);
+        };
+    }
+    function removeFormattingTokens(input) {
+        if (input.match(/\[[\s\S]/)) return input.replace(/^\[|\]$/g, '');
+        return input.replace(/\\/g, '');
+    }
+    function makeFormatFunction(format) {
+        var array = format.match(formattingTokens), i, length;
+        for(i = 0, length = array.length; i < length; i++)if (formatTokenFunctions[array[i]]) array[i] = formatTokenFunctions[array[i]];
+        else array[i] = removeFormattingTokens(array[i]);
+        return function(mom) {
+            var output = '', i1;
+            for(i1 = 0; i1 < length; i1++)output += isFunction(array[i1]) ? array[i1].call(mom, format) : array[i1];
+            return output;
+        };
+    }
+    // format date using native date object
+    function formatMoment(m, format) {
+        if (!m.isValid()) return m.localeData().invalidDate();
+        format = expandFormat(format, m.localeData());
+        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
+        return formatFunctions[format](m);
+    }
+    function expandFormat(format, locale) {
+        var i = 5;
+        function replaceLongDateFormatTokens(input) {
+            return locale.longDateFormat(input) || input;
+        }
+        localFormattingTokens.lastIndex = 0;
+        while(i >= 0 && localFormattingTokens.test(format)){
+            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+            localFormattingTokens.lastIndex = 0;
+            i -= 1;
+        }
+        return format;
+    }
+    var defaultLongDateFormat = {
+        LTS: 'h:mm:ss A',
+        LT: 'h:mm A',
+        L: 'MM/DD/YYYY',
+        LL: 'MMMM D, YYYY',
+        LLL: 'MMMM D, YYYY h:mm A',
+        LLLL: 'dddd, MMMM D, YYYY h:mm A'
+    };
+    function longDateFormat(key) {
+        var format = this._longDateFormat[key], formatUpper = this._longDateFormat[key.toUpperCase()];
+        if (format || !formatUpper) return format;
+        this._longDateFormat[key] = formatUpper.match(formattingTokens).map(function(tok) {
+            if (tok === 'MMMM' || tok === 'MM' || tok === 'DD' || tok === 'dddd') return tok.slice(1);
+            return tok;
+        }).join('');
+        return this._longDateFormat[key];
+    }
+    var defaultInvalidDate = 'Invalid date';
+    function invalidDate() {
+        return this._invalidDate;
+    }
+    var defaultOrdinal = '%d', defaultDayOfMonthOrdinalParse = /\d{1,2}/;
+    function ordinal(number) {
+        return this._ordinal.replace('%d', number);
+    }
+    var defaultRelativeTime = {
+        future: 'in %s',
+        past: '%s ago',
+        s: 'a few seconds',
+        ss: '%d seconds',
+        m: 'a minute',
+        mm: '%d minutes',
+        h: 'an hour',
+        hh: '%d hours',
+        d: 'a day',
+        dd: '%d days',
+        w: 'a week',
+        ww: '%d weeks',
+        M: 'a month',
+        MM: '%d months',
+        y: 'a year',
+        yy: '%d years'
+    };
+    function relativeTime(number, withoutSuffix, string, isFuture) {
+        var output = this._relativeTime[string];
+        return isFunction(output) ? output(number, withoutSuffix, string, isFuture) : output.replace(/%d/i, number);
+    }
+    function pastFuture(diff, output) {
+        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+    }
+    var aliases = {
+    };
+    function addUnitAlias(unit, shorthand) {
+        var lowerCase = unit.toLowerCase();
+        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
+    }
+    function normalizeUnits(units) {
+        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
+    }
+    function normalizeObjectUnits(inputObject) {
+        var normalizedInput = {
+        }, normalizedProp, prop;
+        for(prop in inputObject)if (hasOwnProp(inputObject, prop)) {
+            normalizedProp = normalizeUnits(prop);
+            if (normalizedProp) normalizedInput[normalizedProp] = inputObject[prop];
+        }
+        return normalizedInput;
+    }
+    var priorities = {
+    };
+    function addUnitPriority(unit, priority) {
+        priorities[unit] = priority;
+    }
+    function getPrioritizedUnits(unitsObj) {
+        var units = [], u;
+        for(u in unitsObj)if (hasOwnProp(unitsObj, u)) units.push({
+            unit: u,
+            priority: priorities[u]
+        });
+        units.sort(function(a, b) {
+            return a.priority - b.priority;
+        });
+        return units;
+    }
+    function isLeapYear(year) {
+        return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
+    }
+    function absFloor(number) {
+        if (number < 0) // -0 -> 0
+        return Math.ceil(number) || 0;
+        else return Math.floor(number);
+    }
+    function toInt(argumentForCoercion) {
+        var coercedNumber = +argumentForCoercion, value = 0;
+        if (coercedNumber !== 0 && isFinite(coercedNumber)) value = absFloor(coercedNumber);
+        return value;
+    }
+    function makeGetSet(unit, keepTime) {
+        return function(value) {
+            if (value != null) {
+                set$1(this, unit, value);
+                hooks.updateOffset(this, keepTime);
+                return this;
+            } else return get(this, unit);
+        };
+    }
+    function get(mom, unit) {
+        return mom.isValid() ? mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+    }
+    function set$1(mom, unit, value) {
+        if (mom.isValid() && !isNaN(value)) {
+            if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
+                value = toInt(value);
+                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
+            } else mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+        }
+    }
+    // MOMENTS
+    function stringGet(units) {
+        units = normalizeUnits(units);
+        if (isFunction(this[units])) return this[units]();
+        return this;
+    }
+    function stringSet(units, value) {
+        if (typeof units === 'object') {
+            units = normalizeObjectUnits(units);
+            var prioritized = getPrioritizedUnits(units), i, prioritizedLen = prioritized.length;
+            for(i = 0; i < prioritizedLen; i++)this[prioritized[i].unit](units[prioritized[i].unit]);
+        } else {
+            units = normalizeUnits(units);
+            if (isFunction(this[units])) return this[units](value);
+        }
+        return this;
+    }
+    var match1 = /\d/, match2 = /\d\d/, match3 = /\d{3}/, match4 = /\d{4}/, match6 = /[+-]?\d{6}/, match1to2 = /\d\d?/, match3to4 = /\d\d\d\d?/, match5to6 = /\d\d\d\d\d\d?/, match1to3 = /\d{1,3}/, match1to4 = /\d{1,4}/, match1to6 = /[+-]?\d{1,6}/, matchUnsigned = /\d+/, matchSigned = /[+-]?\d+/, matchOffset = /Z|[+-]\d\d:?\d\d/gi, matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi, matchTimestamp = /[+-]?\d+(\.\d{1,3})?/, // any word (or two) characters or numbers including two/three word month in arabic.
+    // includes scottish gaelic two word and hyphenated months
+    matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i, regexes;
+    regexes = {
+    };
+    function addRegexToken(token, regex, strictRegex) {
+        regexes[token] = isFunction(regex) ? regex : function(isStrict, localeData) {
+            return isStrict && strictRegex ? strictRegex : regex;
+        };
+    }
+    function getParseRegexForToken(token, config) {
+        if (!hasOwnProp(regexes, token)) return new RegExp(unescapeFormat(token));
+        return regexes[token](config._strict, config._locale);
+    }
+    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+    function unescapeFormat(s) {
+        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function(matched, p1, p2, p3, p4) {
+            return p1 || p2 || p3 || p4;
+        }));
+    }
+    function regexEscape(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    }
+    var tokens = {
+    };
+    function addParseToken(token, callback) {
+        var i, func = callback, tokenLen;
+        if (typeof token === 'string') token = [
+            token
+        ];
+        if (isNumber(callback)) func = function(input, array) {
+            array[callback] = toInt(input);
+        };
+        tokenLen = token.length;
+        for(i = 0; i < tokenLen; i++)tokens[token[i]] = func;
+    }
+    function addWeekParseToken(token, callback) {
+        addParseToken(token, function(input, array, config, token1) {
+            config._w = config._w || {
+            };
+            callback(input, config._w, config, token1);
+        });
+    }
+    function addTimeToArrayFromToken(token, input, config) {
+        if (input != null && hasOwnProp(tokens, token)) tokens[token](input, config._a, config, token);
+    }
+    var YEAR = 0, MONTH = 1, DATE = 2, HOUR = 3, MINUTE = 4, SECOND = 5, MILLISECOND = 6, WEEK = 7, WEEKDAY = 8;
+    function mod(n, x) {
+        return (n % x + x) % x;
+    }
+    var indexOf;
+    if (Array.prototype.indexOf) indexOf = Array.prototype.indexOf;
+    else indexOf = function(o) {
+        // I know
+        var i;
+        for(i = 0; i < this.length; ++i){
+            if (this[i] === o) return i;
+        }
+        return -1;
+    };
+    function daysInMonth(year, month) {
+        if (isNaN(year) || isNaN(month)) return NaN;
+        var modMonth = mod(month, 12);
+        year += (month - modMonth) / 12;
+        return modMonth === 1 ? isLeapYear(year) ? 29 : 28 : 31 - modMonth % 7 % 2;
+    }
+    // FORMATTING
+    addFormatToken('M', [
+        'MM',
+        2
+    ], 'Mo', function() {
+        return this.month() + 1;
+    });
+    addFormatToken('MMM', 0, 0, function(format) {
+        return this.localeData().monthsShort(this, format);
+    });
+    addFormatToken('MMMM', 0, 0, function(format) {
+        return this.localeData().months(this, format);
+    });
+    // ALIASES
+    addUnitAlias('month', 'M');
+    // PRIORITY
+    addUnitPriority('month', 8);
+    // PARSING
+    addRegexToken('M', match1to2);
+    addRegexToken('MM', match1to2, match2);
+    addRegexToken('MMM', function(isStrict, locale) {
+        return locale.monthsShortRegex(isStrict);
+    });
+    addRegexToken('MMMM', function(isStrict, locale) {
+        return locale.monthsRegex(isStrict);
+    });
+    addParseToken([
+        'M',
+        'MM'
+    ], function(input, array) {
+        array[MONTH] = toInt(input) - 1;
+    });
+    addParseToken([
+        'MMM',
+        'MMMM'
+    ], function(input, array, config, token) {
+        var month = config._locale.monthsParse(input, token, config._strict);
+        // if we didn't find a month name, mark the date as invalid.
+        if (month != null) array[MONTH] = month;
+        else getParsingFlags(config).invalidMonth = input;
+    });
+    // LOCALES
+    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'), defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'), MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/, defaultMonthsShortRegex = matchWord, defaultMonthsRegex = matchWord;
+    function localeMonths(m, format) {
+        if (!m) return isArray(this._months) ? this._months : this._months['standalone'];
+        return isArray(this._months) ? this._months[m.month()] : this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+    }
+    function localeMonthsShort(m, format) {
+        if (!m) return isArray(this._monthsShort) ? this._monthsShort : this._monthsShort['standalone'];
+        return isArray(this._monthsShort) ? this._monthsShort[m.month()] : this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+    }
+    function handleStrictParse(monthName, format, strict) {
+        var i, ii, mom, llc = monthName.toLocaleLowerCase();
+        if (!this._monthsParse) {
+            // this is not used
+            this._monthsParse = [];
+            this._longMonthsParse = [];
+            this._shortMonthsParse = [];
+            for(i = 0; i < 12; ++i){
+                mom = createUTC([
+                    2000,
+                    i
+                ]);
+                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+            }
+        }
+        if (strict) {
+            if (format === 'MMM') {
+                ii = indexOf.call(this._shortMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._longMonthsParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else if (format === 'MMM') {
+            ii = indexOf.call(this._shortMonthsParse, llc);
+            if (ii !== -1) return ii;
+            ii = indexOf.call(this._longMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        } else {
+            ii = indexOf.call(this._longMonthsParse, llc);
+            if (ii !== -1) return ii;
+            ii = indexOf.call(this._shortMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        }
+    }
+    function localeMonthsParse(monthName, format, strict) {
+        var i, mom, regex;
+        if (this._monthsParseExact) return handleStrictParse.call(this, monthName, format, strict);
+        if (!this._monthsParse) {
+            this._monthsParse = [];
+            this._longMonthsParse = [];
+            this._shortMonthsParse = [];
+        }
+        // TODO: add sorting
+        // Sorting makes sure if one month (or abbr) is a prefix of another
+        // see sorting in computeMonthsParse
+        for(i = 0; i < 12; i++){
+            // make the regex if we don't have it already
+            mom = createUTC([
+                2000,
+                i
+            ]);
+            if (strict && !this._longMonthsParse[i]) {
+                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
+            }
+            if (!strict && !this._monthsParse[i]) {
+                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
+            }
+            // test the regex
+            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) return i;
+            else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) return i;
+            else if (!strict && this._monthsParse[i].test(monthName)) return i;
+        }
+    }
+    // MOMENTS
+    function setMonth(mom, value) {
+        var dayOfMonth;
+        if (!mom.isValid()) // No op
+        return mom;
+        if (typeof value === 'string') {
+            if (/^\d+$/.test(value)) value = toInt(value);
+            else {
+                value = mom.localeData().monthsParse(value);
+                // TODO: Another silent failure?
+                if (!isNumber(value)) return mom;
+            }
+        }
+        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
+        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+        return mom;
+    }
+    function getSetMonth(value) {
+        if (value != null) {
+            setMonth(this, value);
+            hooks.updateOffset(this, true);
+            return this;
+        } else return get(this, 'Month');
+    }
+    function getDaysInMonth() {
+        return daysInMonth(this.year(), this.month());
+    }
+    function monthsShortRegex(isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) computeMonthsParse.call(this);
+            if (isStrict) return this._monthsShortStrictRegex;
+            else return this._monthsShortRegex;
+        } else {
+            if (!hasOwnProp(this, '_monthsShortRegex')) this._monthsShortRegex = defaultMonthsShortRegex;
+            return this._monthsShortStrictRegex && isStrict ? this._monthsShortStrictRegex : this._monthsShortRegex;
+        }
+    }
+    function monthsRegex(isStrict) {
+        if (this._monthsParseExact) {
+            if (!hasOwnProp(this, '_monthsRegex')) computeMonthsParse.call(this);
+            if (isStrict) return this._monthsStrictRegex;
+            else return this._monthsRegex;
+        } else {
+            if (!hasOwnProp(this, '_monthsRegex')) this._monthsRegex = defaultMonthsRegex;
+            return this._monthsStrictRegex && isStrict ? this._monthsStrictRegex : this._monthsRegex;
+        }
+    }
+    function computeMonthsParse() {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+        var shortPieces = [], longPieces = [], mixedPieces = [], i, mom;
+        for(i = 0; i < 12; i++){
+            // make the regex if we don't have it already
+            mom = createUTC([
+                2000,
+                i
+            ]);
+            shortPieces.push(this.monthsShort(mom, ''));
+            longPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.months(mom, ''));
+            mixedPieces.push(this.monthsShort(mom, ''));
+        }
+        // Sorting makes sure if one month (or abbr) is a prefix of another it
+        // will match the longer piece.
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        for(i = 0; i < 12; i++){
+            shortPieces[i] = regexEscape(shortPieces[i]);
+            longPieces[i] = regexEscape(longPieces[i]);
+        }
+        for(i = 0; i < 24; i++)mixedPieces[i] = regexEscape(mixedPieces[i]);
+        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._monthsShortRegex = this._monthsRegex;
+        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    }
+    // FORMATTING
+    addFormatToken('Y', 0, 0, function() {
+        var y = this.year();
+        return y <= 9999 ? zeroFill(y, 4) : '+' + y;
+    });
+    addFormatToken(0, [
+        'YY',
+        2
+    ], 0, function() {
+        return this.year() % 100;
+    });
+    addFormatToken(0, [
+        'YYYY',
+        4
+    ], 0, 'year');
+    addFormatToken(0, [
+        'YYYYY',
+        5
+    ], 0, 'year');
+    addFormatToken(0, [
+        'YYYYYY',
+        6,
+        true
+    ], 0, 'year');
+    // ALIASES
+    addUnitAlias('year', 'y');
+    // PRIORITIES
+    addUnitPriority('year', 1);
+    // PARSING
+    addRegexToken('Y', matchSigned);
+    addRegexToken('YY', match1to2, match2);
+    addRegexToken('YYYY', match1to4, match4);
+    addRegexToken('YYYYY', match1to6, match6);
+    addRegexToken('YYYYYY', match1to6, match6);
+    addParseToken([
+        'YYYYY',
+        'YYYYYY'
+    ], YEAR);
+    addParseToken('YYYY', function(input, array) {
+        array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
+    });
+    addParseToken('YY', function(input, array) {
+        array[YEAR] = hooks.parseTwoDigitYear(input);
+    });
+    addParseToken('Y', function(input, array) {
+        array[YEAR] = parseInt(input, 10);
+    });
+    // HELPERS
+    function daysInYear(year) {
+        return isLeapYear(year) ? 366 : 365;
+    }
+    // HOOKS
+    hooks.parseTwoDigitYear = function(input) {
+        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    };
+    // MOMENTS
+    var getSetYear = makeGetSet('FullYear', true);
+    function getIsLeapYear() {
+        return isLeapYear(this.year());
+    }
+    function createDate(y, m, d, h, M, s, ms) {
+        // can't just apply() to create a date:
+        // https://stackoverflow.com/q/181348
+        var date;
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            // preserve leap years using a full 400 year cycle, then reset
+            date = new Date(y + 400, m, d, h, M, s, ms);
+            if (isFinite(date.getFullYear())) date.setFullYear(y);
+        } else date = new Date(y, m, d, h, M, s, ms);
+        return date;
+    }
+    function createUTCDate(y) {
+        var date, args;
+        // the Date.UTC function remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) {
+            args = Array.prototype.slice.call(arguments);
+            // preserve leap years using a full 400 year cycle, then reset
+            args[0] = y + 400;
+            date = new Date(Date.UTC.apply(null, args));
+            if (isFinite(date.getUTCFullYear())) date.setUTCFullYear(y);
+        } else date = new Date(Date.UTC.apply(null, arguments));
+        return date;
+    }
+    // start-of-first-week - start-of-year
+    function firstWeekOffset(year, dow, doy) {
+        var fwd = 7 + dow - doy, // first-week day local weekday -- which local weekday is fwd
+        fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+        return -fwdlw + fwd - 1;
+    }
+    // https://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+        var localWeekday = (7 + weekday - dow) % 7, weekOffset = firstWeekOffset(year, dow, doy), dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset, resYear, resDayOfYear;
+        if (dayOfYear <= 0) {
+            resYear = year - 1;
+            resDayOfYear = daysInYear(resYear) + dayOfYear;
+        } else if (dayOfYear > daysInYear(year)) {
+            resYear = year + 1;
+            resDayOfYear = dayOfYear - daysInYear(year);
+        } else {
+            resYear = year;
+            resDayOfYear = dayOfYear;
+        }
+        return {
+            year: resYear,
+            dayOfYear: resDayOfYear
+        };
+    }
+    function weekOfYear(mom, dow, doy) {
+        var weekOffset = firstWeekOffset(mom.year(), dow, doy), week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1, resWeek, resYear;
+        if (week < 1) {
+            resYear = mom.year() - 1;
+            resWeek = week + weeksInYear(resYear, dow, doy);
+        } else if (week > weeksInYear(mom.year(), dow, doy)) {
+            resWeek = week - weeksInYear(mom.year(), dow, doy);
+            resYear = mom.year() + 1;
+        } else {
+            resYear = mom.year();
+            resWeek = week;
+        }
+        return {
+            week: resWeek,
+            year: resYear
+        };
+    }
+    function weeksInYear(year, dow, doy) {
+        var weekOffset = firstWeekOffset(year, dow, doy), weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+    }
+    // FORMATTING
+    addFormatToken('w', [
+        'ww',
+        2
+    ], 'wo', 'week');
+    addFormatToken('W', [
+        'WW',
+        2
+    ], 'Wo', 'isoWeek');
+    // ALIASES
+    addUnitAlias('week', 'w');
+    addUnitAlias('isoWeek', 'W');
+    // PRIORITIES
+    addUnitPriority('week', 5);
+    addUnitPriority('isoWeek', 5);
+    // PARSING
+    addRegexToken('w', match1to2);
+    addRegexToken('ww', match1to2, match2);
+    addRegexToken('W', match1to2);
+    addRegexToken('WW', match1to2, match2);
+    addWeekParseToken([
+        'w',
+        'ww',
+        'W',
+        'WW'
+    ], function(input, week, config, token) {
+        week[token.substr(0, 1)] = toInt(input);
+    });
+    // HELPERS
+    // LOCALES
+    function localeWeek(mom) {
+        return weekOfYear(mom, this._week.dow, this._week.doy).week;
+    }
+    var defaultLocaleWeek = {
+        dow: 0,
+        doy: 6
+    };
+    function localeFirstDayOfWeek() {
+        return this._week.dow;
+    }
+    function localeFirstDayOfYear() {
+        return this._week.doy;
+    }
+    // MOMENTS
+    function getSetWeek(input) {
+        var week = this.localeData().week(this);
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+    function getSetISOWeek(input) {
+        var week = weekOfYear(this, 1, 4).week;
+        return input == null ? week : this.add((input - week) * 7, 'd');
+    }
+    // FORMATTING
+    addFormatToken('d', 0, 'do', 'day');
+    addFormatToken('dd', 0, 0, function(format) {
+        return this.localeData().weekdaysMin(this, format);
+    });
+    addFormatToken('ddd', 0, 0, function(format) {
+        return this.localeData().weekdaysShort(this, format);
+    });
+    addFormatToken('dddd', 0, 0, function(format) {
+        return this.localeData().weekdays(this, format);
+    });
+    addFormatToken('e', 0, 0, 'weekday');
+    addFormatToken('E', 0, 0, 'isoWeekday');
+    // ALIASES
+    addUnitAlias('day', 'd');
+    addUnitAlias('weekday', 'e');
+    addUnitAlias('isoWeekday', 'E');
+    // PRIORITY
+    addUnitPriority('day', 11);
+    addUnitPriority('weekday', 11);
+    addUnitPriority('isoWeekday', 11);
+    // PARSING
+    addRegexToken('d', match1to2);
+    addRegexToken('e', match1to2);
+    addRegexToken('E', match1to2);
+    addRegexToken('dd', function(isStrict, locale) {
+        return locale.weekdaysMinRegex(isStrict);
+    });
+    addRegexToken('ddd', function(isStrict, locale) {
+        return locale.weekdaysShortRegex(isStrict);
+    });
+    addRegexToken('dddd', function(isStrict, locale) {
+        return locale.weekdaysRegex(isStrict);
+    });
+    addWeekParseToken([
+        'dd',
+        'ddd',
+        'dddd'
+    ], function(input, week, config, token) {
+        var weekday = config._locale.weekdaysParse(input, token, config._strict);
+        // if we didn't get a weekday name, mark the date as invalid
+        if (weekday != null) week.d = weekday;
+        else getParsingFlags(config).invalidWeekday = input;
+    });
+    addWeekParseToken([
+        'd',
+        'e',
+        'E'
+    ], function(input, week, config, token) {
+        week[token] = toInt(input);
+    });
+    // HELPERS
+    function parseWeekday(input, locale) {
+        if (typeof input !== 'string') return input;
+        if (!isNaN(input)) return parseInt(input, 10);
+        input = locale.weekdaysParse(input);
+        if (typeof input === 'number') return input;
+        return null;
+    }
+    function parseIsoWeekday(input, locale) {
+        if (typeof input === 'string') return locale.weekdaysParse(input) % 7 || 7;
+        return isNaN(input) ? null : input;
+    }
+    // LOCALES
+    function shiftWeekdays(ws, n) {
+        return ws.slice(n, 7).concat(ws.slice(0, n));
+    }
+    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'), defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'), defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'), defaultWeekdaysRegex = matchWord, defaultWeekdaysShortRegex = matchWord, defaultWeekdaysMinRegex = matchWord;
+    function localeWeekdays(m, format) {
+        var weekdays = isArray(this._weekdays) ? this._weekdays : this._weekdays[m && m !== true && this._weekdays.isFormat.test(format) ? 'format' : 'standalone'];
+        return m === true ? shiftWeekdays(weekdays, this._week.dow) : m ? weekdays[m.day()] : weekdays;
+    }
+    function localeWeekdaysShort(m) {
+        return m === true ? shiftWeekdays(this._weekdaysShort, this._week.dow) : m ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+    }
+    function localeWeekdaysMin(m) {
+        return m === true ? shiftWeekdays(this._weekdaysMin, this._week.dow) : m ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+    }
+    function handleStrictParse$1(weekdayName, format, strict) {
+        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+        if (!this._weekdaysParse) {
+            this._weekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._minWeekdaysParse = [];
+            for(i = 0; i < 7; ++i){
+                mom = createUTC([
+                    2000,
+                    1
+                ]).day(i);
+                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+            }
+        }
+        if (strict) {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            }
+        } else {
+            if (format === 'dddd') {
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else if (format === 'ddd') {
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
+            } else {
+                ii = indexOf.call(this._minWeekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._weekdaysParse, llc);
+                if (ii !== -1) return ii;
+                ii = indexOf.call(this._shortWeekdaysParse, llc);
+                return ii !== -1 ? ii : null;
             }
         }
     }
-    return targetComponent;
-}
-module.exports = hoistNonReactStatics;
-
-},{"react-is":"5wFcP"}],"bwjcK":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _inheritsLoose = require("@babel/runtime/helpers/esm/inheritsLoose");
-var _inheritsLooseDefault = parcelHelpers.interopDefault(_inheritsLoose);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _tinyWarning = require("tiny-warning");
-var _tinyWarningDefault = parcelHelpers.interopDefault(_tinyWarning);
-var global = arguments[3];
-var MAX_SIGNED_31_BIT_INT = 1073741823;
-var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {
-};
-function getUniqueId() {
-    var key = '__global_unique_id__';
-    return commonjsGlobal[key] = (commonjsGlobal[key] || 0) + 1;
-}
-function objectIs(x, y) {
-    if (x === y) return x !== 0 || 1 / x === 1 / y;
-    else return x !== x && y !== y;
-}
-function createEventEmitter(value) {
-    var handlers = [];
-    return {
-        on: function on(handler) {
-            handlers.push(handler);
-        },
-        off: function off(handler) {
-            handlers = handlers.filter(function(h) {
-                return h !== handler;
-            });
-        },
-        get: function get() {
-            return value;
-        },
-        set: function set(newValue, changedBits) {
-            value = newValue;
-            handlers.forEach(function(handler) {
-                return handler(value, changedBits);
-            });
+    function localeWeekdaysParse(weekdayName, format, strict) {
+        var i, mom, regex;
+        if (this._weekdaysParseExact) return handleStrictParse$1.call(this, weekdayName, format, strict);
+        if (!this._weekdaysParse) {
+            this._weekdaysParse = [];
+            this._minWeekdaysParse = [];
+            this._shortWeekdaysParse = [];
+            this._fullWeekdaysParse = [];
         }
+        for(i = 0; i < 7; i++){
+            // make the regex if we don't have it already
+            mom = createUTC([
+                2000,
+                1
+            ]).day(i);
+            if (strict && !this._fullWeekdaysParse[i]) {
+                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
+                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
+            }
+            if (!this._weekdaysParse[i]) {
+                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+            }
+            // test the regex
+            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) return i;
+            else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) return i;
+            else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) return i;
+            else if (!strict && this._weekdaysParse[i].test(weekdayName)) return i;
+        }
+    }
+    // MOMENTS
+    function getSetDayOfWeek(input) {
+        if (!this.isValid()) return input != null ? this : NaN;
+        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+        if (input != null) {
+            input = parseWeekday(input, this.localeData());
+            return this.add(input - day, 'd');
+        } else return day;
+    }
+    function getSetLocaleDayOfWeek(input) {
+        if (!this.isValid()) return input != null ? this : NaN;
+        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+        return input == null ? weekday : this.add(input - weekday, 'd');
+    }
+    function getSetISODayOfWeek(input) {
+        if (!this.isValid()) return input != null ? this : NaN;
+        // behaves the same as moment#day except
+        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+        // as a setter, sunday should belong to the previous week.
+        if (input != null) {
+            var weekday = parseIsoWeekday(input, this.localeData());
+            return this.day(this.day() % 7 ? weekday : weekday - 7);
+        } else return this.day() || 7;
+    }
+    function weekdaysRegex(isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
+            if (isStrict) return this._weekdaysStrictRegex;
+            else return this._weekdaysRegex;
+        } else {
+            if (!hasOwnProp(this, '_weekdaysRegex')) this._weekdaysRegex = defaultWeekdaysRegex;
+            return this._weekdaysStrictRegex && isStrict ? this._weekdaysStrictRegex : this._weekdaysRegex;
+        }
+    }
+    function weekdaysShortRegex(isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
+            if (isStrict) return this._weekdaysShortStrictRegex;
+            else return this._weekdaysShortRegex;
+        } else {
+            if (!hasOwnProp(this, '_weekdaysShortRegex')) this._weekdaysShortRegex = defaultWeekdaysShortRegex;
+            return this._weekdaysShortStrictRegex && isStrict ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
+        }
+    }
+    function weekdaysMinRegex(isStrict) {
+        if (this._weekdaysParseExact) {
+            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
+            if (isStrict) return this._weekdaysMinStrictRegex;
+            else return this._weekdaysMinRegex;
+        } else {
+            if (!hasOwnProp(this, '_weekdaysMinRegex')) this._weekdaysMinRegex = defaultWeekdaysMinRegex;
+            return this._weekdaysMinStrictRegex && isStrict ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+        }
+    }
+    function computeWeekdaysParse() {
+        function cmpLenRev(a, b) {
+            return b.length - a.length;
+        }
+        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [], i, mom, minp, shortp, longp;
+        for(i = 0; i < 7; i++){
+            // make the regex if we don't have it already
+            mom = createUTC([
+                2000,
+                1
+            ]).day(i);
+            minp = regexEscape(this.weekdaysMin(mom, ''));
+            shortp = regexEscape(this.weekdaysShort(mom, ''));
+            longp = regexEscape(this.weekdays(mom, ''));
+            minPieces.push(minp);
+            shortPieces.push(shortp);
+            longPieces.push(longp);
+            mixedPieces.push(minp);
+            mixedPieces.push(shortp);
+            mixedPieces.push(longp);
+        }
+        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+        // will match the longer piece.
+        minPieces.sort(cmpLenRev);
+        shortPieces.sort(cmpLenRev);
+        longPieces.sort(cmpLenRev);
+        mixedPieces.sort(cmpLenRev);
+        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._weekdaysShortRegex = this._weekdaysRegex;
+        this._weekdaysMinRegex = this._weekdaysRegex;
+        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+    }
+    // FORMATTING
+    function hFormat() {
+        return this.hours() % 12 || 12;
+    }
+    function kFormat() {
+        return this.hours() || 24;
+    }
+    addFormatToken('H', [
+        'HH',
+        2
+    ], 0, 'hour');
+    addFormatToken('h', [
+        'hh',
+        2
+    ], 0, hFormat);
+    addFormatToken('k', [
+        'kk',
+        2
+    ], 0, kFormat);
+    addFormatToken('hmm', 0, 0, function() {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+    });
+    addFormatToken('hmmss', 0, 0, function() {
+        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
+    });
+    addFormatToken('Hmm', 0, 0, function() {
+        return '' + this.hours() + zeroFill(this.minutes(), 2);
+    });
+    addFormatToken('Hmmss', 0, 0, function() {
+        return '' + this.hours() + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
+    });
+    function meridiem(token, lowercase) {
+        addFormatToken(token, 0, 0, function() {
+            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
+        });
+    }
+    meridiem('a', true);
+    meridiem('A', false);
+    // ALIASES
+    addUnitAlias('hour', 'h');
+    // PRIORITY
+    addUnitPriority('hour', 13);
+    // PARSING
+    function matchMeridiem(isStrict, locale) {
+        return locale._meridiemParse;
+    }
+    addRegexToken('a', matchMeridiem);
+    addRegexToken('A', matchMeridiem);
+    addRegexToken('H', match1to2);
+    addRegexToken('h', match1to2);
+    addRegexToken('k', match1to2);
+    addRegexToken('HH', match1to2, match2);
+    addRegexToken('hh', match1to2, match2);
+    addRegexToken('kk', match1to2, match2);
+    addRegexToken('hmm', match3to4);
+    addRegexToken('hmmss', match5to6);
+    addRegexToken('Hmm', match3to4);
+    addRegexToken('Hmmss', match5to6);
+    addParseToken([
+        'H',
+        'HH'
+    ], HOUR);
+    addParseToken([
+        'k',
+        'kk'
+    ], function(input, array, config) {
+        var kInput = toInt(input);
+        array[HOUR] = kInput === 24 ? 0 : kInput;
+    });
+    addParseToken([
+        'a',
+        'A'
+    ], function(input, array, config) {
+        config._isPm = config._locale.isPM(input);
+        config._meridiem = input;
+    });
+    addParseToken([
+        'h',
+        'hh'
+    ], function(input, array, config) {
+        array[HOUR] = toInt(input);
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmm', function(input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('hmmss', function(input, array, config) {
+        var pos1 = input.length - 4, pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
+        getParsingFlags(config).bigHour = true;
+    });
+    addParseToken('Hmm', function(input, array, config) {
+        var pos = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos));
+        array[MINUTE] = toInt(input.substr(pos));
+    });
+    addParseToken('Hmmss', function(input, array, config) {
+        var pos1 = input.length - 4, pos2 = input.length - 2;
+        array[HOUR] = toInt(input.substr(0, pos1));
+        array[MINUTE] = toInt(input.substr(pos1, 2));
+        array[SECOND] = toInt(input.substr(pos2));
+    });
+    // LOCALES
+    function localeIsPM(input) {
+        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+        // Using charAt should be more compatible.
+        return (input + '').toLowerCase().charAt(0) === 'p';
+    }
+    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i, // Setting the hour should keep the time, because the user explicitly
+    // specified which hour they want. So trying to maintain the same hour (in
+    // a new timezone) makes sense. Adding/subtracting hours does not follow
+    // this rule.
+    getSetHour = makeGetSet('Hours', true);
+    function localeMeridiem(hours, minutes, isLower) {
+        if (hours > 11) return isLower ? 'pm' : 'PM';
+        else return isLower ? 'am' : 'AM';
+    }
+    var baseConfig = {
+        calendar: defaultCalendar,
+        longDateFormat: defaultLongDateFormat,
+        invalidDate: defaultInvalidDate,
+        ordinal: defaultOrdinal,
+        dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
+        relativeTime: defaultRelativeTime,
+        months: defaultLocaleMonths,
+        monthsShort: defaultLocaleMonthsShort,
+        week: defaultLocaleWeek,
+        weekdays: defaultLocaleWeekdays,
+        weekdaysMin: defaultLocaleWeekdaysMin,
+        weekdaysShort: defaultLocaleWeekdaysShort,
+        meridiemParse: defaultLocaleMeridiemParse
     };
-}
-function onlyChild(children) {
-    return Array.isArray(children) ? children[0] : children;
-}
-function createReactContext(defaultValue, calculateChangedBits) {
-    var _Provider$childContex, _Consumer$contextType;
-    var contextProp = '__create-react-context-' + getUniqueId() + '__';
-    var Provider1 = /*#__PURE__*/ function(_Component) {
-        _inheritsLooseDefault.default(Provider2, _Component);
-        function Provider2() {
-            var _this;
-            _this = _Component.apply(this, arguments) || this;
-            _this.emitter = createEventEmitter(_this.props.value);
-            return _this;
+    // internal storage for locale config files
+    var locales = {
+    }, localeFamilies = {
+    }, globalLocale;
+    function commonPrefix(arr1, arr2) {
+        var i, minl = Math.min(arr1.length, arr2.length);
+        for(i = 0; i < minl; i += 1){
+            if (arr1[i] !== arr2[i]) return i;
         }
-        var _proto = Provider2.prototype;
-        _proto.getChildContext = function getChildContext() {
-            var _ref;
-            return _ref = {
-            }, _ref[contextProp] = this.emitter, _ref;
-        };
-        _proto.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-            if (this.props.value !== nextProps.value) {
-                var oldValue = this.props.value;
-                var newValue = nextProps.value;
-                var changedBits;
-                if (objectIs(oldValue, newValue)) changedBits = 0;
+        return minl;
+    }
+    function normalizeLocale(key) {
+        return key ? key.toLowerCase().replace('_', '-') : key;
+    }
+    // pick the locale from the array
+    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
+    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+    function chooseLocale(names) {
+        var i = 0, j, next, locale, split;
+        while(i < names.length){
+            split = normalizeLocale(names[i]).split('-');
+            j = split.length;
+            next = normalizeLocale(names[i + 1]);
+            next = next ? next.split('-') : null;
+            while(j > 0){
+                locale = loadLocale(split.slice(0, j).join('-'));
+                if (locale) return locale;
+                if (next && next.length >= j && commonPrefix(split, next) >= j - 1) break;
+                j--;
+            }
+            i++;
+        }
+        return globalLocale;
+    }
+    function isLocaleNameSane(name) {
+        // Prevent names that look like filesystem paths, i.e contain '/' or '\'
+        return name.match('^[^/\\\\]*$') != null;
+    }
+    function loadLocale(name) {
+        var oldLocale = null, aliasedRequire;
+        // TODO: Find a better way to register and load all the locales in Node
+        if (locales[name] === undefined && typeof module !== 'undefined' && module && module.exports && isLocaleNameSane(name)) try {
+            oldLocale = globalLocale._abbr;
+            aliasedRequire = undefined;
+            aliasedRequire('./locale/' + name);
+            getSetGlobalLocale(oldLocale);
+        } catch (e) {
+            // mark as not found to avoid repeating expensive file require call causing high CPU
+            // when trying to find en-US, en_US, en-us for every format call
+            locales[name] = null; // null means not found
+        }
+        return locales[name];
+    }
+    // This function will load locale and then set the global locale.  If
+    // no arguments are passed in, it will simply return the current global
+    // locale key.
+    function getSetGlobalLocale(key, values) {
+        var data;
+        if (key) {
+            if (isUndefined(values)) data = getLocale(key);
+            else data = defineLocale(key, values);
+            if (data) // moment.duration._locale = moment._locale = data;
+            globalLocale = data;
+            else if (typeof console !== 'undefined' && console.warn) //warn user if arguments are passed but the locale could not be set
+            console.warn('Locale ' + key + ' not found. Did you forget to load it?');
+        }
+        return globalLocale._abbr;
+    }
+    function defineLocale(name, config) {
+        if (config !== null) {
+            var locale, parentConfig = baseConfig;
+            config.abbr = name;
+            if (locales[name] != null) {
+                deprecateSimple('defineLocaleOverride', "use moment.updateLocale(localeName, config) to change an existing locale. moment.defineLocale(localeName, config) should only be used for creating a new locale See http://momentjs.com/guides/#/warnings/define-locale/ for more info.");
+                parentConfig = locales[name]._config;
+            } else if (config.parentLocale != null) {
+                if (locales[config.parentLocale] != null) parentConfig = locales[config.parentLocale]._config;
                 else {
-                    changedBits = typeof calculateChangedBits === 'function' ? calculateChangedBits(oldValue, newValue) : MAX_SIGNED_31_BIT_INT;
-                    _tinyWarningDefault.default((changedBits & MAX_SIGNED_31_BIT_INT) === changedBits, "calculateChangedBits: Expected the return value to be a 31-bit integer. Instead received: " + changedBits);
-                    changedBits |= 0;
-                    if (changedBits !== 0) this.emitter.set(nextProps.value, changedBits);
+                    locale = loadLocale(config.parentLocale);
+                    if (locale != null) parentConfig = locale._config;
+                    else {
+                        if (!localeFamilies[config.parentLocale]) localeFamilies[config.parentLocale] = [];
+                        localeFamilies[config.parentLocale].push({
+                            name: name,
+                            config: config
+                        });
+                        return null;
+                    }
                 }
             }
-        };
-        _proto.render = function render() {
-            return this.props.children;
-        };
-        return Provider2;
-    }(_react.Component);
-    Provider1.childContextTypes = (_Provider$childContex = {
-    }, _Provider$childContex[contextProp] = _propTypesDefault.default.object.isRequired, _Provider$childContex);
-    var Consumer1 = /*#__PURE__*/ function(_Component2) {
-        _inheritsLooseDefault.default(Consumer2, _Component2);
-        function Consumer2() {
-            var _this2;
-            _this2 = _Component2.apply(this, arguments) || this;
-            _this2.state = {
-                value: _this2.getValue()
-            };
-            _this2.onUpdate = function(newValue, changedBits) {
-                var observedBits = _this2.observedBits | 0;
-                if ((observedBits & changedBits) !== 0) _this2.setState({
-                    value: _this2.getValue()
-                });
-            };
-            return _this2;
+            locales[name] = new Locale(mergeConfigs(parentConfig, config));
+            if (localeFamilies[name]) localeFamilies[name].forEach(function(x) {
+                defineLocale(x.name, x.config);
+            });
+            // backwards compat for now: also set the locale
+            // make sure we set the locale AFTER all child locales have been
+            // created, so we won't end up with the child locale set.
+            getSetGlobalLocale(name);
+            return locales[name];
+        } else {
+            // useful for testing
+            delete locales[name];
+            return null;
         }
-        var _proto2 = Consumer2.prototype;
-        _proto2.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-            var observedBits = nextProps.observedBits;
-            this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT : observedBits;
-        };
-        _proto2.componentDidMount = function componentDidMount() {
-            if (this.context[contextProp]) this.context[contextProp].on(this.onUpdate);
-            var observedBits = this.props.observedBits;
-            this.observedBits = observedBits === undefined || observedBits === null ? MAX_SIGNED_31_BIT_INT : observedBits;
-        };
-        _proto2.componentWillUnmount = function componentWillUnmount() {
-            if (this.context[contextProp]) this.context[contextProp].off(this.onUpdate);
-        };
-        _proto2.getValue = function getValue() {
-            if (this.context[contextProp]) return this.context[contextProp].get();
-            else return defaultValue;
-        };
-        _proto2.render = function render() {
-            return onlyChild(this.props.children)(this.state.value);
-        };
-        return Consumer2;
-    }(_react.Component);
-    Consumer1.contextTypes = (_Consumer$contextType = {
-    }, _Consumer$contextType[contextProp] = _propTypesDefault.default.object, _Consumer$contextType);
-    return {
-        Provider: Provider1,
-        Consumer: Consumer1
+    }
+    function updateLocale(name, config) {
+        if (config != null) {
+            var locale, tmpLocale, parentConfig = baseConfig;
+            if (locales[name] != null && locales[name].parentLocale != null) // Update existing child locale in-place to avoid memory-leaks
+            locales[name].set(mergeConfigs(locales[name]._config, config));
+            else {
+                // MERGE
+                tmpLocale = loadLocale(name);
+                if (tmpLocale != null) parentConfig = tmpLocale._config;
+                config = mergeConfigs(parentConfig, config);
+                if (tmpLocale == null) // updateLocale is called for creating a new locale
+                // Set abbr so it will have a name (getters return
+                // undefined otherwise).
+                config.abbr = name;
+                locale = new Locale(config);
+                locale.parentLocale = locales[name];
+                locales[name] = locale;
+            }
+            // backwards compat for now: also set the locale
+            getSetGlobalLocale(name);
+        } else // pass null for config to unupdate, useful for tests
+        if (locales[name] != null) {
+            if (locales[name].parentLocale != null) {
+                locales[name] = locales[name].parentLocale;
+                if (name === getSetGlobalLocale()) getSetGlobalLocale(name);
+            } else if (locales[name] != null) delete locales[name];
+        }
+        return locales[name];
+    }
+    // returns locale data
+    function getLocale(key) {
+        var locale;
+        if (key && key._locale && key._locale._abbr) key = key._locale._abbr;
+        if (!key) return globalLocale;
+        if (!isArray(key)) {
+            //short-circuit everything else
+            locale = loadLocale(key);
+            if (locale) return locale;
+            key = [
+                key
+            ];
+        }
+        return chooseLocale(key);
+    }
+    function listLocales() {
+        return keys(locales);
+    }
+    function checkOverflow(m) {
+        var overflow, a = m._a;
+        if (a && getParsingFlags(m).overflow === -2) {
+            overflow = a[MONTH] < 0 || a[MONTH] > 11 ? MONTH : a[DATE] < 1 || a[DATE] > daysInMonth(a[YEAR], a[MONTH]) ? DATE : a[HOUR] < 0 || a[HOUR] > 24 || a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0) ? HOUR : a[MINUTE] < 0 || a[MINUTE] > 59 ? MINUTE : a[SECOND] < 0 || a[SECOND] > 59 ? SECOND : a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND : -1;
+            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) overflow = DATE;
+            if (getParsingFlags(m)._overflowWeeks && overflow === -1) overflow = WEEK;
+            if (getParsingFlags(m)._overflowWeekday && overflow === -1) overflow = WEEKDAY;
+            getParsingFlags(m).overflow = overflow;
+        }
+        return m;
+    }
+    // iso 8601 regex
+    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d|))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, tzRegex = /Z|[+-]\d\d(?::?\d\d)?/, isoDates = [
+        [
+            'YYYYYY-MM-DD',
+            /[+-]\d{6}-\d\d-\d\d/
+        ],
+        [
+            'YYYY-MM-DD',
+            /\d{4}-\d\d-\d\d/
+        ],
+        [
+            'GGGG-[W]WW-E',
+            /\d{4}-W\d\d-\d/
+        ],
+        [
+            'GGGG-[W]WW',
+            /\d{4}-W\d\d/,
+            false
+        ],
+        [
+            'YYYY-DDD',
+            /\d{4}-\d{3}/
+        ],
+        [
+            'YYYY-MM',
+            /\d{4}-\d\d/,
+            false
+        ],
+        [
+            'YYYYYYMMDD',
+            /[+-]\d{10}/
+        ],
+        [
+            'YYYYMMDD',
+            /\d{8}/
+        ],
+        [
+            'GGGG[W]WWE',
+            /\d{4}W\d{3}/
+        ],
+        [
+            'GGGG[W]WW',
+            /\d{4}W\d{2}/,
+            false
+        ],
+        [
+            'YYYYDDD',
+            /\d{7}/
+        ],
+        [
+            'YYYYMM',
+            /\d{6}/,
+            false
+        ],
+        [
+            'YYYY',
+            /\d{4}/,
+            false
+        ], 
+    ], // iso time formats and regexes
+    isoTimes = [
+        [
+            'HH:mm:ss.SSSS',
+            /\d\d:\d\d:\d\d\.\d+/
+        ],
+        [
+            'HH:mm:ss,SSSS',
+            /\d\d:\d\d:\d\d,\d+/
+        ],
+        [
+            'HH:mm:ss',
+            /\d\d:\d\d:\d\d/
+        ],
+        [
+            'HH:mm',
+            /\d\d:\d\d/
+        ],
+        [
+            'HHmmss.SSSS',
+            /\d\d\d\d\d\d\.\d+/
+        ],
+        [
+            'HHmmss,SSSS',
+            /\d\d\d\d\d\d,\d+/
+        ],
+        [
+            'HHmmss',
+            /\d\d\d\d\d\d/
+        ],
+        [
+            'HHmm',
+            /\d\d\d\d/
+        ],
+        [
+            'HH',
+            /\d\d/
+        ], 
+    ], aspNetJsonRegex = /^\/?Date\((-?\d+)/i, // RFC 2822 regex: For details see https://tools.ietf.org/html/rfc2822#section-3.3
+    rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/, obsOffsets = {
+        UT: 0,
+        GMT: 0,
+        EDT: -240,
+        EST: -300,
+        CDT: -300,
+        CST: -360,
+        MDT: -360,
+        MST: -420,
+        PDT: -420,
+        PST: -480
     };
-}
-var index = _reactDefault.default.createContext || createReactContext;
-exports.default = index;
+    // date from iso format
+    function configFromISO(config) {
+        var i, l, string = config._i, match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string), allowTime, dateFormat, timeFormat, tzFormat, isoDatesLen = isoDates.length, isoTimesLen = isoTimes.length;
+        if (match) {
+            getParsingFlags(config).iso = true;
+            for(i = 0, l = isoDatesLen; i < l; i++)if (isoDates[i][1].exec(match[1])) {
+                dateFormat = isoDates[i][0];
+                allowTime = isoDates[i][2] !== false;
+                break;
+            }
+            if (dateFormat == null) {
+                config._isValid = false;
+                return;
+            }
+            if (match[3]) {
+                for(i = 0, l = isoTimesLen; i < l; i++)if (isoTimes[i][1].exec(match[3])) {
+                    // match[2] should be 'T' or space
+                    timeFormat = (match[2] || ' ') + isoTimes[i][0];
+                    break;
+                }
+                if (timeFormat == null) {
+                    config._isValid = false;
+                    return;
+                }
+            }
+            if (!allowTime && timeFormat != null) {
+                config._isValid = false;
+                return;
+            }
+            if (match[4]) {
+                if (tzRegex.exec(match[4])) tzFormat = 'Z';
+                else {
+                    config._isValid = false;
+                    return;
+                }
+            }
+            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
+            configFromStringAndFormat(config);
+        } else config._isValid = false;
+    }
+    function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
+        var result = [
+            untruncateYear(yearStr),
+            defaultLocaleMonthsShort.indexOf(monthStr),
+            parseInt(dayStr, 10),
+            parseInt(hourStr, 10),
+            parseInt(minuteStr, 10), 
+        ];
+        if (secondStr) result.push(parseInt(secondStr, 10));
+        return result;
+    }
+    function untruncateYear(yearStr) {
+        var year = parseInt(yearStr, 10);
+        if (year <= 49) return 2000 + year;
+        else if (year <= 999) return 1900 + year;
+        return year;
+    }
+    function preprocessRFC2822(s) {
+        // Remove comments and folding whitespace and replace multiple-spaces with a single space
+        return s.replace(/\([^()]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
+    function checkWeekday(weekdayStr, parsedInput, config) {
+        if (weekdayStr) {
+            // TODO: Replace the vanilla JS Date object with an independent day-of-week check.
+            var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr), weekdayActual = new Date(parsedInput[0], parsedInput[1], parsedInput[2]).getDay();
+            if (weekdayProvided !== weekdayActual) {
+                getParsingFlags(config).weekdayMismatch = true;
+                config._isValid = false;
+                return false;
+            }
+        }
+        return true;
+    }
+    function calculateOffset(obsOffset, militaryOffset, numOffset) {
+        if (obsOffset) return obsOffsets[obsOffset];
+        else if (militaryOffset) // the only allowed military tz is Z
+        return 0;
+        else {
+            var hm = parseInt(numOffset, 10), m = hm % 100, h = (hm - m) / 100;
+            return h * 60 + m;
+        }
+    }
+    // date and time from ref 2822 format
+    function configFromRFC2822(config) {
+        var match = rfc2822.exec(preprocessRFC2822(config._i)), parsedArray;
+        if (match) {
+            parsedArray = extractFromRFC2822Strings(match[4], match[3], match[2], match[5], match[6], match[7]);
+            if (!checkWeekday(match[1], parsedArray, config)) return;
+            config._a = parsedArray;
+            config._tzm = calculateOffset(match[8], match[9], match[10]);
+            config._d = createUTCDate.apply(null, config._a);
+            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+            getParsingFlags(config).rfc2822 = true;
+        } else config._isValid = false;
+    }
+    // date from 1) ASP.NET, 2) ISO, 3) RFC 2822 formats, or 4) optional fallback if parsing isn't strict
+    function configFromString(config) {
+        var matched = aspNetJsonRegex.exec(config._i);
+        if (matched !== null) {
+            config._d = new Date(+matched[1]);
+            return;
+        }
+        configFromISO(config);
+        if (config._isValid === false) delete config._isValid;
+        else return;
+        configFromRFC2822(config);
+        if (config._isValid === false) delete config._isValid;
+        else return;
+        if (config._strict) config._isValid = false;
+        else // Final attempt, use Input Fallback
+        hooks.createFromInputFallback(config);
+    }
+    hooks.createFromInputFallback = deprecate("value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.", function(config) {
+        config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+    });
+    // Pick the first defined of two or three arguments.
+    function defaults(a, b, c) {
+        if (a != null) return a;
+        if (b != null) return b;
+        return c;
+    }
+    function currentDateArray(config) {
+        // hooks is actually the exported moment object
+        var nowValue = new Date(hooks.now());
+        if (config._useUTC) return [
+            nowValue.getUTCFullYear(),
+            nowValue.getUTCMonth(),
+            nowValue.getUTCDate(), 
+        ];
+        return [
+            nowValue.getFullYear(),
+            nowValue.getMonth(),
+            nowValue.getDate()
+        ];
+    }
+    // convert an array to a date.
+    // the array should mirror the parameters below
+    // note: all values past the year are optional and will default to the lowest possible value.
+    // [year, month, day , hour, minute, second, millisecond]
+    function configFromArray(config) {
+        var i, date, input = [], currentDate, expectedWeekday, yearToUse;
+        if (config._d) return;
+        currentDate = currentDateArray(config);
+        //compute day of the year from weeks and weekdays
+        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) dayOfYearFromWeekInfo(config);
+        //if the day of the year is set, figure out what it is
+        if (config._dayOfYear != null) {
+            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+            if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) getParsingFlags(config)._overflowDayOfYear = true;
+            date = createUTCDate(yearToUse, 0, config._dayOfYear);
+            config._a[MONTH] = date.getUTCMonth();
+            config._a[DATE] = date.getUTCDate();
+        }
+        // Default to current date.
+        // * if no year, month, day of month are given, default to today
+        // * if day of month is given, default month and year
+        // * if month is given, default only year
+        // * if year is given, don't default anything
+        for(i = 0; i < 3 && config._a[i] == null; ++i)config._a[i] = input[i] = currentDate[i];
+        // Zero out whatever was not defaulted, including time
+        for(; i < 7; i++)config._a[i] = input[i] = config._a[i] == null ? i === 2 ? 1 : 0 : config._a[i];
+        // Check for 24:00:00.000
+        if (config._a[HOUR] === 24 && config._a[MINUTE] === 0 && config._a[SECOND] === 0 && config._a[MILLISECOND] === 0) {
+            config._nextDay = true;
+            config._a[HOUR] = 0;
+        }
+        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+        expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
+        // Apply timezone offset from input. The actual utcOffset can be changed
+        // with parseZone.
+        if (config._tzm != null) config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+        if (config._nextDay) config._a[HOUR] = 24;
+        // check for mismatching day of week
+        if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) getParsingFlags(config).weekdayMismatch = true;
+    }
+    function dayOfYearFromWeekInfo(config) {
+        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow, curWeek;
+        w = config._w;
+        if (w.GG != null || w.W != null || w.E != null) {
+            dow = 1;
+            doy = 4;
+            // TODO: We need to take the current isoWeekYear, but that depends on
+            // how we interpret now (local, utc, fixed offset). So create
+            // a now version of current config (take local/utc/offset flags, and
+            // create now).
+            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+            week = defaults(w.W, 1);
+            weekday = defaults(w.E, 1);
+            if (weekday < 1 || weekday > 7) weekdayOverflow = true;
+        } else {
+            dow = config._locale._week.dow;
+            doy = config._locale._week.doy;
+            curWeek = weekOfYear(createLocal(), dow, doy);
+            weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+            // Default to current week.
+            week = defaults(w.w, curWeek.week);
+            if (w.d != null) {
+                // weekday -- low day numbers are considered next week
+                weekday = w.d;
+                if (weekday < 0 || weekday > 6) weekdayOverflow = true;
+            } else if (w.e != null) {
+                // local weekday -- counting starts from beginning of week
+                weekday = w.e + dow;
+                if (w.e < 0 || w.e > 6) weekdayOverflow = true;
+            } else // default to beginning of week
+            weekday = dow;
+        }
+        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) getParsingFlags(config)._overflowWeeks = true;
+        else if (weekdayOverflow != null) getParsingFlags(config)._overflowWeekday = true;
+        else {
+            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+            config._a[YEAR] = temp.year;
+            config._dayOfYear = temp.dayOfYear;
+        }
+    }
+    // constant that refers to the ISO standard
+    hooks.ISO_8601 = function() {
+    };
+    // constant that refers to the RFC 2822 form
+    hooks.RFC_2822 = function() {
+    };
+    // date from string and format string
+    function configFromStringAndFormat(config) {
+        // TODO: Move this to another part of the creation flow to prevent circular deps
+        if (config._f === hooks.ISO_8601) {
+            configFromISO(config);
+            return;
+        }
+        if (config._f === hooks.RFC_2822) {
+            configFromRFC2822(config);
+            return;
+        }
+        config._a = [];
+        getParsingFlags(config).empty = true;
+        // This array is used to make a Date, either with `new Date` or `Date.UTC`
+        var string = '' + config._i, i, parsedInput, tokens1, token, skipped, stringLength = string.length, totalParsedInputLength = 0, era, tokenLen;
+        tokens1 = expandFormat(config._f, config._locale).match(formattingTokens) || [];
+        tokenLen = tokens1.length;
+        for(i = 0; i < tokenLen; i++){
+            token = tokens1[i];
+            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+            if (parsedInput) {
+                skipped = string.substr(0, string.indexOf(parsedInput));
+                if (skipped.length > 0) getParsingFlags(config).unusedInput.push(skipped);
+                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
+                totalParsedInputLength += parsedInput.length;
+            }
+            // don't parse if it's not a known token
+            if (formatTokenFunctions[token]) {
+                if (parsedInput) getParsingFlags(config).empty = false;
+                else getParsingFlags(config).unusedTokens.push(token);
+                addTimeToArrayFromToken(token, parsedInput, config);
+            } else if (config._strict && !parsedInput) getParsingFlags(config).unusedTokens.push(token);
+        }
+        // add remaining unparsed input length to the string
+        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
+        if (string.length > 0) getParsingFlags(config).unusedInput.push(string);
+        // clear _12h flag if hour is <= 12
+        if (config._a[HOUR] <= 12 && getParsingFlags(config).bigHour === true && config._a[HOUR] > 0) getParsingFlags(config).bigHour = undefined;
+        getParsingFlags(config).parsedDateParts = config._a.slice(0);
+        getParsingFlags(config).meridiem = config._meridiem;
+        // handle meridiem
+        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
+        // handle era
+        era = getParsingFlags(config).era;
+        if (era !== null) config._a[YEAR] = config._locale.erasConvertYear(era, config._a[YEAR]);
+        configFromArray(config);
+        checkOverflow(config);
+    }
+    function meridiemFixWrap(locale, hour, meridiem1) {
+        var isPm;
+        if (meridiem1 == null) // nothing to do
+        return hour;
+        if (locale.meridiemHour != null) return locale.meridiemHour(hour, meridiem1);
+        else if (locale.isPM != null) {
+            // Fallback
+            isPm = locale.isPM(meridiem1);
+            if (isPm && hour < 12) hour += 12;
+            if (!isPm && hour === 12) hour = 0;
+            return hour;
+        } else // this is not supposed to happen
+        return hour;
+    }
+    // date from string and array of format strings
+    function configFromStringAndArray(config) {
+        var tempConfig, bestMoment, scoreToBeat, i, currentScore, validFormatFound, bestFormatIsValid = false, configfLen = config._f.length;
+        if (configfLen === 0) {
+            getParsingFlags(config).invalidFormat = true;
+            config._d = new Date(NaN);
+            return;
+        }
+        for(i = 0; i < configfLen; i++){
+            currentScore = 0;
+            validFormatFound = false;
+            tempConfig = copyConfig({
+            }, config);
+            if (config._useUTC != null) tempConfig._useUTC = config._useUTC;
+            tempConfig._f = config._f[i];
+            configFromStringAndFormat(tempConfig);
+            if (isValid(tempConfig)) validFormatFound = true;
+            // if there is any input that was not parsed add a penalty for that format
+            currentScore += getParsingFlags(tempConfig).charsLeftOver;
+            //or tokens
+            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
+            getParsingFlags(tempConfig).score = currentScore;
+            if (!bestFormatIsValid) {
+                if (scoreToBeat == null || currentScore < scoreToBeat || validFormatFound) {
+                    scoreToBeat = currentScore;
+                    bestMoment = tempConfig;
+                    if (validFormatFound) bestFormatIsValid = true;
+                }
+            } else if (currentScore < scoreToBeat) {
+                scoreToBeat = currentScore;
+                bestMoment = tempConfig;
+            }
+        }
+        extend(config, bestMoment || tempConfig);
+    }
+    function configFromObject(config) {
+        if (config._d) return;
+        var i = normalizeObjectUnits(config._i), dayOrDate = i.day === undefined ? i.date : i.day;
+        config._a = map([
+            i.year,
+            i.month,
+            dayOrDate,
+            i.hour,
+            i.minute,
+            i.second,
+            i.millisecond
+        ], function(obj) {
+            return obj && parseInt(obj, 10);
+        });
+        configFromArray(config);
+    }
+    function createFromConfig(config) {
+        var res = new Moment(checkOverflow(prepareConfig(config)));
+        if (res._nextDay) {
+            // Adding is smart enough around DST
+            res.add(1, 'd');
+            res._nextDay = undefined;
+        }
+        return res;
+    }
+    function prepareConfig(config) {
+        var input = config._i, format = config._f;
+        config._locale = config._locale || getLocale(config._l);
+        if (input === null || format === undefined && input === '') return createInvalid({
+            nullInput: true
+        });
+        if (typeof input === 'string') config._i = input = config._locale.preparse(input);
+        if (isMoment(input)) return new Moment(checkOverflow(input));
+        else if (isDate(input)) config._d = input;
+        else if (isArray(format)) configFromStringAndArray(config);
+        else if (format) configFromStringAndFormat(config);
+        else configFromInput(config);
+        if (!isValid(config)) config._d = null;
+        return config;
+    }
+    function configFromInput(config) {
+        var input = config._i;
+        if (isUndefined(input)) config._d = new Date(hooks.now());
+        else if (isDate(input)) config._d = new Date(input.valueOf());
+        else if (typeof input === 'string') configFromString(config);
+        else if (isArray(input)) {
+            config._a = map(input.slice(0), function(obj) {
+                return parseInt(obj, 10);
+            });
+            configFromArray(config);
+        } else if (isObject(input)) configFromObject(config);
+        else if (isNumber(input)) // from milliseconds
+        config._d = new Date(input);
+        else hooks.createFromInputFallback(config);
+    }
+    function createLocalOrUTC(input, format, locale, strict, isUTC) {
+        var c = {
+        };
+        if (format === true || format === false) {
+            strict = format;
+            format = undefined;
+        }
+        if (locale === true || locale === false) {
+            strict = locale;
+            locale = undefined;
+        }
+        if (isObject(input) && isObjectEmpty(input) || isArray(input) && input.length === 0) input = undefined;
+        // object construction must be done this way.
+        // https://github.com/moment/moment/issues/1423
+        c._isAMomentObject = true;
+        c._useUTC = c._isUTC = isUTC;
+        c._l = locale;
+        c._i = input;
+        c._f = format;
+        c._strict = strict;
+        return createFromConfig(c);
+    }
+    function createLocal(input, format, locale, strict) {
+        return createLocalOrUTC(input, format, locale, strict, false);
+    }
+    var prototypeMin = deprecate('moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/', function() {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) return other < this ? this : other;
+        else return createInvalid();
+    }), prototypeMax = deprecate('moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/', function() {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) return other > this ? this : other;
+        else return createInvalid();
+    });
+    // Pick a moment m from moments so that m[fn](other) is true for all
+    // other. This relies on the function fn to be transitive.
+    //
+    // moments should either be an array of moment objects or an array, whose
+    // first element is an array of moment objects.
+    function pickBy(fn, moments) {
+        var res, i;
+        if (moments.length === 1 && isArray(moments[0])) moments = moments[0];
+        if (!moments.length) return createLocal();
+        res = moments[0];
+        for(i = 1; i < moments.length; ++i)if (!moments[i].isValid() || moments[i][fn](res)) res = moments[i];
+        return res;
+    }
+    // TODO: Use [].sort instead?
+    function min() {
+        var args = [].slice.call(arguments, 0);
+        return pickBy('isBefore', args);
+    }
+    function max() {
+        var args = [].slice.call(arguments, 0);
+        return pickBy('isAfter', args);
+    }
+    var now = function() {
+        return Date.now ? Date.now() : +new Date();
+    };
+    var ordering = [
+        'year',
+        'quarter',
+        'month',
+        'week',
+        'day',
+        'hour',
+        'minute',
+        'second',
+        'millisecond', 
+    ];
+    function isDurationValid(m) {
+        var key, unitHasDecimal = false, i, orderLen = ordering.length;
+        for(key in m){
+            if (hasOwnProp(m, key) && !(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) return false;
+        }
+        for(i = 0; i < orderLen; ++i)if (m[ordering[i]]) {
+            if (unitHasDecimal) return false; // only allow non-integers for smallest unit
+            if (parseFloat(m[ordering[i]]) !== toInt(m[ordering[i]])) unitHasDecimal = true;
+        }
+        return true;
+    }
+    function isValid$1() {
+        return this._isValid;
+    }
+    function createInvalid$1() {
+        return createDuration(NaN);
+    }
+    function Duration(duration) {
+        var normalizedInput = normalizeObjectUnits(duration), years = normalizedInput.year || 0, quarters = normalizedInput.quarter || 0, months = normalizedInput.month || 0, weeks = normalizedInput.week || normalizedInput.isoWeek || 0, days = normalizedInput.day || 0, hours = normalizedInput.hour || 0, minutes = normalizedInput.minute || 0, seconds = normalizedInput.second || 0, milliseconds = normalizedInput.millisecond || 0;
+        this._isValid = isDurationValid(normalizedInput);
+        // representation for dateAddRemove
+        this._milliseconds = +milliseconds + seconds * 1000 + minutes * 60000 + hours * 3600000; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
+        // Because of dateAddRemove treats 24 hours as different from a
+        // day when working around DST, we need to store them separately
+        this._days = +days + weeks * 7;
+        // It is impossible to translate months into days without knowing
+        // which months you are are talking about, so we have to store
+        // it separately.
+        this._months = +months + quarters * 3 + years * 12;
+        this._data = {
+        };
+        this._locale = getLocale();
+        this._bubble();
+    }
+    function isDuration(obj) {
+        return obj instanceof Duration;
+    }
+    function absRound(number) {
+        if (number < 0) return Math.round(-1 * number) * -1;
+        else return Math.round(number);
+    }
+    // compare two arrays, return the number of differences
+    function compareArrays(array1, array2, dontConvert) {
+        var len = Math.min(array1.length, array2.length), lengthDiff = Math.abs(array1.length - array2.length), diffs = 0, i;
+        for(i = 0; i < len; i++)if (dontConvert && array1[i] !== array2[i] || !dontConvert && toInt(array1[i]) !== toInt(array2[i])) diffs++;
+        return diffs + lengthDiff;
+    }
+    // FORMATTING
+    function offset(token, separator) {
+        addFormatToken(token, 0, 0, function() {
+            var offset1 = this.utcOffset(), sign = '+';
+            if (offset1 < 0) {
+                offset1 = -offset1;
+                sign = '-';
+            }
+            return sign + zeroFill(~~(offset1 / 60), 2) + separator + zeroFill(~~offset1 % 60, 2);
+        });
+    }
+    offset('Z', ':');
+    offset('ZZ', '');
+    // PARSING
+    addRegexToken('Z', matchShortOffset);
+    addRegexToken('ZZ', matchShortOffset);
+    addParseToken([
+        'Z',
+        'ZZ'
+    ], function(input, array, config) {
+        config._useUTC = true;
+        config._tzm = offsetFromString(matchShortOffset, input);
+    });
+    // HELPERS
+    // timezone chunker
+    // '+10:00' > ['10',  '00']
+    // '-1530'  > ['-15', '30']
+    var chunkOffset = /([\+\-]|\d\d)/gi;
+    function offsetFromString(matcher, string) {
+        var matches = (string || '').match(matcher), chunk, parts, minutes;
+        if (matches === null) return null;
+        chunk = matches[matches.length - 1] || [];
+        parts = (chunk + '').match(chunkOffset) || [
+            '-',
+            0,
+            0
+        ];
+        minutes = +(parts[1] * 60) + toInt(parts[2]);
+        return minutes === 0 ? 0 : parts[0] === '+' ? minutes : -minutes;
+    }
+    // Return a moment from input, that is local/utc/zone equivalent to model.
+    function cloneWithOffset(input, model) {
+        var res, diff;
+        if (model._isUTC) {
+            res = model.clone();
+            diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
+            // Use low-level api, because this fn is low-level api.
+            res._d.setTime(res._d.valueOf() + diff);
+            hooks.updateOffset(res, false);
+            return res;
+        } else return createLocal(input).local();
+    }
+    function getDateOffset(m) {
+        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+        // https://github.com/moment/moment/pull/1871
+        return -Math.round(m._d.getTimezoneOffset());
+    }
+    // HOOKS
+    // This function will be called whenever a moment is mutated.
+    // It is intended to keep the offset in sync with the timezone.
+    hooks.updateOffset = function() {
+    };
+    // MOMENTS
+    // keepLocalTime = true means only change the timezone, without
+    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+    // +0200, so we adjust the time as needed, to be valid.
+    //
+    // Keeping the time actually adds/subtracts (one hour)
+    // from the actual represented time. That is why we call updateOffset
+    // a second time. In case it wants us to change the offset again
+    // _changeInProgress == true case, then we have to adjust, because
+    // there is no such time in the given timezone.
+    function getSetOffset(input, keepLocalTime, keepMinutes) {
+        var offset1 = this._offset || 0, localAdjust;
+        if (!this.isValid()) return input != null ? this : NaN;
+        if (input != null) {
+            if (typeof input === 'string') {
+                input = offsetFromString(matchShortOffset, input);
+                if (input === null) return this;
+            } else if (Math.abs(input) < 16 && !keepMinutes) input = input * 60;
+            if (!this._isUTC && keepLocalTime) localAdjust = getDateOffset(this);
+            this._offset = input;
+            this._isUTC = true;
+            if (localAdjust != null) this.add(localAdjust, 'm');
+            if (offset1 !== input) {
+                if (!keepLocalTime || this._changeInProgress) addSubtract(this, createDuration(input - offset1, 'm'), 1, false);
+                else if (!this._changeInProgress) {
+                    this._changeInProgress = true;
+                    hooks.updateOffset(this, true);
+                    this._changeInProgress = null;
+                }
+            }
+            return this;
+        } else return this._isUTC ? offset1 : getDateOffset(this);
+    }
+    function getSetZone(input, keepLocalTime) {
+        if (input != null) {
+            if (typeof input !== 'string') input = -input;
+            this.utcOffset(input, keepLocalTime);
+            return this;
+        } else return -this.utcOffset();
+    }
+    function setOffsetToUTC(keepLocalTime) {
+        return this.utcOffset(0, keepLocalTime);
+    }
+    function setOffsetToLocal(keepLocalTime) {
+        if (this._isUTC) {
+            this.utcOffset(0, keepLocalTime);
+            this._isUTC = false;
+            if (keepLocalTime) this.subtract(getDateOffset(this), 'm');
+        }
+        return this;
+    }
+    function setOffsetToParsedOffset() {
+        if (this._tzm != null) this.utcOffset(this._tzm, false, true);
+        else if (typeof this._i === 'string') {
+            var tZone = offsetFromString(matchOffset, this._i);
+            if (tZone != null) this.utcOffset(tZone);
+            else this.utcOffset(0, true);
+        }
+        return this;
+    }
+    function hasAlignedHourOffset(input) {
+        if (!this.isValid()) return false;
+        input = input ? createLocal(input).utcOffset() : 0;
+        return (this.utcOffset() - input) % 60 === 0;
+    }
+    function isDaylightSavingTime() {
+        return this.utcOffset() > this.clone().month(0).utcOffset() || this.utcOffset() > this.clone().month(5).utcOffset();
+    }
+    function isDaylightSavingTimeShifted() {
+        if (!isUndefined(this._isDSTShifted)) return this._isDSTShifted;
+        var c = {
+        }, other;
+        copyConfig(c, this);
+        c = prepareConfig(c);
+        if (c._a) {
+            other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
+            this._isDSTShifted = this.isValid() && compareArrays(c._a, other.toArray()) > 0;
+        } else this._isDSTShifted = false;
+        return this._isDSTShifted;
+    }
+    function isLocal() {
+        return this.isValid() ? !this._isUTC : false;
+    }
+    function isUtcOffset() {
+        return this.isValid() ? this._isUTC : false;
+    }
+    function isUtc() {
+        return this.isValid() ? this._isUTC && this._offset === 0 : false;
+    }
+    // ASP.NET json date format regex
+    var aspNetRegex = /^(-|\+)?(?:(\d*)[. ])?(\d+):(\d+)(?::(\d+)(\.\d*)?)?$/, // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+    // and further modified to allow for strings containing both week and day
+    isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
+    function createDuration(input, key) {
+        var duration = input, // matching against regexp is expensive, do it on demand
+        match = null, sign, ret, diffRes;
+        if (isDuration(input)) duration = {
+            ms: input._milliseconds,
+            d: input._days,
+            M: input._months
+        };
+        else if (isNumber(input) || !isNaN(+input)) {
+            duration = {
+            };
+            if (key) duration[key] = +input;
+            else duration.milliseconds = +input;
+        } else if (match = aspNetRegex.exec(input)) {
+            sign = match[1] === '-' ? -1 : 1;
+            duration = {
+                y: 0,
+                d: toInt(match[DATE]) * sign,
+                h: toInt(match[HOUR]) * sign,
+                m: toInt(match[MINUTE]) * sign,
+                s: toInt(match[SECOND]) * sign,
+                ms: toInt(absRound(match[MILLISECOND] * 1000)) * sign
+            };
+        } else if (match = isoRegex.exec(input)) {
+            sign = match[1] === '-' ? -1 : 1;
+            duration = {
+                y: parseIso(match[2], sign),
+                M: parseIso(match[3], sign),
+                w: parseIso(match[4], sign),
+                d: parseIso(match[5], sign),
+                h: parseIso(match[6], sign),
+                m: parseIso(match[7], sign),
+                s: parseIso(match[8], sign)
+            };
+        } else if (duration == null) // checks for null or undefined
+        duration = {
+        };
+        else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
+            diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
+            duration = {
+            };
+            duration.ms = diffRes.milliseconds;
+            duration.M = diffRes.months;
+        }
+        ret = new Duration(duration);
+        if (isDuration(input) && hasOwnProp(input, '_locale')) ret._locale = input._locale;
+        if (isDuration(input) && hasOwnProp(input, '_isValid')) ret._isValid = input._isValid;
+        return ret;
+    }
+    createDuration.fn = Duration.prototype;
+    createDuration.invalid = createInvalid$1;
+    function parseIso(inp, sign) {
+        // We'd normally use ~~inp for this, but unfortunately it also
+        // converts floats to ints.
+        // inp may be undefined, so careful calling replace on it.
+        var res = inp && parseFloat(inp.replace(',', '.'));
+        // apply sign while we're at it
+        return (isNaN(res) ? 0 : res) * sign;
+    }
+    function positiveMomentsDifference(base, other) {
+        var res = {
+        };
+        res.months = other.month() - base.month() + (other.year() - base.year()) * 12;
+        if (base.clone().add(res.months, 'M').isAfter(other)) --res.months;
+        res.milliseconds = +other - +base.clone().add(res.months, 'M');
+        return res;
+    }
+    function momentsDifference(base, other) {
+        var res;
+        if (!(base.isValid() && other.isValid())) return {
+            milliseconds: 0,
+            months: 0
+        };
+        other = cloneWithOffset(other, base);
+        if (base.isBefore(other)) res = positiveMomentsDifference(base, other);
+        else {
+            res = positiveMomentsDifference(other, base);
+            res.milliseconds = -res.milliseconds;
+            res.months = -res.months;
+        }
+        return res;
+    }
+    // TODO: remove 'name' arg after deprecation is removed
+    function createAdder(direction, name) {
+        return function(val, period) {
+            var dur, tmp;
+            //invert the arguments, but complain about it
+            if (period !== null && !isNaN(+period)) {
+                deprecateSimple(name, 'moment().' + name + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' + 'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
+                tmp = val;
+                val = period;
+                period = tmp;
+            }
+            dur = createDuration(val, period);
+            addSubtract(this, dur, direction);
+            return this;
+        };
+    }
+    function addSubtract(mom, duration, isAdding, updateOffset) {
+        var milliseconds = duration._milliseconds, days = absRound(duration._days), months = absRound(duration._months);
+        if (!mom.isValid()) // No op
+        return;
+        updateOffset = updateOffset == null ? true : updateOffset;
+        if (months) setMonth(mom, get(mom, 'Month') + months * isAdding);
+        if (days) set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
+        if (milliseconds) mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+        if (updateOffset) hooks.updateOffset(mom, days || months);
+    }
+    var add = createAdder(1, 'add'), subtract = createAdder(-1, 'subtract');
+    function isString(input) {
+        return typeof input === 'string' || input instanceof String;
+    }
+    // type MomentInput = Moment | Date | string | number | (number | string)[] | MomentInputObject | void; // null | undefined
+    function isMomentInput(input) {
+        return isMoment(input) || isDate(input) || isString(input) || isNumber(input) || isNumberOrStringArray(input) || isMomentInputObject(input) || input === null || input === undefined;
+    }
+    function isMomentInputObject(input) {
+        var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties = [
+            'years',
+            'year',
+            'y',
+            'months',
+            'month',
+            'M',
+            'days',
+            'day',
+            'd',
+            'dates',
+            'date',
+            'D',
+            'hours',
+            'hour',
+            'h',
+            'minutes',
+            'minute',
+            'm',
+            'seconds',
+            'second',
+            's',
+            'milliseconds',
+            'millisecond',
+            'ms', 
+        ], i, property, propertyLen = properties.length;
+        for(i = 0; i < propertyLen; i += 1){
+            property = properties[i];
+            propertyTest = propertyTest || hasOwnProp(input, property);
+        }
+        return objectTest && propertyTest;
+    }
+    function isNumberOrStringArray(input) {
+        var arrayTest = isArray(input), dataTypeTest = false;
+        if (arrayTest) dataTypeTest = input.filter(function(item) {
+            return !isNumber(item) && isString(input);
+        }).length === 0;
+        return arrayTest && dataTypeTest;
+    }
+    function isCalendarSpec(input) {
+        var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties = [
+            'sameDay',
+            'nextDay',
+            'lastDay',
+            'nextWeek',
+            'lastWeek',
+            'sameElse', 
+        ], i, property;
+        for(i = 0; i < properties.length; i += 1){
+            property = properties[i];
+            propertyTest = propertyTest || hasOwnProp(input, property);
+        }
+        return objectTest && propertyTest;
+    }
+    function getCalendarFormat(myMoment, now1) {
+        var diff = myMoment.diff(now1, 'days', true);
+        return diff < -6 ? 'sameElse' : diff < -1 ? 'lastWeek' : diff < 0 ? 'lastDay' : diff < 1 ? 'sameDay' : diff < 2 ? 'nextDay' : diff < 7 ? 'nextWeek' : 'sameElse';
+    }
+    function calendar$1(time, formats) {
+        // Support for single parameter, formats only overload to the calendar function
+        if (arguments.length === 1) {
+            if (!arguments[0]) {
+                time = undefined;
+                formats = undefined;
+            } else if (isMomentInput(arguments[0])) {
+                time = arguments[0];
+                formats = undefined;
+            } else if (isCalendarSpec(arguments[0])) {
+                formats = arguments[0];
+                time = undefined;
+            }
+        }
+        // We want to compare the start of today, vs this.
+        // Getting start-of-today depends on whether we're local/utc/offset or not.
+        var now1 = time || createLocal(), sod = cloneWithOffset(now1, this).startOf('day'), format = hooks.calendarFormat(this, sod) || 'sameElse', output = formats && (isFunction(formats[format]) ? formats[format].call(this, now1) : formats[format]);
+        return this.format(output || this.localeData().calendar(format, this, createLocal(now1)));
+    }
+    function clone() {
+        return new Moment(this);
+    }
+    function isAfter(input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) return false;
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') return this.valueOf() > localInput.valueOf();
+        else return localInput.valueOf() < this.clone().startOf(units).valueOf();
+    }
+    function isBefore(input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input);
+        if (!(this.isValid() && localInput.isValid())) return false;
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') return this.valueOf() < localInput.valueOf();
+        else return this.clone().endOf(units).valueOf() < localInput.valueOf();
+    }
+    function isBetween(from, to, units, inclusivity) {
+        var localFrom = isMoment(from) ? from : createLocal(from), localTo = isMoment(to) ? to : createLocal(to);
+        if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) return false;
+        inclusivity = inclusivity || '()';
+        return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) && (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
+    }
+    function isSame(input, units) {
+        var localInput = isMoment(input) ? input : createLocal(input), inputMs;
+        if (!(this.isValid() && localInput.isValid())) return false;
+        units = normalizeUnits(units) || 'millisecond';
+        if (units === 'millisecond') return this.valueOf() === localInput.valueOf();
+        else {
+            inputMs = localInput.valueOf();
+            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
+        }
+    }
+    function isSameOrAfter(input, units) {
+        return this.isSame(input, units) || this.isAfter(input, units);
+    }
+    function isSameOrBefore(input, units) {
+        return this.isSame(input, units) || this.isBefore(input, units);
+    }
+    function diff(input, units, asFloat) {
+        var that, zoneDelta, output;
+        if (!this.isValid()) return NaN;
+        that = cloneWithOffset(input, this);
+        if (!that.isValid()) return NaN;
+        zoneDelta = (that.utcOffset() - this.utcOffset()) * 60000;
+        units = normalizeUnits(units);
+        switch(units){
+            case 'year':
+                output = monthDiff(this, that) / 12;
+                break;
+            case 'month':
+                output = monthDiff(this, that);
+                break;
+            case 'quarter':
+                output = monthDiff(this, that) / 3;
+                break;
+            case 'second':
+                output = (this - that) / 1000;
+                break; // 1000
+            case 'minute':
+                output = (this - that) / 60000;
+                break; // 1000 * 60
+            case 'hour':
+                output = (this - that) / 3600000;
+                break; // 1000 * 60 * 60
+            case 'day':
+                output = (this - that - zoneDelta) / 86400000;
+                break; // 1000 * 60 * 60 * 24, negate dst
+            case 'week':
+                output = (this - that - zoneDelta) / 604800000;
+                break; // 1000 * 60 * 60 * 24 * 7, negate dst
+            default:
+                output = this - that;
+        }
+        return asFloat ? output : absFloor(output);
+    }
+    function monthDiff(a, b) {
+        if (a.date() < b.date()) // end-of-month calculations work correct when the start month has more
+        // days than the end month.
+        return -monthDiff(b, a);
+        // difference in months
+        var wholeMonthDiff = (b.year() - a.year()) * 12 + (b.month() - a.month()), // b is in (anchor - 1 month, anchor + 1 month)
+        anchor = a.clone().add(wholeMonthDiff, 'months'), anchor2, adjust;
+        if (b - anchor < 0) {
+            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor - anchor2);
+        } else {
+            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+            // linear across the month
+            adjust = (b - anchor) / (anchor2 - anchor);
+        }
+        //check for negative zero, return zero if negative zero
+        return -(wholeMonthDiff + adjust) || 0;
+    }
+    hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+    hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
+    function toString() {
+        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+    }
+    function toISOString(keepOffset) {
+        if (!this.isValid()) return null;
+        var utc = keepOffset !== true, m = utc ? this.clone().utc() : this;
+        if (m.year() < 0 || m.year() > 9999) return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
+        if (isFunction(Date.prototype.toISOString)) {
+            // native implementation is ~50x faster, use it when we can
+            if (utc) return this.toDate().toISOString();
+            else return new Date(this.valueOf() + this.utcOffset() * 60000).toISOString().replace('Z', formatMoment(m, 'Z'));
+        }
+        return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
+    }
+    /**
+     * Return a human readable representation of a moment that can
+     * also be evaluated to get a new moment which is the same
+     *
+     * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
+     */ function inspect() {
+        if (!this.isValid()) return 'moment.invalid(/* ' + this._i + ' */)';
+        var func = 'moment', zone = '', prefix, year, datetime, suffix;
+        if (!this.isLocal()) {
+            func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
+            zone = 'Z';
+        }
+        prefix = '[' + func + '("]';
+        year = 0 <= this.year() && this.year() <= 9999 ? 'YYYY' : 'YYYYYY';
+        datetime = '-MM-DD[T]HH:mm:ss.SSS';
+        suffix = zone + '[")]';
+        return this.format(prefix + year + datetime + suffix);
+    }
+    function format(inputString) {
+        if (!inputString) inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
+        var output = formatMoment(this, inputString);
+        return this.localeData().postformat(output);
+    }
+    function from(time, withoutSuffix) {
+        if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) return createDuration({
+            to: this,
+            from: time
+        }).locale(this.locale()).humanize(!withoutSuffix);
+        else return this.localeData().invalidDate();
+    }
+    function fromNow(withoutSuffix) {
+        return this.from(createLocal(), withoutSuffix);
+    }
+    function to(time, withoutSuffix) {
+        if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) return createDuration({
+            from: this,
+            to: time
+        }).locale(this.locale()).humanize(!withoutSuffix);
+        else return this.localeData().invalidDate();
+    }
+    function toNow(withoutSuffix) {
+        return this.to(createLocal(), withoutSuffix);
+    }
+    // If passed a locale key, it will set the locale for this
+    // instance.  Otherwise, it will return the locale configuration
+    // variables for this instance.
+    function locale(key) {
+        var newLocaleData;
+        if (key === undefined) return this._locale._abbr;
+        else {
+            newLocaleData = getLocale(key);
+            if (newLocaleData != null) this._locale = newLocaleData;
+            return this;
+        }
+    }
+    var lang = deprecate('moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.', function(key) {
+        if (key === undefined) return this.localeData();
+        else return this.locale(key);
+    });
+    function localeData() {
+        return this._locale;
+    }
+    var MS_PER_SECOND = 1000, MS_PER_MINUTE = 60 * MS_PER_SECOND, MS_PER_HOUR = 60 * MS_PER_MINUTE, MS_PER_400_YEARS = 3506328 * MS_PER_HOUR;
+    // actual modulo - handles negative numbers (for dates before 1970):
+    function mod$1(dividend, divisor) {
+        return (dividend % divisor + divisor) % divisor;
+    }
+    function localStartOfDate(y, m, d) {
+        // the date constructor remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) // preserve leap years using a full 400 year cycle, then reset
+        return new Date(y + 400, m, d) - MS_PER_400_YEARS;
+        else return new Date(y, m, d).valueOf();
+    }
+    function utcStartOfDate(y, m, d) {
+        // Date.UTC remaps years 0-99 to 1900-1999
+        if (y < 100 && y >= 0) // preserve leap years using a full 400 year cycle, then reset
+        return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
+        else return Date.UTC(y, m, d);
+    }
+    function startOf(units) {
+        var time, startOfDate;
+        units = normalizeUnits(units);
+        if (units === undefined || units === 'millisecond' || !this.isValid()) return this;
+        startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+        switch(units){
+            case 'year':
+                time = startOfDate(this.year(), 0, 1);
+                break;
+            case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3, 1);
+                break;
+            case 'month':
+                time = startOfDate(this.year(), this.month(), 1);
+                break;
+            case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday());
+                break;
+            case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1));
+                break;
+            case 'day':
+            case 'date':
+                time = startOfDate(this.year(), this.month(), this.date());
+                break;
+            case 'hour':
+                time = this._d.valueOf();
+                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
+                break;
+            case 'minute':
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_MINUTE);
+                break;
+            case 'second':
+                time = this._d.valueOf();
+                time -= mod$1(time, MS_PER_SECOND);
+                break;
+        }
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
+        return this;
+    }
+    function endOf(units) {
+        var time, startOfDate;
+        units = normalizeUnits(units);
+        if (units === undefined || units === 'millisecond' || !this.isValid()) return this;
+        startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
+        switch(units){
+            case 'year':
+                time = startOfDate(this.year() + 1, 0, 1) - 1;
+                break;
+            case 'quarter':
+                time = startOfDate(this.year(), this.month() - this.month() % 3 + 3, 1) - 1;
+                break;
+            case 'month':
+                time = startOfDate(this.year(), this.month() + 1, 1) - 1;
+                break;
+            case 'week':
+                time = startOfDate(this.year(), this.month(), this.date() - this.weekday() + 7) - 1;
+                break;
+            case 'isoWeek':
+                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1) + 7) - 1;
+                break;
+            case 'day':
+            case 'date':
+                time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
+                break;
+            case 'hour':
+                time = this._d.valueOf();
+                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
+                break;
+            case 'minute':
+                time = this._d.valueOf();
+                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
+                break;
+            case 'second':
+                time = this._d.valueOf();
+                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
+                break;
+        }
+        this._d.setTime(time);
+        hooks.updateOffset(this, true);
+        return this;
+    }
+    function valueOf() {
+        return this._d.valueOf() - (this._offset || 0) * 60000;
+    }
+    function unix() {
+        return Math.floor(this.valueOf() / 1000);
+    }
+    function toDate() {
+        return new Date(this.valueOf());
+    }
+    function toArray() {
+        var m = this;
+        return [
+            m.year(),
+            m.month(),
+            m.date(),
+            m.hour(),
+            m.minute(),
+            m.second(),
+            m.millisecond(), 
+        ];
+    }
+    function toObject() {
+        var m = this;
+        return {
+            years: m.year(),
+            months: m.month(),
+            date: m.date(),
+            hours: m.hours(),
+            minutes: m.minutes(),
+            seconds: m.seconds(),
+            milliseconds: m.milliseconds()
+        };
+    }
+    function toJSON() {
+        // new Date(NaN).toJSON() === null
+        return this.isValid() ? this.toISOString() : null;
+    }
+    function isValid$2() {
+        return isValid(this);
+    }
+    function parsingFlags() {
+        return extend({
+        }, getParsingFlags(this));
+    }
+    function invalidAt() {
+        return getParsingFlags(this).overflow;
+    }
+    function creationData() {
+        return {
+            input: this._i,
+            format: this._f,
+            locale: this._locale,
+            isUTC: this._isUTC,
+            strict: this._strict
+        };
+    }
+    addFormatToken('N', 0, 0, 'eraAbbr');
+    addFormatToken('NN', 0, 0, 'eraAbbr');
+    addFormatToken('NNN', 0, 0, 'eraAbbr');
+    addFormatToken('NNNN', 0, 0, 'eraName');
+    addFormatToken('NNNNN', 0, 0, 'eraNarrow');
+    addFormatToken('y', [
+        'y',
+        1
+    ], 'yo', 'eraYear');
+    addFormatToken('y', [
+        'yy',
+        2
+    ], 0, 'eraYear');
+    addFormatToken('y', [
+        'yyy',
+        3
+    ], 0, 'eraYear');
+    addFormatToken('y', [
+        'yyyy',
+        4
+    ], 0, 'eraYear');
+    addRegexToken('N', matchEraAbbr);
+    addRegexToken('NN', matchEraAbbr);
+    addRegexToken('NNN', matchEraAbbr);
+    addRegexToken('NNNN', matchEraName);
+    addRegexToken('NNNNN', matchEraNarrow);
+    addParseToken([
+        'N',
+        'NN',
+        'NNN',
+        'NNNN',
+        'NNNNN'
+    ], function(input, array, config, token) {
+        var era = config._locale.erasParse(input, token, config._strict);
+        if (era) getParsingFlags(config).era = era;
+        else getParsingFlags(config).invalidEra = input;
+    });
+    addRegexToken('y', matchUnsigned);
+    addRegexToken('yy', matchUnsigned);
+    addRegexToken('yyy', matchUnsigned);
+    addRegexToken('yyyy', matchUnsigned);
+    addRegexToken('yo', matchEraYearOrdinal);
+    addParseToken([
+        'y',
+        'yy',
+        'yyy',
+        'yyyy'
+    ], YEAR);
+    addParseToken([
+        'yo'
+    ], function(input, array, config, token) {
+        var match;
+        if (config._locale._eraYearOrdinalRegex) match = input.match(config._locale._eraYearOrdinalRegex);
+        if (config._locale.eraYearOrdinalParse) array[YEAR] = config._locale.eraYearOrdinalParse(input, match);
+        else array[YEAR] = parseInt(input, 10);
+    });
+    function localeEras(m, format1) {
+        var i, l, date, eras = this._eras || getLocale('en')._eras;
+        for(i = 0, l = eras.length; i < l; ++i){
+            switch(typeof eras[i].since){
+                case 'string':
+                    // truncate time
+                    date = hooks(eras[i].since).startOf('day');
+                    eras[i].since = date.valueOf();
+                    break;
+            }
+            switch(typeof eras[i].until){
+                case 'undefined':
+                    eras[i].until = Infinity;
+                    break;
+                case 'string':
+                    // truncate time
+                    date = hooks(eras[i].until).startOf('day').valueOf();
+                    eras[i].until = date.valueOf();
+                    break;
+            }
+        }
+        return eras;
+    }
+    function localeErasParse(eraName, format1, strict) {
+        var i, l, eras = this.eras(), name, abbr, narrow;
+        eraName = eraName.toUpperCase();
+        for(i = 0, l = eras.length; i < l; ++i){
+            name = eras[i].name.toUpperCase();
+            abbr = eras[i].abbr.toUpperCase();
+            narrow = eras[i].narrow.toUpperCase();
+            if (strict) switch(format1){
+                case 'N':
+                case 'NN':
+                case 'NNN':
+                    if (abbr === eraName) return eras[i];
+                    break;
+                case 'NNNN':
+                    if (name === eraName) return eras[i];
+                    break;
+                case 'NNNNN':
+                    if (narrow === eraName) return eras[i];
+                    break;
+            }
+            else if ([
+                name,
+                abbr,
+                narrow
+            ].indexOf(eraName) >= 0) return eras[i];
+        }
+    }
+    function localeErasConvertYear(era, year) {
+        var dir = era.since <= era.until ? 1 : -1;
+        if (year === undefined) return hooks(era.since).year();
+        else return hooks(era.since).year() + (year - era.offset) * dir;
+    }
+    function getEraName() {
+        var i, l, val, eras = this.localeData().eras();
+        for(i = 0, l = eras.length; i < l; ++i){
+            // truncate time
+            val = this.clone().startOf('day').valueOf();
+            if (eras[i].since <= val && val <= eras[i].until) return eras[i].name;
+            if (eras[i].until <= val && val <= eras[i].since) return eras[i].name;
+        }
+        return '';
+    }
+    function getEraNarrow() {
+        var i, l, val, eras = this.localeData().eras();
+        for(i = 0, l = eras.length; i < l; ++i){
+            // truncate time
+            val = this.clone().startOf('day').valueOf();
+            if (eras[i].since <= val && val <= eras[i].until) return eras[i].narrow;
+            if (eras[i].until <= val && val <= eras[i].since) return eras[i].narrow;
+        }
+        return '';
+    }
+    function getEraAbbr() {
+        var i, l, val, eras = this.localeData().eras();
+        for(i = 0, l = eras.length; i < l; ++i){
+            // truncate time
+            val = this.clone().startOf('day').valueOf();
+            if (eras[i].since <= val && val <= eras[i].until) return eras[i].abbr;
+            if (eras[i].until <= val && val <= eras[i].since) return eras[i].abbr;
+        }
+        return '';
+    }
+    function getEraYear() {
+        var i, l, dir, val, eras = this.localeData().eras();
+        for(i = 0, l = eras.length; i < l; ++i){
+            dir = eras[i].since <= eras[i].until ? 1 : -1;
+            // truncate time
+            val = this.clone().startOf('day').valueOf();
+            if (eras[i].since <= val && val <= eras[i].until || eras[i].until <= val && val <= eras[i].since) return (this.year() - hooks(eras[i].since).year()) * dir + eras[i].offset;
+        }
+        return this.year();
+    }
+    function erasNameRegex(isStrict) {
+        if (!hasOwnProp(this, '_erasNameRegex')) computeErasParse.call(this);
+        return isStrict ? this._erasNameRegex : this._erasRegex;
+    }
+    function erasAbbrRegex(isStrict) {
+        if (!hasOwnProp(this, '_erasAbbrRegex')) computeErasParse.call(this);
+        return isStrict ? this._erasAbbrRegex : this._erasRegex;
+    }
+    function erasNarrowRegex(isStrict) {
+        if (!hasOwnProp(this, '_erasNarrowRegex')) computeErasParse.call(this);
+        return isStrict ? this._erasNarrowRegex : this._erasRegex;
+    }
+    function matchEraAbbr(isStrict, locale1) {
+        return locale1.erasAbbrRegex(isStrict);
+    }
+    function matchEraName(isStrict, locale1) {
+        return locale1.erasNameRegex(isStrict);
+    }
+    function matchEraNarrow(isStrict, locale1) {
+        return locale1.erasNarrowRegex(isStrict);
+    }
+    function matchEraYearOrdinal(isStrict, locale1) {
+        return locale1._eraYearOrdinalRegex || matchUnsigned;
+    }
+    function computeErasParse() {
+        var abbrPieces = [], namePieces = [], narrowPieces = [], mixedPieces = [], i, l, eras = this.eras();
+        for(i = 0, l = eras.length; i < l; ++i){
+            namePieces.push(regexEscape(eras[i].name));
+            abbrPieces.push(regexEscape(eras[i].abbr));
+            narrowPieces.push(regexEscape(eras[i].narrow));
+            mixedPieces.push(regexEscape(eras[i].name));
+            mixedPieces.push(regexEscape(eras[i].abbr));
+            mixedPieces.push(regexEscape(eras[i].narrow));
+        }
+        this._erasRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+        this._erasNameRegex = new RegExp('^(' + namePieces.join('|') + ')', 'i');
+        this._erasAbbrRegex = new RegExp('^(' + abbrPieces.join('|') + ')', 'i');
+        this._erasNarrowRegex = new RegExp('^(' + narrowPieces.join('|') + ')', 'i');
+    }
+    // FORMATTING
+    addFormatToken(0, [
+        'gg',
+        2
+    ], 0, function() {
+        return this.weekYear() % 100;
+    });
+    addFormatToken(0, [
+        'GG',
+        2
+    ], 0, function() {
+        return this.isoWeekYear() % 100;
+    });
+    function addWeekYearFormatToken(token, getter) {
+        addFormatToken(0, [
+            token,
+            token.length
+        ], 0, getter);
+    }
+    addWeekYearFormatToken('gggg', 'weekYear');
+    addWeekYearFormatToken('ggggg', 'weekYear');
+    addWeekYearFormatToken('GGGG', 'isoWeekYear');
+    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
+    // ALIASES
+    addUnitAlias('weekYear', 'gg');
+    addUnitAlias('isoWeekYear', 'GG');
+    // PRIORITY
+    addUnitPriority('weekYear', 1);
+    addUnitPriority('isoWeekYear', 1);
+    // PARSING
+    addRegexToken('G', matchSigned);
+    addRegexToken('g', matchSigned);
+    addRegexToken('GG', match1to2, match2);
+    addRegexToken('gg', match1to2, match2);
+    addRegexToken('GGGG', match1to4, match4);
+    addRegexToken('gggg', match1to4, match4);
+    addRegexToken('GGGGG', match1to6, match6);
+    addRegexToken('ggggg', match1to6, match6);
+    addWeekParseToken([
+        'gggg',
+        'ggggg',
+        'GGGG',
+        'GGGGG'
+    ], function(input, week, config, token) {
+        week[token.substr(0, 2)] = toInt(input);
+    });
+    addWeekParseToken([
+        'gg',
+        'GG'
+    ], function(input, week, config, token) {
+        week[token] = hooks.parseTwoDigitYear(input);
+    });
+    // MOMENTS
+    function getSetWeekYear(input) {
+        return getSetWeekYearHelper.call(this, input, this.week(), this.weekday(), this.localeData()._week.dow, this.localeData()._week.doy);
+    }
+    function getSetISOWeekYear(input) {
+        return getSetWeekYearHelper.call(this, input, this.isoWeek(), this.isoWeekday(), 1, 4);
+    }
+    function getISOWeeksInYear() {
+        return weeksInYear(this.year(), 1, 4);
+    }
+    function getISOWeeksInISOWeekYear() {
+        return weeksInYear(this.isoWeekYear(), 1, 4);
+    }
+    function getWeeksInYear() {
+        var weekInfo = this.localeData()._week;
+        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+    }
+    function getWeeksInWeekYear() {
+        var weekInfo = this.localeData()._week;
+        return weeksInYear(this.weekYear(), weekInfo.dow, weekInfo.doy);
+    }
+    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+        var weeksTarget;
+        if (input == null) return weekOfYear(this, dow, doy).year;
+        else {
+            weeksTarget = weeksInYear(input, dow, doy);
+            if (week > weeksTarget) week = weeksTarget;
+            return setWeekAll.call(this, input, week, weekday, dow, doy);
+        }
+    }
+    function setWeekAll(weekYear, week, weekday, dow, doy) {
+        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy), date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+        this.year(date.getUTCFullYear());
+        this.month(date.getUTCMonth());
+        this.date(date.getUTCDate());
+        return this;
+    }
+    // FORMATTING
+    addFormatToken('Q', 0, 'Qo', 'quarter');
+    // ALIASES
+    addUnitAlias('quarter', 'Q');
+    // PRIORITY
+    addUnitPriority('quarter', 7);
+    // PARSING
+    addRegexToken('Q', match1);
+    addParseToken('Q', function(input, array) {
+        array[MONTH] = (toInt(input) - 1) * 3;
+    });
+    // MOMENTS
+    function getSetQuarter(input) {
+        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+    }
+    // FORMATTING
+    addFormatToken('D', [
+        'DD',
+        2
+    ], 'Do', 'date');
+    // ALIASES
+    addUnitAlias('date', 'D');
+    // PRIORITY
+    addUnitPriority('date', 9);
+    // PARSING
+    addRegexToken('D', match1to2);
+    addRegexToken('DD', match1to2, match2);
+    addRegexToken('Do', function(isStrict, locale1) {
+        // TODO: Remove "ordinalParse" fallback in next major release.
+        return isStrict ? locale1._dayOfMonthOrdinalParse || locale1._ordinalParse : locale1._dayOfMonthOrdinalParseLenient;
+    });
+    addParseToken([
+        'D',
+        'DD'
+    ], DATE);
+    addParseToken('Do', function(input, array) {
+        array[DATE] = toInt(input.match(match1to2)[0]);
+    });
+    // MOMENTS
+    var getSetDayOfMonth = makeGetSet('Date', true);
+    // FORMATTING
+    addFormatToken('DDD', [
+        'DDDD',
+        3
+    ], 'DDDo', 'dayOfYear');
+    // ALIASES
+    addUnitAlias('dayOfYear', 'DDD');
+    // PRIORITY
+    addUnitPriority('dayOfYear', 4);
+    // PARSING
+    addRegexToken('DDD', match1to3);
+    addRegexToken('DDDD', match3);
+    addParseToken([
+        'DDD',
+        'DDDD'
+    ], function(input, array, config) {
+        config._dayOfYear = toInt(input);
+    });
+    // HELPERS
+    // MOMENTS
+    function getSetDayOfYear(input) {
+        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 86400000) + 1;
+        return input == null ? dayOfYear : this.add(input - dayOfYear, 'd');
+    }
+    // FORMATTING
+    addFormatToken('m', [
+        'mm',
+        2
+    ], 0, 'minute');
+    // ALIASES
+    addUnitAlias('minute', 'm');
+    // PRIORITY
+    addUnitPriority('minute', 14);
+    // PARSING
+    addRegexToken('m', match1to2);
+    addRegexToken('mm', match1to2, match2);
+    addParseToken([
+        'm',
+        'mm'
+    ], MINUTE);
+    // MOMENTS
+    var getSetMinute = makeGetSet('Minutes', false);
+    // FORMATTING
+    addFormatToken('s', [
+        'ss',
+        2
+    ], 0, 'second');
+    // ALIASES
+    addUnitAlias('second', 's');
+    // PRIORITY
+    addUnitPriority('second', 15);
+    // PARSING
+    addRegexToken('s', match1to2);
+    addRegexToken('ss', match1to2, match2);
+    addParseToken([
+        's',
+        'ss'
+    ], SECOND);
+    // MOMENTS
+    var getSetSecond = makeGetSet('Seconds', false);
+    // FORMATTING
+    addFormatToken('S', 0, 0, function() {
+        return ~~(this.millisecond() / 100);
+    });
+    addFormatToken(0, [
+        'SS',
+        2
+    ], 0, function() {
+        return ~~(this.millisecond() / 10);
+    });
+    addFormatToken(0, [
+        'SSS',
+        3
+    ], 0, 'millisecond');
+    addFormatToken(0, [
+        'SSSS',
+        4
+    ], 0, function() {
+        return this.millisecond() * 10;
+    });
+    addFormatToken(0, [
+        'SSSSS',
+        5
+    ], 0, function() {
+        return this.millisecond() * 100;
+    });
+    addFormatToken(0, [
+        'SSSSSS',
+        6
+    ], 0, function() {
+        return this.millisecond() * 1000;
+    });
+    addFormatToken(0, [
+        'SSSSSSS',
+        7
+    ], 0, function() {
+        return this.millisecond() * 10000;
+    });
+    addFormatToken(0, [
+        'SSSSSSSS',
+        8
+    ], 0, function() {
+        return this.millisecond() * 100000;
+    });
+    addFormatToken(0, [
+        'SSSSSSSSS',
+        9
+    ], 0, function() {
+        return this.millisecond() * 1000000;
+    });
+    // ALIASES
+    addUnitAlias('millisecond', 'ms');
+    // PRIORITY
+    addUnitPriority('millisecond', 16);
+    // PARSING
+    addRegexToken('S', match1to3, match1);
+    addRegexToken('SS', match1to3, match2);
+    addRegexToken('SSS', match1to3, match3);
+    var token, getSetMillisecond;
+    for(token = 'SSSS'; token.length <= 9; token += 'S')addRegexToken(token, matchUnsigned);
+    function parseMs(input, array) {
+        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    }
+    for(token = 'S'; token.length <= 9; token += 'S')addParseToken(token, parseMs);
+    getSetMillisecond = makeGetSet('Milliseconds', false);
+    // FORMATTING
+    addFormatToken('z', 0, 0, 'zoneAbbr');
+    addFormatToken('zz', 0, 0, 'zoneName');
+    // MOMENTS
+    function getZoneAbbr() {
+        return this._isUTC ? 'UTC' : '';
+    }
+    function getZoneName() {
+        return this._isUTC ? 'Coordinated Universal Time' : '';
+    }
+    var proto = Moment.prototype;
+    proto.add = add;
+    proto.calendar = calendar$1;
+    proto.clone = clone;
+    proto.diff = diff;
+    proto.endOf = endOf;
+    proto.format = format;
+    proto.from = from;
+    proto.fromNow = fromNow;
+    proto.to = to;
+    proto.toNow = toNow;
+    proto.get = stringGet;
+    proto.invalidAt = invalidAt;
+    proto.isAfter = isAfter;
+    proto.isBefore = isBefore;
+    proto.isBetween = isBetween;
+    proto.isSame = isSame;
+    proto.isSameOrAfter = isSameOrAfter;
+    proto.isSameOrBefore = isSameOrBefore;
+    proto.isValid = isValid$2;
+    proto.lang = lang;
+    proto.locale = locale;
+    proto.localeData = localeData;
+    proto.max = prototypeMax;
+    proto.min = prototypeMin;
+    proto.parsingFlags = parsingFlags;
+    proto.set = stringSet;
+    proto.startOf = startOf;
+    proto.subtract = subtract;
+    proto.toArray = toArray;
+    proto.toObject = toObject;
+    proto.toDate = toDate;
+    proto.toISOString = toISOString;
+    proto.inspect = inspect;
+    if (typeof Symbol !== 'undefined' && Symbol.for != null) proto[Symbol.for('nodejs.util.inspect.custom')] = function() {
+        return 'Moment<' + this.format() + '>';
+    };
+    proto.toJSON = toJSON;
+    proto.toString = toString;
+    proto.unix = unix;
+    proto.valueOf = valueOf;
+    proto.creationData = creationData;
+    proto.eraName = getEraName;
+    proto.eraNarrow = getEraNarrow;
+    proto.eraAbbr = getEraAbbr;
+    proto.eraYear = getEraYear;
+    proto.year = getSetYear;
+    proto.isLeapYear = getIsLeapYear;
+    proto.weekYear = getSetWeekYear;
+    proto.isoWeekYear = getSetISOWeekYear;
+    proto.quarter = proto.quarters = getSetQuarter;
+    proto.month = getSetMonth;
+    proto.daysInMonth = getDaysInMonth;
+    proto.week = proto.weeks = getSetWeek;
+    proto.isoWeek = proto.isoWeeks = getSetISOWeek;
+    proto.weeksInYear = getWeeksInYear;
+    proto.weeksInWeekYear = getWeeksInWeekYear;
+    proto.isoWeeksInYear = getISOWeeksInYear;
+    proto.isoWeeksInISOWeekYear = getISOWeeksInISOWeekYear;
+    proto.date = getSetDayOfMonth;
+    proto.day = proto.days = getSetDayOfWeek;
+    proto.weekday = getSetLocaleDayOfWeek;
+    proto.isoWeekday = getSetISODayOfWeek;
+    proto.dayOfYear = getSetDayOfYear;
+    proto.hour = proto.hours = getSetHour;
+    proto.minute = proto.minutes = getSetMinute;
+    proto.second = proto.seconds = getSetSecond;
+    proto.millisecond = proto.milliseconds = getSetMillisecond;
+    proto.utcOffset = getSetOffset;
+    proto.utc = setOffsetToUTC;
+    proto.local = setOffsetToLocal;
+    proto.parseZone = setOffsetToParsedOffset;
+    proto.hasAlignedHourOffset = hasAlignedHourOffset;
+    proto.isDST = isDaylightSavingTime;
+    proto.isLocal = isLocal;
+    proto.isUtcOffset = isUtcOffset;
+    proto.isUtc = isUtc;
+    proto.isUTC = isUtc;
+    proto.zoneAbbr = getZoneAbbr;
+    proto.zoneName = getZoneName;
+    proto.dates = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
+    proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
+    proto.years = deprecate('years accessor is deprecated. Use year instead', getSetYear);
+    proto.zone = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
+    proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
+    function createUnix(input) {
+        return createLocal(input * 1000);
+    }
+    function createInZone() {
+        return createLocal.apply(null, arguments).parseZone();
+    }
+    function preParsePostFormat(string) {
+        return string;
+    }
+    var proto$1 = Locale.prototype;
+    proto$1.calendar = calendar;
+    proto$1.longDateFormat = longDateFormat;
+    proto$1.invalidDate = invalidDate;
+    proto$1.ordinal = ordinal;
+    proto$1.preparse = preParsePostFormat;
+    proto$1.postformat = preParsePostFormat;
+    proto$1.relativeTime = relativeTime;
+    proto$1.pastFuture = pastFuture;
+    proto$1.set = set;
+    proto$1.eras = localeEras;
+    proto$1.erasParse = localeErasParse;
+    proto$1.erasConvertYear = localeErasConvertYear;
+    proto$1.erasAbbrRegex = erasAbbrRegex;
+    proto$1.erasNameRegex = erasNameRegex;
+    proto$1.erasNarrowRegex = erasNarrowRegex;
+    proto$1.months = localeMonths;
+    proto$1.monthsShort = localeMonthsShort;
+    proto$1.monthsParse = localeMonthsParse;
+    proto$1.monthsRegex = monthsRegex;
+    proto$1.monthsShortRegex = monthsShortRegex;
+    proto$1.week = localeWeek;
+    proto$1.firstDayOfYear = localeFirstDayOfYear;
+    proto$1.firstDayOfWeek = localeFirstDayOfWeek;
+    proto$1.weekdays = localeWeekdays;
+    proto$1.weekdaysMin = localeWeekdaysMin;
+    proto$1.weekdaysShort = localeWeekdaysShort;
+    proto$1.weekdaysParse = localeWeekdaysParse;
+    proto$1.weekdaysRegex = weekdaysRegex;
+    proto$1.weekdaysShortRegex = weekdaysShortRegex;
+    proto$1.weekdaysMinRegex = weekdaysMinRegex;
+    proto$1.isPM = localeIsPM;
+    proto$1.meridiem = localeMeridiem;
+    function get$1(format1, index, field, setter) {
+        var locale1 = getLocale(), utc = createUTC().set(setter, index);
+        return locale1[field](utc, format1);
+    }
+    function listMonthsImpl(format1, index, field) {
+        if (isNumber(format1)) {
+            index = format1;
+            format1 = undefined;
+        }
+        format1 = format1 || '';
+        if (index != null) return get$1(format1, index, field, 'month');
+        var i, out = [];
+        for(i = 0; i < 12; i++)out[i] = get$1(format1, i, field, 'month');
+        return out;
+    }
+    // ()
+    // (5)
+    // (fmt, 5)
+    // (fmt)
+    // (true)
+    // (true, 5)
+    // (true, fmt, 5)
+    // (true, fmt)
+    function listWeekdaysImpl(localeSorted, format1, index, field) {
+        if (typeof localeSorted === 'boolean') {
+            if (isNumber(format1)) {
+                index = format1;
+                format1 = undefined;
+            }
+            format1 = format1 || '';
+        } else {
+            format1 = localeSorted;
+            index = format1;
+            localeSorted = false;
+            if (isNumber(format1)) {
+                index = format1;
+                format1 = undefined;
+            }
+            format1 = format1 || '';
+        }
+        var locale1 = getLocale(), shift = localeSorted ? locale1._week.dow : 0, i, out = [];
+        if (index != null) return get$1(format1, (index + shift) % 7, field, 'day');
+        for(i = 0; i < 7; i++)out[i] = get$1(format1, (i + shift) % 7, field, 'day');
+        return out;
+    }
+    function listMonths(format1, index) {
+        return listMonthsImpl(format1, index, 'months');
+    }
+    function listMonthsShort(format1, index) {
+        return listMonthsImpl(format1, index, 'monthsShort');
+    }
+    function listWeekdays(localeSorted, format1, index) {
+        return listWeekdaysImpl(localeSorted, format1, index, 'weekdays');
+    }
+    function listWeekdaysShort(localeSorted, format1, index) {
+        return listWeekdaysImpl(localeSorted, format1, index, 'weekdaysShort');
+    }
+    function listWeekdaysMin(localeSorted, format1, index) {
+        return listWeekdaysImpl(localeSorted, format1, index, 'weekdaysMin');
+    }
+    getSetGlobalLocale('en', {
+        eras: [
+            {
+                since: '0001-01-01',
+                until: Infinity,
+                offset: 1,
+                name: 'Anno Domini',
+                narrow: 'AD',
+                abbr: 'AD'
+            },
+            {
+                since: '0000-12-31',
+                until: -Infinity,
+                offset: 1,
+                name: 'Before Christ',
+                narrow: 'BC',
+                abbr: 'BC'
+            }, 
+        ],
+        dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
+        ordinal: function(number) {
+            var b = number % 10, output = toInt(number % 100 / 10) === 1 ? 'th' : b === 1 ? 'st' : b === 2 ? 'nd' : b === 3 ? 'rd' : 'th';
+            return number + output;
+        }
+    });
+    // Side effect imports
+    hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
+    hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
+    var mathAbs = Math.abs;
+    function abs() {
+        var data = this._data;
+        this._milliseconds = mathAbs(this._milliseconds);
+        this._days = mathAbs(this._days);
+        this._months = mathAbs(this._months);
+        data.milliseconds = mathAbs(data.milliseconds);
+        data.seconds = mathAbs(data.seconds);
+        data.minutes = mathAbs(data.minutes);
+        data.hours = mathAbs(data.hours);
+        data.months = mathAbs(data.months);
+        data.years = mathAbs(data.years);
+        return this;
+    }
+    function addSubtract$1(duration, input, value, direction) {
+        var other = createDuration(input, value);
+        duration._milliseconds += direction * other._milliseconds;
+        duration._days += direction * other._days;
+        duration._months += direction * other._months;
+        return duration._bubble();
+    }
+    // supports only 2.0-style add(1, 's') or add(duration)
+    function add$1(input, value) {
+        return addSubtract$1(this, input, value, 1);
+    }
+    // supports only 2.0-style subtract(1, 's') or subtract(duration)
+    function subtract$1(input, value) {
+        return addSubtract$1(this, input, value, -1);
+    }
+    function absCeil(number) {
+        if (number < 0) return Math.floor(number);
+        else return Math.ceil(number);
+    }
+    function bubble() {
+        var milliseconds = this._milliseconds, days = this._days, months = this._months, data = this._data, seconds, minutes, hours, years, monthsFromDays;
+        // if we have a mix of positive and negative values, bubble down first
+        // check: https://github.com/moment/moment/issues/2166
+        if (!(milliseconds >= 0 && days >= 0 && months >= 0 || milliseconds <= 0 && days <= 0 && months <= 0)) {
+            milliseconds += absCeil(monthsToDays(months) + days) * 86400000;
+            days = 0;
+            months = 0;
+        }
+        // The following code bubbles up values, see the tests for
+        // examples of what that means.
+        data.milliseconds = milliseconds % 1000;
+        seconds = absFloor(milliseconds / 1000);
+        data.seconds = seconds % 60;
+        minutes = absFloor(seconds / 60);
+        data.minutes = minutes % 60;
+        hours = absFloor(minutes / 60);
+        data.hours = hours % 24;
+        days += absFloor(hours / 24);
+        // convert days to months
+        monthsFromDays = absFloor(daysToMonths(days));
+        months += monthsFromDays;
+        days -= absCeil(monthsToDays(monthsFromDays));
+        // 12 months -> 1 year
+        years = absFloor(months / 12);
+        months %= 12;
+        data.days = days;
+        data.months = months;
+        data.years = years;
+        return this;
+    }
+    function daysToMonths(days) {
+        // 400 years have 146097 days (taking into account leap year rules)
+        // 400 years have 12 months === 4800
+        return days * 4800 / 146097;
+    }
+    function monthsToDays(months) {
+        // the reverse of daysToMonths
+        return months * 146097 / 4800;
+    }
+    function as(units) {
+        if (!this.isValid()) return NaN;
+        var days, months, milliseconds = this._milliseconds;
+        units = normalizeUnits(units);
+        if (units === 'month' || units === 'quarter' || units === 'year') {
+            days = this._days + milliseconds / 86400000;
+            months = this._months + daysToMonths(days);
+            switch(units){
+                case 'month':
+                    return months;
+                case 'quarter':
+                    return months / 3;
+                case 'year':
+                    return months / 12;
+            }
+        } else {
+            // handle milliseconds separately because of floating point math errors (issue #1867)
+            days = this._days + Math.round(monthsToDays(this._months));
+            switch(units){
+                case 'week':
+                    return days / 7 + milliseconds / 604800000;
+                case 'day':
+                    return days + milliseconds / 86400000;
+                case 'hour':
+                    return days * 24 + milliseconds / 3600000;
+                case 'minute':
+                    return days * 1440 + milliseconds / 60000;
+                case 'second':
+                    return days * 86400 + milliseconds / 1000;
+                // Math.floor prevents floating point math errors here
+                case 'millisecond':
+                    return Math.floor(days * 86400000) + milliseconds;
+                default:
+                    throw new Error('Unknown unit ' + units);
+            }
+        }
+    }
+    // TODO: Use this.as('ms')?
+    function valueOf$1() {
+        if (!this.isValid()) return NaN;
+        return this._milliseconds + this._days * 86400000 + this._months % 12 * 2592000000 + toInt(this._months / 12) * 31536000000;
+    }
+    function makeAs(alias) {
+        return function() {
+            return this.as(alias);
+        };
+    }
+    var asMilliseconds = makeAs('ms'), asSeconds = makeAs('s'), asMinutes = makeAs('m'), asHours = makeAs('h'), asDays = makeAs('d'), asWeeks = makeAs('w'), asMonths = makeAs('M'), asQuarters = makeAs('Q'), asYears = makeAs('y');
+    function clone$1() {
+        return createDuration(this);
+    }
+    function get$2(units) {
+        units = normalizeUnits(units);
+        return this.isValid() ? this[units + 's']() : NaN;
+    }
+    function makeGetter(name) {
+        return function() {
+            return this.isValid() ? this._data[name] : NaN;
+        };
+    }
+    var milliseconds = makeGetter('milliseconds'), seconds = makeGetter('seconds'), minutes = makeGetter('minutes'), hours = makeGetter('hours'), days = makeGetter('days'), months = makeGetter('months'), years = makeGetter('years');
+    function weeks() {
+        return absFloor(this.days() / 7);
+    }
+    var round = Math.round, thresholds = {
+        ss: 44,
+        s: 45,
+        m: 45,
+        h: 22,
+        d: 26,
+        w: null,
+        M: 11
+    };
+    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale1) {
+        return locale1.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+    }
+    function relativeTime$1(posNegDuration, withoutSuffix, thresholds1, locale1) {
+        var duration = createDuration(posNegDuration).abs(), seconds1 = round(duration.as('s')), minutes1 = round(duration.as('m')), hours1 = round(duration.as('h')), days1 = round(duration.as('d')), months1 = round(duration.as('M')), weeks1 = round(duration.as('w')), years1 = round(duration.as('y')), a = seconds1 <= thresholds1.ss && [
+            's',
+            seconds1
+        ] || seconds1 < thresholds1.s && [
+            'ss',
+            seconds1
+        ] || minutes1 <= 1 && [
+            'm'
+        ] || minutes1 < thresholds1.m && [
+            'mm',
+            minutes1
+        ] || hours1 <= 1 && [
+            'h'
+        ] || hours1 < thresholds1.h && [
+            'hh',
+            hours1
+        ] || days1 <= 1 && [
+            'd'
+        ] || days1 < thresholds1.d && [
+            'dd',
+            days1
+        ];
+        if (thresholds1.w != null) a = a || weeks1 <= 1 && [
+            'w'
+        ] || weeks1 < thresholds1.w && [
+            'ww',
+            weeks1
+        ];
+        a = a || months1 <= 1 && [
+            'M'
+        ] || months1 < thresholds1.M && [
+            'MM',
+            months1
+        ] || years1 <= 1 && [
+            'y'
+        ] || [
+            'yy',
+            years1
+        ];
+        a[2] = withoutSuffix;
+        a[3] = +posNegDuration > 0;
+        a[4] = locale1;
+        return substituteTimeAgo.apply(null, a);
+    }
+    // This function allows you to set the rounding function for relative time strings
+    function getSetRelativeTimeRounding(roundingFunction) {
+        if (roundingFunction === undefined) return round;
+        if (typeof roundingFunction === 'function') {
+            round = roundingFunction;
+            return true;
+        }
+        return false;
+    }
+    // This function allows you to set a threshold for relative time strings
+    function getSetRelativeTimeThreshold(threshold, limit) {
+        if (thresholds[threshold] === undefined) return false;
+        if (limit === undefined) return thresholds[threshold];
+        thresholds[threshold] = limit;
+        if (threshold === 's') thresholds.ss = limit - 1;
+        return true;
+    }
+    function humanize(argWithSuffix, argThresholds) {
+        if (!this.isValid()) return this.localeData().invalidDate();
+        var withSuffix = false, th = thresholds, locale1, output;
+        if (typeof argWithSuffix === 'object') {
+            argThresholds = argWithSuffix;
+            argWithSuffix = false;
+        }
+        if (typeof argWithSuffix === 'boolean') withSuffix = argWithSuffix;
+        if (typeof argThresholds === 'object') {
+            th = Object.assign({
+            }, thresholds, argThresholds);
+            if (argThresholds.s != null && argThresholds.ss == null) th.ss = argThresholds.s - 1;
+        }
+        locale1 = this.localeData();
+        output = relativeTime$1(this, !withSuffix, th, locale1);
+        if (withSuffix) output = locale1.pastFuture(+this, output);
+        return locale1.postformat(output);
+    }
+    var abs$1 = Math.abs;
+    function sign(x) {
+        return (x > 0) - (x < 0) || +x;
+    }
+    function toISOString$1() {
+        // for ISO strings we do not use the normal bubbling rules:
+        //  * milliseconds bubble up until they become hours
+        //  * days do not bubble at all
+        //  * months bubble up until they become years
+        // This is because there is no context-free conversion between hours and days
+        // (think of clock changes)
+        // and also not between days and months (28-31 days per month)
+        if (!this.isValid()) return this.localeData().invalidDate();
+        var seconds1 = abs$1(this._milliseconds) / 1000, days1 = abs$1(this._days), months1 = abs$1(this._months), minutes1, hours1, years1, s, total = this.asSeconds(), totalSign, ymSign, daysSign, hmsSign;
+        if (!total) // this is the same as C#'s (Noda) and python (isodate)...
+        // but not other JS (goog.date)
+        return 'P0D';
+        // 3600 seconds -> 60 minutes -> 1 hour
+        minutes1 = absFloor(seconds1 / 60);
+        hours1 = absFloor(minutes1 / 60);
+        seconds1 %= 60;
+        minutes1 %= 60;
+        // 12 months -> 1 year
+        years1 = absFloor(months1 / 12);
+        months1 %= 12;
+        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+        s = seconds1 ? seconds1.toFixed(3).replace(/\.?0+$/, '') : '';
+        totalSign = total < 0 ? '-' : '';
+        ymSign = sign(this._months) !== sign(total) ? '-' : '';
+        daysSign = sign(this._days) !== sign(total) ? '-' : '';
+        hmsSign = sign(this._milliseconds) !== sign(total) ? '-' : '';
+        return totalSign + 'P' + (years1 ? ymSign + years1 + 'Y' : '') + (months1 ? ymSign + months1 + 'M' : '') + (days1 ? daysSign + days1 + 'D' : '') + (hours1 || minutes1 || seconds1 ? 'T' : '') + (hours1 ? hmsSign + hours1 + 'H' : '') + (minutes1 ? hmsSign + minutes1 + 'M' : '') + (seconds1 ? hmsSign + s + 'S' : '');
+    }
+    var proto$2 = Duration.prototype;
+    proto$2.isValid = isValid$1;
+    proto$2.abs = abs;
+    proto$2.add = add$1;
+    proto$2.subtract = subtract$1;
+    proto$2.as = as;
+    proto$2.asMilliseconds = asMilliseconds;
+    proto$2.asSeconds = asSeconds;
+    proto$2.asMinutes = asMinutes;
+    proto$2.asHours = asHours;
+    proto$2.asDays = asDays;
+    proto$2.asWeeks = asWeeks;
+    proto$2.asMonths = asMonths;
+    proto$2.asQuarters = asQuarters;
+    proto$2.asYears = asYears;
+    proto$2.valueOf = valueOf$1;
+    proto$2._bubble = bubble;
+    proto$2.clone = clone$1;
+    proto$2.get = get$2;
+    proto$2.milliseconds = milliseconds;
+    proto$2.seconds = seconds;
+    proto$2.minutes = minutes;
+    proto$2.hours = hours;
+    proto$2.days = days;
+    proto$2.weeks = weeks;
+    proto$2.months = months;
+    proto$2.years = years;
+    proto$2.humanize = humanize;
+    proto$2.toISOString = toISOString$1;
+    proto$2.toString = toISOString$1;
+    proto$2.toJSON = toISOString$1;
+    proto$2.locale = locale;
+    proto$2.localeData = localeData;
+    proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
+    proto$2.lang = lang;
+    // FORMATTING
+    addFormatToken('X', 0, 0, 'unix');
+    addFormatToken('x', 0, 0, 'valueOf');
+    // PARSING
+    addRegexToken('x', matchSigned);
+    addRegexToken('X', matchTimestamp);
+    addParseToken('X', function(input, array, config) {
+        config._d = new Date(parseFloat(input) * 1000);
+    });
+    addParseToken('x', function(input, array, config) {
+        config._d = new Date(toInt(input));
+    });
+    //! moment.js
+    hooks.version = '2.29.4';
+    setHookCallback(createLocal);
+    hooks.fn = proto;
+    hooks.min = min;
+    hooks.max = max;
+    hooks.now = now;
+    hooks.utc = createUTC;
+    hooks.unix = createUnix;
+    hooks.months = listMonths;
+    hooks.isDate = isDate;
+    hooks.locale = getSetGlobalLocale;
+    hooks.invalid = createInvalid;
+    hooks.duration = createDuration;
+    hooks.isMoment = isMoment;
+    hooks.weekdays = listWeekdays;
+    hooks.parseZone = createInZone;
+    hooks.localeData = getLocale;
+    hooks.isDuration = isDuration;
+    hooks.monthsShort = listMonthsShort;
+    hooks.weekdaysMin = listWeekdaysMin;
+    hooks.defineLocale = defineLocale;
+    hooks.updateLocale = updateLocale;
+    hooks.locales = listLocales;
+    hooks.weekdaysShort = listWeekdaysShort;
+    hooks.normalizeUnits = normalizeUnits;
+    hooks.relativeTimeRounding = getSetRelativeTimeRounding;
+    hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
+    hooks.calendarFormat = getCalendarFormat;
+    hooks.prototype = proto;
+    // currently HTML5 input type only supports 24-hour formats
+    hooks.HTML5_FMT = {
+        DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',
+        DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',
+        DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',
+        DATE: 'YYYY-MM-DD',
+        TIME: 'HH:mm',
+        TIME_SECONDS: 'HH:mm:ss',
+        TIME_MS: 'HH:mm:ss.SSS',
+        WEEK: 'GGGG-[W]WW',
+        MONTH: 'YYYY-MM'
+    };
+    return hooks;
+});
 
-},{"react":"6TuXu","@babel/runtime/helpers/esm/inheritsLoose":"eO0be","prop-types":"1tgq3","tiny-warning":"4xDJt","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6EiBJ":[function(require,module,exports) {
+},{}],"8WCoL":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$5f0a = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$5f0a.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRedux = require("react-redux");
+var _reactRouterDom = require("react-router-dom");
+var _reactBootstrap = require("react-bootstrap");
+var _s = $RefreshSig$();
+const GenreView = ({ genre , moviesByGenre  })=>{
+    _s();
+    const history = _reactRouterDom.useHistory();
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        className: "mt-4 mx-auto",
+        style: {
+            width: '80%'
+        },
+        __source: {
+            fileName: "src/components/genre-view/genre-view.jsx",
+            lineNumber: 10
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/genre-view/genre-view.jsx",
+                lineNumber: 11
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
+                    as: "h4",
+                    className: "text-center label",
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 12
+                    },
+                    __self: undefined,
+                    children: "Genre Info"
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "genre-name",
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 15
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "label",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 16
+                            },
+                            __self: undefined,
+                            children: "Name: "
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "value",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 17
+                            },
+                            __self: undefined,
+                            children: genre.Name
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "genre-desc",
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 19
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "label",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 20
+                            },
+                            __self: undefined,
+                            children: "Description: "
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx("span", {
+                            className: "value",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 21
+                            },
+                            __self: undefined,
+                            children: genre.Description
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("div", {
+                    className: "text-center align-items-end pt-4",
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 23
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Button, {
+                            variant: "success link",
+                            onClick: history.goBack,
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 24
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx("i", {
+                                    className: "fa fa-arrow-left",
+                                    __source: {
+                                        fileName: "src/components/genre-view/genre-view.jsx",
+                                        lineNumber: 25
+                                    },
+                                    __self: undefined
+                                }),
+                                " Back"
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
+                            to: "/",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 27
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                variant: "success link mx-2",
+                                __source: {
+                                    fileName: "src/components/genre-view/genre-view.jsx",
+                                    lineNumber: 28
+                                },
+                                __self: undefined,
+                                children: "Back to Movie List"
+                            })
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Title, {
+                    as: "h4",
+                    className: "label pt-5",
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 31
+                    },
+                    __self: undefined,
+                    children: [
+                        genre.Name,
+                        " Movies"
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
+                    __source: {
+                        fileName: "src/components/genre-view/genre-view.jsx",
+                        lineNumber: 34
+                    },
+                    __self: undefined,
+                    children: !!moviesByGenre ? moviesByGenre.map((movie)=>!!movie && /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                            xs: 12,
+                            md: 6,
+                            lg: 4,
+                            className: "fav-movie",
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 39
+                            },
+                            __self: undefined,
+                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
+                                __source: {
+                                    fileName: "src/components/genre-view/genre-view.jsx",
+                                    lineNumber: 46
+                                },
+                                __self: undefined,
+                                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
+                                    to: `/movies/${movie._id}`,
+                                    __source: {
+                                        fileName: "src/components/genre-view/genre-view.jsx",
+                                        lineNumber: 47
+                                    },
+                                    __self: undefined,
+                                    children: [
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
+                                            src: movie.ImagePath,
+                                            alt: movie.Title,
+                                            crossOrigin: "anonymous",
+                                            __source: {
+                                                fileName: "src/components/genre-view/genre-view.jsx",
+                                                lineNumber: 48
+                                            },
+                                            __self: undefined
+                                        }),
+                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
+                                            __source: {
+                                                fileName: "src/components/genre-view/genre-view.jsx",
+                                                lineNumber: 53
+                                            },
+                                            __self: undefined,
+                                            children: movie.Title
+                                        })
+                                    ]
+                                })
+                            })
+                        }, movie._id)
+                    ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        __source: {
+                            fileName: "src/components/genre-view/genre-view.jsx",
+                            lineNumber: 60
+                        },
+                        __self: undefined,
+                        children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                            __source: {
+                                fileName: "src/components/genre-view/genre-view.jsx",
+                                lineNumber: 61
+                            },
+                            __self: undefined,
+                            children: "No movies"
+                        })
+                    })
+                })
+            ]
+        })
+    }));
+};
+_s(GenreView, "9cZfZ04734qoCGIctmKX7+sX6eU=", false, function() {
+    return [_reactRouterDom.useHistory];
+});
+_c = GenreView;
+const mapStateToProps = ({ movies  }, ownProps)=>{
+    const moviesByGenre = movies.filter((m)=>m.Genre.Name === ownProps.match.params.name
+    );
+    const genre = movies.find((m)=>m.Genre.Name === ownProps.match.params.name
+    ).Genre;
+    return {
+        genre,
+        moviesByGenre
+    };
+};
+exports.default = _reactRedux.connect(mapStateToProps)(GenreView);
+var _c;
+$RefreshReg$(_c, "GenreView");
+
+  $parcel$ReactRefreshHelpers$5f0a.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-redux":"2L0if","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"bpxKL":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$4e37 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$4e37.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactBootstrap = require("react-bootstrap");
+var _navBarScss = require("./nav-bar.scss");
+const MyNavbar = ({ user  })=>{
+    const onLoggedOut = ()=>{
+        localStorage.clear();
+        window.open("/", "_self");
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar, {
+        bg: "light",
+        expand: "lg",
+        __source: {
+            fileName: "src/components/nav-bar/nav-bar.jsx",
+            lineNumber: 15
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Container, {
+            __source: {
+                fileName: "src/components/nav-bar/nav-bar.jsx",
+                lineNumber: 16
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Brand, {
+                    href: "/",
+                    __source: {
+                        fileName: "src/components/nav-bar/nav-bar.jsx",
+                        lineNumber: 17
+                    },
+                    __self: undefined,
+                    children: "myFlix"
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Toggle, {
+                    "aria-controls": "basic-navbar-nav",
+                    __source: {
+                        fileName: "src/components/nav-bar/nav-bar.jsx",
+                        lineNumber: 18
+                    },
+                    __self: undefined
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Collapse, {
+                    className: "justify-content-end",
+                    id: "basic-navbar-nav",
+                    __source: {
+                        fileName: "src/components/nav-bar/nav-bar.jsx",
+                        lineNumber: 19
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Nav, {
+                        className: "justify-content-end",
+                        __source: {
+                            fileName: "src/components/nav-bar/nav-bar.jsx",
+                            lineNumber: 20
+                        },
+                        __self: undefined,
+                        children: [
+                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
+                                href: "/",
+                                __source: {
+                                    fileName: "src/components/nav-bar/nav-bar.jsx",
+                                    lineNumber: 21
+                                },
+                                __self: undefined,
+                                children: "Home"
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
+                                href: `/profile`,
+                                __source: {
+                                    fileName: "src/components/nav-bar/nav-bar.jsx",
+                                    lineNumber: 22
+                                },
+                                __self: undefined,
+                                children: "Profile"
+                            }),
+                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
+                                onClick: ()=>onLoggedOut()
+                                ,
+                                __source: {
+                                    fileName: "src/components/nav-bar/nav-bar.jsx",
+                                    lineNumber: 23
+                                },
+                                __self: undefined,
+                                children: "Logout"
+                            })
+                        ]
+                    })
+                })
+            ]
+        })
+    }));
+};
+_c = MyNavbar;
+exports.default = MyNavbar;
+var _c;
+$RefreshReg$(_c, "MyNavbar");
+
+  $parcel$ReactRefreshHelpers$4e37.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-bootstrap":"h2YVd","./nav-bar.scss":"jDPsg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"jDPsg":[function() {},{}],"2E7Aw":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$58c6 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$58c6.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _reactRedux = require("react-redux");
+var _favoriteMovies = require("./favorite-movies");
+var _favoriteMoviesDefault = parcelHelpers.interopDefault(_favoriteMovies);
+var _updateUser = require("./update-user");
+var _updateUserDefault = parcelHelpers.interopDefault(_updateUser);
+var _userInfo = require("./user-info");
+var _userInfoDefault = parcelHelpers.interopDefault(_userInfo);
+var _reactBootstrap = require("react-bootstrap");
+var _constant = require("../../utils/constant");
+const ProfileView = ({ user , favoriteMovies  })=>{
+    console.log(favoriteMovies);
+    const handleDelFavMovie = (movieId)=>{
+        const user1 = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        _axiosDefault.default.delete(`${_constant.API_URL}/users/${user1.Username}/movies/${movieId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response)=>{
+            const updatedUser = response.data;
+            console.log('Movie deleted from fav list');
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            window.location.reload();
+        }).catch((error)=>{
+            console.log('Fav movie deleting failed.', error);
+        });
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Container, {
+        __source: {
+            fileName: "src/components/profile-view/profile-view.jsx",
+            lineNumber: 33
+        },
+        __self: undefined,
+        children: [
+            /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
+                __source: {
+                    fileName: "src/components/profile-view/profile-view.jsx",
+                    lineNumber: 34
+                },
+                __self: undefined,
+                children: [
+                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        md: 4,
+                        __source: {
+                            fileName: "src/components/profile-view/profile-view.jsx",
+                            lineNumber: 35
+                        },
+                        __self: undefined,
+                        children: !!user && /*#__PURE__*/ _jsxRuntime.jsx(_userInfoDefault.default, {
+                            name: user.Username,
+                            email: user.Email,
+                            __source: {
+                                fileName: "src/components/profile-view/profile-view.jsx",
+                                lineNumber: 36
+                            },
+                            __self: undefined
+                        })
+                    }),
+                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        md: 8,
+                        __source: {
+                            fileName: "src/components/profile-view/profile-view.jsx",
+                            lineNumber: 38
+                        },
+                        __self: undefined,
+                        children: !!user && /*#__PURE__*/ _jsxRuntime.jsx(_updateUserDefault.default, {
+                            user: user,
+                            __source: {
+                                fileName: "src/components/profile-view/profile-view.jsx",
+                                lineNumber: 39
+                            },
+                            __self: undefined
+                        })
+                    })
+                ]
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx(_favoriteMoviesDefault.default, {
+                favoriteMovies: favoriteMovies,
+                delFavMovie: (id)=>handleDelFavMovie(id)
+                ,
+                __source: {
+                    fileName: "src/components/profile-view/profile-view.jsx",
+                    lineNumber: 42
+                },
+                __self: undefined
+            })
+        ]
+    }));
+};
+_c = ProfileView;
+const mapStateToProps = (props, ownProps)=>{
+    const { movies  } = props;
+    const { user  } = ownProps;
+    const favoriteMovies = user && user.FavoriteMovies.map((favMovie)=>movies.find((movie)=>movie._id === favMovie
+        )
+    );
+    return {
+        favoriteMovies,
+        user
+    };
+};
+exports.default = _reactRedux.connect(mapStateToProps)(ProfileView);
+var _c;
+$RefreshReg$(_c, "ProfileView");
+
+  $parcel$ReactRefreshHelpers$58c6.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","react-redux":"2L0if","./favorite-movies":"gKhXS","./update-user":"hBcEf","./user-info":"cK8m8","react-bootstrap":"h2YVd","../../utils/constant":"cR822","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"gKhXS":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$7994 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$7994.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRouterDom = require("react-router-dom");
+var _reactBootstrap = require("react-bootstrap");
+var _profileViewScss = require("./profile-view.scss");
+const FavoriteMovies = ({ favoriteMovies , delFavMovie  })=>{
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        __source: {
+            fileName: "src/components/profile-view/favorite-movies.jsx",
+            lineNumber: 9
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/profile-view/favorite-movies.jsx",
+                lineNumber: 10
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
+                    __source: {
+                        fileName: "src/components/profile-view/favorite-movies.jsx",
+                        lineNumber: 11
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        __source: {
+                            fileName: "src/components/profile-view/favorite-movies.jsx",
+                            lineNumber: 12
+                        },
+                        __self: undefined,
+                        children: /*#__PURE__*/ _jsxRuntime.jsx("h4", {
+                            __source: {
+                                fileName: "src/components/profile-view/favorite-movies.jsx",
+                                lineNumber: 13
+                            },
+                            __self: undefined,
+                            children: "Favorite Movies"
+                        })
+                    })
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
+                    __source: {
+                        fileName: "src/components/profile-view/favorite-movies.jsx",
+                        lineNumber: 16
+                    },
+                    __self: undefined,
+                    children: !!favoriteMovies ? favoriteMovies.map((movie)=>!!movie && /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Col, {
+                            xs: 12,
+                            md: 6,
+                            lg: 4,
+                            className: "fav-movie",
+                            __source: {
+                                fileName: "src/components/profile-view/favorite-movies.jsx",
+                                lineNumber: 21
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
+                                    __source: {
+                                        fileName: "src/components/profile-view/favorite-movies.jsx",
+                                        lineNumber: 28
+                                    },
+                                    __self: undefined,
+                                    children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
+                                        to: `/movies/${movie._id}`,
+                                        __source: {
+                                            fileName: "src/components/profile-view/favorite-movies.jsx",
+                                            lineNumber: 29
+                                        },
+                                        __self: undefined,
+                                        children: [
+                                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
+                                                src: movie.ImageURL,
+                                                alt: movie.Title,
+                                                __source: {
+                                                    fileName: "src/components/profile-view/favorite-movies.jsx",
+                                                    lineNumber: 30
+                                                },
+                                                __self: undefined
+                                            }),
+                                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
+                                                __source: {
+                                                    fileName: "src/components/profile-view/favorite-movies.jsx",
+                                                    lineNumber: 34
+                                                },
+                                                __self: undefined,
+                                                children: movie.Title
+                                            })
+                                        ]
+                                    })
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                                    variant: "secondary",
+                                    onClick: ()=>delFavMovie(movie._id)
+                                    ,
+                                    __source: {
+                                        fileName: "src/components/profile-view/favorite-movies.jsx",
+                                        lineNumber: 37
+                                    },
+                                    __self: undefined,
+                                    children: "Remove From list"
+                                })
+                            ]
+                        }, movie._id)
+                    ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                        xs: 12,
+                        __source: {
+                            fileName: "src/components/profile-view/favorite-movies.jsx",
+                            lineNumber: 47
+                        },
+                        __self: undefined,
+                        children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
+                            __source: {
+                                fileName: "src/components/profile-view/favorite-movies.jsx",
+                                lineNumber: 48
+                            },
+                            __self: undefined,
+                            children: "No movies favorited yet"
+                        })
+                    })
+                })
+            ]
+        })
+    }));
+};
+_c = FavoriteMovies;
+exports.default = FavoriteMovies;
+var _c;
+$RefreshReg$(_c, "FavoriteMovies");
+
+  $parcel$ReactRefreshHelpers$7994.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","./profile-view.scss":"gb0ga","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"gb0ga":[function() {},{}],"hBcEf":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$f560 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$f560.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _constant = require("../../utils/constant");
+var _propTypes = require("prop-types");
+var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _reactBootstrap = require("react-bootstrap");
+var _validate = require("../../utils/validate");
+var _s = $RefreshSig$();
+const UpdateUser = ({ user  })=>{
+    _s();
+    const [userData, setUserData] = _reactDefault.default.useState({
+        username: `${user.Username}`,
+        password: '',
+        email: `${user.Email}`
+    });
+    const [errors, setErrors] = _react.useState({
+    });
+    const [message, setMessage] = _react.useState("");
+    const handleChange = (e)=>{
+        const { name , value  } = e.target;
+        let error = _validate.validate(name, value);
+        setErrors((prevErr)=>{
+            return {
+                ...prevErr,
+                ...error
+            };
+        });
+        setUserData((prevState)=>({
+                ...prevState,
+                [name]: value
+            })
+        );
+    };
+    const handleSubmit = (e)=>{
+        e.preventDefault();
+        //form can be submitted if there are no validation errors. 
+        let isValid = Object.values(errors).every((error)=>error.length === 0
+        );
+        const token = localStorage.getItem('token');
+        isValid && _axiosDefault.default.put(`${_constant.API_URL}/users/${user.Username}`, {
+            Username: userData.username || user.Username,
+            Password: userData.password || user.Password,
+            Email: userData.email || user.Email,
+            Birthday: user.Birthday
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response)=>{
+            const data = response.data;
+            setMessage("User info updated");
+            localStorage.setItem('user', JSON.stringify(data));
+            window.location.reload();
+        }).catch((e1)=>{
+            setMessage("User doesn't exists. Check username or password.");
+            console.log('no such user exists!!!');
+        });
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        __source: {
+            fileName: "src/components/profile-view/update-user.jsx",
+            lineNumber: 64
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/profile-view/update-user.jsx",
+                lineNumber: 65
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
+                    as: "h4",
+                    className: "text-center",
+                    __source: {
+                        fileName: "src/components/profile-view/update-user.jsx",
+                        lineNumber: 66
+                    },
+                    __self: undefined,
+                    children: "Want to change some info?"
+                }),
+                message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                    className: "form-group",
+                    __source: {
+                        fileName: "src/components/profile-view/update-user.jsx",
+                        lineNumber: 68
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
+                        className: "alert alert-danger my-1 py-2",
+                        role: "alert",
+                        __source: {
+                            fileName: "src/components/profile-view/update-user.jsx",
+                            lineNumber: 69
+                        },
+                        __self: undefined,
+                        children: message
+                    })
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
+                    __source: {
+                        fileName: "src/components/profile-view/update-user.jsx",
+                        lineNumber: 74
+                    },
+                    __self: undefined,
+                    children: [
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "username",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/profile-view/update-user.jsx",
+                                lineNumber: 75
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 76
+                                    },
+                                    __self: undefined,
+                                    children: "Username: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "text",
+                                    name: "username",
+                                    value: userData.username || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter username here",
+                                    isInvalid: !!errors.username,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 77
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 85
+                                    },
+                                    __self: undefined,
+                                    children: errors.username
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "password",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/profile-view/update-user.jsx",
+                                lineNumber: 89
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 90
+                                    },
+                                    __self: undefined,
+                                    children: "Password: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "password",
+                                    name: "password",
+                                    value: userData.password,
+                                    onChange: handleChange,
+                                    placeholder: "Enter password here",
+                                    isInvalid: !!errors.password,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 91
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 99
+                                    },
+                                    __self: undefined,
+                                    children: errors.password
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
+                            controlId: "email",
+                            className: "mb-3",
+                            __source: {
+                                fileName: "src/components/profile-view/update-user.jsx",
+                                lineNumber: 103
+                            },
+                            __self: undefined,
+                            children: [
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 104
+                                    },
+                                    __self: undefined,
+                                    children: "e-mail: "
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+                                    type: "email",
+                                    name: "email",
+                                    value: userData.email || '',
+                                    onChange: handleChange,
+                                    placeholder: "Enter email here",
+                                    isInvalid: !!errors.email,
+                                    required: true,
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 105
+                                    },
+                                    __self: undefined
+                                }),
+                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
+                                    type: "invalid",
+                                    __source: {
+                                        fileName: "src/components/profile-view/update-user.jsx",
+                                        lineNumber: 113
+                                    },
+                                    __self: undefined,
+                                    children: errors.email
+                                })
+                            ]
+                        }),
+                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
+                            type: "submit",
+                            className: "login-btn",
+                            disabled: !userData.password,
+                            onClick: handleSubmit,
+                            __source: {
+                                fileName: "src/components/profile-view/update-user.jsx",
+                                lineNumber: 117
+                            },
+                            __self: undefined,
+                            children: "Update"
+                        })
+                    ]
+                })
+            ]
+        })
+    }));
+};
+_s(UpdateUser, "LeFxze7YLJNH/g2zvBaEJvO8V88=");
+_c = UpdateUser;
+exports.default = UpdateUser;
+var _c;
+$RefreshReg$(_c, "UpdateUser");
+
+  $parcel$ReactRefreshHelpers$f560.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../../utils/constant":"cR822","prop-types":"1tgq3","axios":"iYoWk","react-bootstrap":"h2YVd","../../utils/validate":"jdxGU","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"cK8m8":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$94e5 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$94e5.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactBootstrap = require("react-bootstrap");
+const UserInfo = ({ name , email  })=>{
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+        __source: {
+            fileName: "src/components/profile-view/user-info.jsx",
+            lineNumber: 6
+        },
+        __self: undefined,
+        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
+            __source: {
+                fileName: "src/components/profile-view/user-info.jsx",
+                lineNumber: 7
+            },
+            __self: undefined,
+            children: [
+                /*#__PURE__*/ _jsxRuntime.jsx("h4", {
+                    __source: {
+                        fileName: "src/components/profile-view/user-info.jsx",
+                        lineNumber: 8
+                    },
+                    __self: undefined,
+                    children: "User Info"
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
+                    __source: {
+                        fileName: "src/components/profile-view/user-info.jsx",
+                        lineNumber: 9
+                    },
+                    __self: undefined,
+                    children: [
+                        "Name: ",
+                        name
+                    ]
+                }),
+                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
+                    __source: {
+                        fileName: "src/components/profile-view/user-info.jsx",
+                        lineNumber: 10
+                    },
+                    __self: undefined,
+                    children: [
+                        "e-mail: ",
+                        email
+                    ]
+                })
+            ]
+        })
+    }));
+};
+_c = UserInfo;
+exports.default = UserInfo;
+var _c;
+$RefreshReg$(_c, "UserInfo");
+
+  $parcel$ReactRefreshHelpers$94e5.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-bootstrap":"h2YVd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"6Cf7s":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$4f92 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$4f92.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRedux = require("react-redux");
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _visibilityFilterInput = require("../visibility-filter-input/visibility-filter-input");
+var _visibilityFilterInputDefault = parcelHelpers.interopDefault(_visibilityFilterInput);
+var _movieCard = require("../movie-card/movie-card");
+var _movieCardDefault = parcelHelpers.interopDefault(_movieCard);
+var _reactBootstrap = require("react-bootstrap");
+var _reactPaginate = require("react-paginate");
+var _reactPaginateDefault = parcelHelpers.interopDefault(_reactPaginate);
+var _constant = require("../../utils/constant");
+var _movieListScss = require("./movie-list.scss");
+var _s = $RefreshSig$();
+const MovieList = ({ visibilityFilter , movies , user  })=>{
+    _s();
+    let [pagination, setPagination] = _reactDefault.default.useState({
+        page: 0,
+        pages: Math.floor(movies.length / _constant.PER_PAGE)
+    });
+    let filteredMovies = movies /* .slice(pagination.page * perPage, (pagination.page + 1) * perPage) */ ;
+    let userFavList = user.FavoriteMovies;
+    if (visibilityFilter !== '') filteredMovies = movies.filter((m)=>m.Title.toLowerCase().includes(visibilityFilter.toLowerCase())
+    );
+    if (!movies) return(/*#__PURE__*/ _jsxRuntime.jsx("div", {
+        className: "main-view",
+        __source: {
+            fileName: "src/components/movie-list/movie-list.jsx",
+            lineNumber: 25
+        },
+        __self: undefined
+    }));
+    /*    //handle pagination
+    const handlePageClick = (event) => {
+        setPagination((prevState) =>({
+            ...prevState,
+            page : event.selected
+        }));
+    } */ //handle fav movie btn clicked
+    const addMovieToUserList = (movieId)=>{
+        console.log(movieId);
+        const token = localStorage.getItem('token');
+        _axiosDefault.default.post(`${_constant.API_URL}/users/${user.Username}/movies/${movieId}`, {
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then((response)=>{
+            const updatedUser = response.data;
+            console.log("Movie added to fav list");
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            window.location.reload();
+        }).catch((error)=>{
+            console.log('Adding a movie to user list failed.', error);
+        });
+    };
+    return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
+        className: "px-5",
+        __source: {
+            fileName: "src/components/movie-list/movie-list.jsx",
+            lineNumber: 55
+        },
+        __self: undefined,
+        children: [
+            /*#__PURE__*/ _jsxRuntime.jsx("h1", {
+                className: "text-center page-title",
+                __source: {
+                    fileName: "src/components/movie-list/movie-list.jsx",
+                    lineNumber: 56
+                },
+                __self: undefined,
+                children: "Movie List"
+            }),
+            /*#__PURE__*/ _jsxRuntime.jsx(_visibilityFilterInputDefault.default, {
+                visibilityFilter: visibilityFilter,
+                __source: {
+                    fileName: "src/components/movie-list/movie-list.jsx",
+                    lineNumber: 57
+                },
+                __self: undefined
+            }),
+            filteredMovies.map((m)=>/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
+                    md: 2,
+                    className: "g-4",
+                    __source: {
+                        fileName: "src/components/movie-list/movie-list.jsx",
+                        lineNumber: 60
+                    },
+                    __self: undefined,
+                    children: /*#__PURE__*/ _jsxRuntime.jsx(_movieCardDefault.default, {
+                        movie: m,
+                        liked: userFavList.includes(m._id),
+                        addFavMovie: (movieId)=>addMovieToUserList(movieId)
+                        ,
+                        __source: {
+                            fileName: "src/components/movie-list/movie-list.jsx",
+                            lineNumber: 61
+                        },
+                        __self: undefined
+                    })
+                }, m._id)
+            )
+        ]
+    }));
+};
+_s(MovieList, "xaDz+sPKCxNGM7hMd8tJT7MG+1Y=");
+_c = MovieList;
+const mapStateToProps = ({ visibilityFilter , movies  }, ownProps)=>({
+        visibilityFilter,
+        movies,
+        user: ownProps.user
+    })
+;
+exports.default = _reactRedux.connect(mapStateToProps)(MovieList);
+var _c;
+$RefreshReg$(_c, "MovieList");
+
+  $parcel$ReactRefreshHelpers$4f92.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-redux":"2L0if","axios":"iYoWk","../visibility-filter-input/visibility-filter-input":"7ZxGS","../movie-card/movie-card":"6EiBJ","react-bootstrap":"h2YVd","react-paginate":"hi1T4","../../utils/constant":"cR822","./movie-list.scss":"99ezQ","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"7ZxGS":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$9bc3 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$9bc3.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _jsxRuntime = require("react/jsx-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRedux = require("react-redux");
+var _actions = require("../../actions");
+var _reactBootstrap = require("react-bootstrap");
+const VisibilityInputFilter = ({ visibilityFilter , dispatch  })=>{
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
+        onChange: (e)=>dispatch(_actions.setFilter(e.target.value))
+        ,
+        value: visibilityFilter,
+        placeholder: "Serach by movie title",
+        __source: {
+            fileName: "src/components/visibility-filter-input/visibility-filter-input.jsx",
+            lineNumber: 8
+        },
+        __self: undefined
+    }));
+};
+_c = VisibilityInputFilter;
+const mapStateToProps = ({ visibilityFilter  })=>({
+        visibilityFilter
+    })
+;
+exports.default = _reactRedux.connect(mapStateToProps)(VisibilityInputFilter);
+var _c;
+$RefreshReg$(_c, "VisibilityInputFilter");
+
+  $parcel$ReactRefreshHelpers$9bc3.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-redux":"2L0if","../../actions":"9lOAG","react-bootstrap":"h2YVd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"9lOAG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setMovies", ()=>setMovies
+);
+parcelHelpers.export(exports, "setFilter", ()=>setFilter
+);
+parcelHelpers.export(exports, "showLoader", ()=>showLoader
+);
+parcelHelpers.export(exports, "hideLoader", ()=>hideLoader
+);
+var _constant = require("../utils/constant");
+const setMovies = (movies)=>({
+        type: _constant.SET_MOVIES,
+        movies
+    })
+;
+const setFilter = (value)=>({
+        type: _constant.SET_FILTER,
+        value
+    })
+;
+const showLoader = ()=>({
+        type: _constant.SHOW_LOADER
+    })
+;
+const hideLoader = ()=>({
+        type: _constant.HIDE_LOADER
+    })
+;
+
+},{"../utils/constant":"cR822","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6EiBJ":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$4249 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -39476,6 +47973,7 @@ var _movieCardScss = require("./movie-card.scss");
 const MovieCard = ({ movie , liked , addFavMovie  })=>{
     return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card, {
         className: "h-100 gap-1",
+        border: "secondary",
         __source: {
             fileName: "src/components/movie-card/movie-card.jsx",
             lineNumber: 10
@@ -39485,8 +47983,8 @@ const MovieCard = ({ movie , liked , addFavMovie  })=>{
             /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Img, {
                 variant: "top",
                 src: movie.ImageURL,
-                crossOrigin: "anonymous",
                 className: "movie-img",
+                crossOrigin: "anonymous",
                 __source: {
                     fileName: "src/components/movie-card/movie-card.jsx",
                     lineNumber: 11
@@ -39569,7 +48067,9 @@ MovieCard.propTypes = {
         }),
         Director: _propTypesDefault.default.shape({
             Name: _propTypesDefault.default.string.isRequired,
-            Bio: _propTypesDefault.default.string.isRequired
+            Bio: _propTypesDefault.default.string.isRequired,
+            Birth: _propTypesDefault.default.string.isRequired,
+            Death: _propTypesDefault.default.string
         }),
         ImageURL: _propTypesDefault.default.string.isRequired
     }).isRequired
@@ -69400,7447 +77900,551 @@ var icons = {
     faHandPointLeft: faHandPointLeft
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"3I5Fk":[function(require,module,exports) {
-"use strict";
-var Refresh = require('react-refresh/runtime');
-function debounce(func, delay) {
-    var args;
-    var timeout = undefined;
-    return function(args1) {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-            timeout = undefined;
-            func.call(null, args1);
-        }, delay);
-    };
-}
-var enqueueUpdate = debounce(function() {
-    Refresh.performReactRefresh();
-}, 30); // Everthing below is either adapted or copied from
-// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
-// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
-module.exports.prelude = function(module) {
-    window.$RefreshReg$ = function(type, id) {
-        Refresh.register(type, module.id + ' ' + id);
-    };
-    window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
-};
-module.exports.postlude = function(module) {
-    if (isReactRefreshBoundary(module.exports)) {
-        registerExportsForReactRefresh(module);
-        if (module.hot) {
-            module.hot.dispose(function(data) {
-                if (Refresh.hasUnrecoverableErrors()) window.location.reload();
-                data.prevExports = module.exports;
-            });
-            module.hot.accept(function(getParents) {
-                var prevExports = module.hot.data.prevExports;
-                var nextExports = module.exports; // Since we just executed the code for it, it's possible
-                // that the new exports make it ineligible for being a boundary.
-                var isNoLongerABoundary = !isReactRefreshBoundary(nextExports); // It can also become ineligible if its exports are incompatible
-                // with the previous exports.
-                // For example, if you add/remove/change exports, we'll want
-                // to re-execute the importing modules, and force those components
-                // to re-render. Similarly, if you convert a class component
-                // to a function, we want to invalidate the boundary.
-                var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
-                if (isNoLongerABoundary || didInvalidate) {
-                    // We'll be conservative. The only case in which we won't do a full
-                    // reload is if all parent modules are also refresh boundaries.
-                    // In that case we'll add them to the current queue.
-                    var parents = getParents();
-                    if (parents.length === 0) {
-                        // Looks like we bubbled to the root. Can't recover from that.
-                        window.location.reload();
-                        return;
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"cF5gT":[function() {},{}],"hi1T4":[function(require,module,exports) {
+!function(e, t) {
+    "object" == typeof exports && "object" == typeof module ? module.exports = t(require("react")) : "function" == typeof define && define.amd ? define([
+        "react"
+    ], t) : "object" == typeof exports ? exports.ReactPaginate = t(require("react")) : e.ReactPaginate = t(e.React);
+}(this, (e)=>(()=>{
+        var t = {
+            703: (e1, t1, a)=>{
+                var r = a(414);
+                function n() {
+                }
+                function i() {
+                }
+                i.resetWarningCache = n, e1.exports = function() {
+                    function e2(e3, t2, a1, n1, i1, o) {
+                        if (o !== r) {
+                            var s = new Error("Calling PropTypes validators directly is not supported by the `prop-types` package. Use PropTypes.checkPropTypes() to call them. Read more at http://fb.me/use-check-prop-types");
+                            throw s.name = "Invariant Violation", s;
+                        }
                     }
-                    return parents;
-                }
-                enqueueUpdate();
-            });
-        }
-    }
-};
-function isReactRefreshBoundary(exports) {
-    if (Refresh.isLikelyComponentType(exports)) return true;
-    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
-    return false;
-    var hasExports = false;
-    var areAllExportsComponents = true;
-    let isESM = '__esModule' in exports;
-    for(var key in exports){
-        hasExports = true;
-        if (key === '__esModule') continue;
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) // Don't invoke getters for CJS as they may have side effects.
-        return false;
-        var exportValue = exports[key];
-        if (!Refresh.isLikelyComponentType(exportValue)) areAllExportsComponents = false;
-    }
-    return hasExports && areAllExportsComponents;
-}
-function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
-    var prevSignature = getRefreshBoundarySignature(prevExports);
-    var nextSignature = getRefreshBoundarySignature(nextExports);
-    if (prevSignature.length !== nextSignature.length) return true;
-    for(var i = 0; i < nextSignature.length; i++){
-        if (prevSignature[i] !== nextSignature[i]) return true;
-    }
-    return false;
-} // When this signature changes, it's unsafe to stop at this refresh boundary.
-function getRefreshBoundarySignature(exports) {
-    var signature = [];
-    signature.push(Refresh.getFamilyByType(exports));
-    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return signature;
-    let isESM = '__esModule' in exports;
-    for(var key in exports){
-        if (key === '__esModule') continue;
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) continue;
-        var exportValue = exports[key];
-        signature.push(key);
-        signature.push(Refresh.getFamilyByType(exportValue));
-    }
-    return signature;
-}
-function registerExportsForReactRefresh(module) {
-    var exports = module.exports, id = module.id;
-    Refresh.register(exports, id + ' %exports%');
-    if (exports == null || typeof exports !== 'object') // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return;
-    let isESM = '__esModule' in exports;
-    for(var key in exports){
-        var desc = Object.getOwnPropertyDescriptor(exports, key);
-        if (desc && desc.get && !isESM) continue;
-        var exportValue = exports[key];
-        Refresh.register(exportValue, id + ' %exports% ' + key);
-    }
-}
-
-},{"react-refresh/runtime":"j7ppG"}],"cF5gT":[function() {},{}],"aP2YV":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$8dd4 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$8dd4.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _constant = require("../../utils/constant");
-var _validate = require("../../utils/validate");
-var _reactBootstrap = require("react-bootstrap");
-var _reactRouterDom = require("react-router-dom");
-var _registrationViewScss = require("./registration-view.scss");
-var _s = $RefreshSig$();
-const RegistrationView = ()=>{
-    _s();
-    const [userData, setUserData] = _reactDefault.default.useState({
-        username: '',
-        password: '',
-        email: '',
-        dob: ''
-    });
-    const [errors, setErrors] = _react.useState({
-    });
-    const [message, setMessage] = _react.useState("");
-    const handleChange = (e)=>{
-        const { name , value  } = e.target;
-        let error = _validate.validate(name, value);
-        setErrors((prevErr)=>{
-            return {
-                ...prevErr,
-                ...error
-            };
-        });
-        setUserData((prevState)=>({
-                ...prevState,
-                [name]: value
-            })
-        );
-    };
-    const handleSubmit = (e)=>{
-        e.preventDefault();
-        console.log(userData, new Date(userData.dob));
-        const { username , password , email , dob  } = userData;
-        _axiosDefault.default.post(`${_constant.API_URL}/users`, {
-            Username: username,
-            Password: password,
-            Email: email,
-            Birthday: new Date(dob)
-        }).then((response)=>{
-            const data = response.data;
-            setMessage("User registration was successful");
-            setUserData({
-                username: '',
-                password: '',
-                email: '',
-                dob: ''
-            });
-            data && window.open('/', '_self');
-        }).catch((error)=>{
-            setMessage("User registration failed. Plaese try later");
-            window.open('/', '_self');
-            console.log(`Registration failed!!! ${error}`);
-        });
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Col, {
-        className: "mx-auto",
-        lg: 4,
-        md: 8,
-        __source: {
-            fileName: "src/components/registration-view/registration-view.jsx",
-            lineNumber: 70
-        },
-        __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsx("h1", {
-                className: "login-logo",
-                __source: {
-                    fileName: "src/components/registration-view/registration-view.jsx",
-                    lineNumber: 71
-                },
-                __self: undefined,
-                children: "myFlix"
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-                className: "reg-container",
-                __source: {
-                    fileName: "src/components/registration-view/registration-view.jsx",
-                    lineNumber: 72
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-                    __source: {
-                        fileName: "src/components/registration-view/registration-view.jsx",
-                        lineNumber: 73
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
-                            as: "h4",
-                            className: "text-center",
-                            __source: {
-                                fileName: "src/components/registration-view/registration-view.jsx",
-                                lineNumber: 74
-                            },
-                            __self: undefined,
-                            children: "Register to myFlix"
-                        }),
-                        message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                            className: "form-group",
-                            __source: {
-                                fileName: "src/components/registration-view/registration-view.jsx",
-                                lineNumber: 78
-                            },
-                            __self: undefined,
-                            children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "alert alert-danger my-1 py-2",
-                                role: "alert",
-                                __source: {
-                                    fileName: "src/components/registration-view/registration-view.jsx",
-                                    lineNumber: 79
-                                },
-                                __self: undefined,
-                                children: message
-                            })
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
-                            __source: {
-                                fileName: "src/components/registration-view/registration-view.jsx",
-                                lineNumber: 84
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "username",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 85
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 86
-                                            },
-                                            __self: undefined,
-                                            children: "Username "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "text",
-                                            name: "username",
-                                            value: userData.username || '',
-                                            onChange: handleChange,
-                                            placeholder: "Enter username here",
-                                            isInvalid: !!errors.username,
-                                            required: true,
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 87
-                                            },
-                                            __self: undefined
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                            type: "invalid",
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 96
-                                            },
-                                            __self: undefined,
-                                            children: errors.username
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "password",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 100
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 101
-                                            },
-                                            __self: undefined,
-                                            children: "Password "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "password",
-                                            name: "password",
-                                            value: userData.password || '',
-                                            onChange: handleChange,
-                                            placeholder: "Enter password here",
-                                            isInvalid: !!errors.password,
-                                            required: true,
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 102
-                                            },
-                                            __self: undefined
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                            type: "invalid",
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 111
-                                            },
-                                            __self: undefined,
-                                            children: errors.password
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "email",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 115
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 116
-                                            },
-                                            __self: undefined,
-                                            children: "Email "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "email",
-                                            name: "email",
-                                            value: userData.email || '',
-                                            onChange: handleChange,
-                                            placeholder: "Enter email here",
-                                            isInvalid: !!errors.email,
-                                            required: true,
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 117
-                                            },
-                                            __self: undefined
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                            type: "invalid",
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 126
-                                            },
-                                            __self: undefined,
-                                            children: errors.email
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "dob",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 130
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 131
-                                            },
-                                            __self: undefined,
-                                            children: "Date of Birth "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "date",
-                                            name: "dob",
-                                            onChange: handleChange,
-                                            placeholder: "Enter date of birth here",
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 132
-                                            },
-                                            __self: undefined
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                                    type: "submit",
-                                    className: "login-btn",
-                                    disabled: !userData.email && !userData.password,
-                                    onClick: handleSubmit,
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 139
-                                    },
-                                    __self: undefined,
-                                    children: "Register"
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 147
-                                    },
-                                    __self: undefined
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
-                                    className: "login-register",
-                                    __source: {
-                                        fileName: "src/components/registration-view/registration-view.jsx",
-                                        lineNumber: 148
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        "Already registered ",
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                            to: '/',
-                                            __source: {
-                                                fileName: "src/components/registration-view/registration-view.jsx",
-                                                lineNumber: 149
-                                            },
-                                            __self: undefined,
-                                            children: "Sign in"
-                                        }),
-                                        " here"
-                                    ]
-                                })
-                            ]
-                        })
-                    ]
-                })
-            })
-        ]
-    }));
-};
-_s(RegistrationView, "4rLT+o7C0CSMFTmRzQF6+eKGR3A=");
-_c = RegistrationView;
-exports.default = RegistrationView;
-var _c;
-$RefreshReg$(_c, "RegistrationView");
-
-  $parcel$ReactRefreshHelpers$8dd4.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","../../utils/constant":"cR822","../../utils/validate":"jdxGU","react-bootstrap":"h2YVd","react-router-dom":"cpyQW","./registration-view.scss":"fr9ZP","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"cR822":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "API_URL", ()=>API_URL
-);
-const API_URL = "https://myflix-firstapi-app.herokuapp.com";
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"jdxGU":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "validate", ()=>validate
-);
-const validate = (fieldName, value)=>{
-    let errors = {
-    };
-    let fieldValid = '';
-    switch(fieldName){
-        case 'username':
-            if (!value) errors.username = 'Username is required';
-            else if (!/^[a-zA-Z0-9_]*$/.test(value)) errors.username = 'Username must contain alphanumeric characters only';
-            else if (value.length < 5) errors.username = 'Username must conatin atleast 5 characters';
-            else errors.username = '';
-            break;
-        case 'email':
-            fieldValid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value);
-            errors.email = fieldValid ? '' : 'Email is invalid';
-            break;
-        case 'password':
-            if (!value) errors.password = 'Password is required';
-            else if (value.length < 6) errors.password = 'Password must conatin atleast 6 characters';
-            else errors.password = '';
-            break;
-        default:
-            break;
-    }
-    return errors;
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fr9ZP":[function() {},{}],"054li":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$02dd = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$02dd.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _constant = require("../../utils/constant");
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _reactBootstrap = require("react-bootstrap");
-var _validate = require("../../utils/validate");
-var _reactRouterDom = require("react-router-dom");
-var _loginViewScss = require("./login-view.scss");
-var _s = $RefreshSig$();
-const LoginView = ({ onLoggedIn  })=>{
-    _s();
-    const [userData, setUserData] = _reactDefault.default.useState({
-        username: '',
-        password: ''
-    });
-    const [errors, setErrors] = _react.useState({
-    });
-    const [message, setMessage] = _react.useState("");
-    const handleChange = (e)=>{
-        const { name , value  } = e.target;
-        let error = _validate.validate(name, value);
-        setErrors((prevErr)=>{
-            return {
-                ...prevErr,
-                ...error
-            };
-        });
-        setUserData((prevState)=>({
-                ...prevState,
-                [name]: value
-            })
-        );
-    };
-    const handleSubmit = (e)=>{
-        e.preventDefault();
-        const { username: Username , password: Password  } = userData;
-        //form can be submitted if there are no validation errors.
-        let isValid = Object.values(errors).every((error)=>error.length === 0
-        );
-        isValid && _axiosDefault.default.post(`${_constant.API_URL}/login`, {
-            Username,
-            Password
-        }).then((response)=>{
-            const data = response.data;
-            data && onLoggedIn(data);
-        }).catch((error)=>{
-            setMessage("User doesn't exists. Check username or password.");
-            console.log(`no such user exists!!! ${error}`);
-        });
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Col, {
-        className: "mx-auto",
-        lg: 4,
-        md: 8,
-        __source: {
-            fileName: "src/components/login-view/login-view.jsx",
-            lineNumber: 60
-        },
-        __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsx("h1", {
-                className: "login-logo",
-                __source: {
-                    fileName: "src/components/login-view/login-view.jsx",
-                    lineNumber: 61
-                },
-                __self: undefined,
-                children: "myFlix"
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-                className: "login-container",
-                __source: {
-                    fileName: "src/components/login-view/login-view.jsx",
-                    lineNumber: 62
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-                    __source: {
-                        fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 63
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
-                            as: "h4",
-                            className: "text-center",
-                            __source: {
-                                fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 64
-                            },
-                            __self: undefined,
-                            children: "Log into myFlix"
-                        }),
-                        message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                            className: "form-group",
-                            __source: {
-                                fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 68
-                            },
-                            __self: undefined,
-                            children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                className: "alert alert-danger my-1 py-2",
-                                role: "alert",
-                                __source: {
-                                    fileName: "src/components/login-view/login-view.jsx",
-                                    lineNumber: 69
-                                },
-                                __self: undefined,
-                                children: message
-                            })
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
-                            __source: {
-                                fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 74
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "username",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/login-view/login-view.jsx",
-                                        lineNumber: 75
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 76
-                                            },
-                                            __self: undefined,
-                                            children: "Username "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "text",
-                                            name: "username",
-                                            value: userData.username || '',
-                                            onChange: handleChange,
-                                            placeholder: "Enter username",
-                                            isInvalid: !!errors.username,
-                                            required: true,
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 77
-                                            },
-                                            __self: undefined
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                            type: "invalid",
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 86
-                                            },
-                                            __self: undefined,
-                                            children: errors.username
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                                    controlId: "password",
-                                    className: "mb-3",
-                                    __source: {
-                                        fileName: "src/components/login-view/login-view.jsx",
-                                        lineNumber: 90
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 91
-                                            },
-                                            __self: undefined,
-                                            children: "Password "
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                            type: "password",
-                                            name: "password",
-                                            value: userData.password || '',
-                                            onChange: handleChange,
-                                            placeholder: "Enter password",
-                                            isInvalid: !!errors.password,
-                                            required: true,
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 92
-                                            },
-                                            __self: undefined
-                                        }),
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                            type: "invalid",
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 101
-                                            },
-                                            __self: undefined,
-                                            children: errors.password
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                                    type: "submit",
-                                    className: "login-btn",
-                                    disabled: !userData.email && !userData.password,
-                                    onClick: handleSubmit,
-                                    __source: {
-                                        fileName: "src/components/login-view/login-view.jsx",
-                                        lineNumber: 105
-                                    },
-                                    __self: undefined,
-                                    children: "Login"
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    __source: {
-                                        fileName: "src/components/login-view/login-view.jsx",
-                                        lineNumber: 113
-                                    },
-                                    __self: undefined
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
-                                    className: "login-register",
-                                    __source: {
-                                        fileName: "src/components/login-view/login-view.jsx",
-                                        lineNumber: 114
-                                    },
-                                    __self: undefined,
-                                    children: [
-                                        "Don't have an account? ",
-                                        /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                            to: '/register',
-                                            __source: {
-                                                fileName: "src/components/login-view/login-view.jsx",
-                                                lineNumber: 115
-                                            },
-                                            __self: undefined,
-                                            children: "Register"
-                                        }),
-                                        ' ',
-                                        "here"
-                                    ]
-                                })
-                            ]
-                        })
-                    ]
-                })
-            })
-        ]
-    }));
-};
-_s(LoginView, "ZSy3NefDFoG22hXh5Z3tB54uqIA=");
-_c = LoginView;
-LoginView.propTypes = {
-    onLoggedIn: _propTypesDefault.default.func.isRequired
-};
-exports.default = LoginView;
-var _c;
-$RefreshReg$(_c, "LoginView");
-
-  $parcel$ReactRefreshHelpers$02dd.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../../utils/constant":"cR822","prop-types":"1tgq3","axios":"iYoWk","react-bootstrap":"h2YVd","../../utils/validate":"jdxGU","react-router-dom":"cpyQW","./login-view.scss":"lS4BK","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"lS4BK":[function() {},{}],"ikZdr":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$3741 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$3741.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _reactRouterDom = require("react-router-dom");
-var _reactBootstrap = require("react-bootstrap");
-var _breadcrumb = require("react-bootstrap/Breadcrumb");
-var _breadcrumbDefault = parcelHelpers.interopDefault(_breadcrumb);
-var _movieViewScss = require("./movie-view.scss");
-const MovieView = ({ movie  })=>{
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsxs(_breadcrumbDefault.default, {
-                __source: {
-                    fileName: "src/components/movie-view/movie-view.jsx",
-                    lineNumber: 14
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        href: "/",
-                        __source: {
-                            fileName: "src/components/movie-view/movie-view.jsx",
-                            lineNumber: 15
-                        },
-                        __self: undefined,
-                        children: "Home"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        active: true,
-                        __source: {
-                            fileName: "src/components/movie-view/movie-view.jsx",
-                            lineNumber: 16
-                        },
-                        __self: undefined,
-                        children: "Movie"
-                    })
-                ]
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-                className: "mt-4 mx-auto",
-                __source: {
-                    fileName: "src/components/movie-view/movie-view.jsx",
-                    lineNumber: 18
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
-                    className: "align-items-center",
-                    __source: {
-                        fileName: "src/components/movie-view/movie-view.jsx",
-                        lineNumber: 19
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                            lg: 6,
-                            md: 5,
-                            sm: 12,
-                            __source: {
-                                fileName: "src/components/movie-view/movie-view.jsx",
-                                lineNumber: 20
-                            },
-                            __self: undefined,
-                            children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Img, {
-                                variant: "top",
-                                src: movie.ImageURL,
-                                crossOrigin: "anonymous",
-                                className: "movie-poster",
-                                alt: "movie-poster",
-                                __source: {
-                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                    lineNumber: 21
-                                },
-                                __self: undefined
-                            })
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                            lg: 6,
-                            md: 5,
-                            sm: 12,
-                            className: "movie-view px-2",
-                            __source: {
-                                fileName: "src/components/movie-view/movie-view.jsx",
-                                lineNumber: 29
-                            },
-                            __self: undefined,
-                            children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-                                className: "movie-body d-flex flex-column",
-                                __source: {
-                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                    lineNumber: 30
-                                },
-                                __self: undefined,
-                                children: [
-                                    /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                                        className: "movie-title mb-3",
-                                        __source: {
-                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                            lineNumber: 31
-                                        },
-                                        __self: undefined,
-                                        children: [
-                                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                                className: "label",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 32
-                                                },
-                                                __self: undefined
-                                            }),
-                                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                                className: "value h1 mb-2",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 33
-                                                },
-                                                __self: undefined,
-                                                children: movie.Title
-                                            })
-                                        ]
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                                        className: "movie-director",
-                                        __source: {
-                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                            lineNumber: 35
-                                        },
-                                        __self: undefined,
-                                        children: [
-                                            /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                                className: "label h6 mb-0",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 36
-                                                },
-                                                __self: undefined,
-                                                children: "Director "
-                                            }),
-                                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                                className: "value",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 37
-                                                },
-                                                __self: undefined,
-                                                children: /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                                    to: `/directors/${movie.Director.Name}`,
-                                                    __source: {
-                                                        fileName: "src/components/movie-view/movie-view.jsx",
-                                                        lineNumber: 38
-                                                    },
-                                                    __self: undefined,
-                                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
-                                                        className: "p-0 mb-2 text-decoration-none",
-                                                        variant: "link",
-                                                        __source: {
-                                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                                            lineNumber: 39
-                                                        },
-                                                        __self: undefined,
-                                                        children: movie.Director.Name
-                                                    })
-                                                })
-                                            })
-                                        ]
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                                        className: "movie-genre",
-                                        __source: {
-                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                            lineNumber: 48
-                                        },
-                                        __self: undefined,
-                                        children: [
-                                            /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                                className: "label h6 mb-0",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 49
-                                                },
-                                                __self: undefined,
-                                                children: "Genre"
-                                            }),
-                                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                                className: "value",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 50
-                                                },
-                                                __self: undefined,
-                                                children: /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                                    to: `/genres/${movie.Genre.Name}`,
-                                                    __source: {
-                                                        fileName: "src/components/movie-view/movie-view.jsx",
-                                                        lineNumber: 51
-                                                    },
-                                                    __self: undefined,
-                                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
-                                                        className: "p-0 mb-2 text-decoration-none",
-                                                        variant: "link",
-                                                        __source: {
-                                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                                            lineNumber: 52
-                                                        },
-                                                        __self: undefined,
-                                                        children: movie.Genre.Name
-                                                    })
-                                                })
-                                            })
-                                        ]
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                                        className: "movie-description",
-                                        __source: {
-                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                            lineNumber: 61
-                                        },
-                                        __self: undefined,
-                                        children: [
-                                            /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                                className: "label h6",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 62
-                                                },
-                                                __self: undefined,
-                                                children: "Description "
-                                            }),
-                                            /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                                className: "value m-0",
-                                                __source: {
-                                                    fileName: "src/components/movie-view/movie-view.jsx",
-                                                    lineNumber: 63
-                                                },
-                                                __self: undefined,
-                                                children: movie.Description
-                                            })
-                                        ]
-                                    }),
-                                    /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                                        className: "movie-footer text-center text-sm-start align-items-end pt-0",
-                                        __source: {
-                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                            lineNumber: 65
-                                        },
-                                        __self: undefined,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Footer, {
-                                            className: "p-md-0 pt-md-4",
-                                            __source: {
-                                                fileName: "src/components/movie-view/movie-view.jsx",
-                                                lineNumber: 66
-                                            },
-                                            __self: undefined,
-                                            children: [
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                                    to: `/directors/${movie.Director.Name}`,
-                                                    __source: {
-                                                        fileName: "src/components/movie-view/movie-view.jsx",
-                                                        lineNumber: 67
-                                                    },
-                                                    __self: undefined,
-                                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                                                        variant: "outline-primary link",
-                                                        __source: {
-                                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                                            lineNumber: 68
-                                                        },
-                                                        __self: undefined,
-                                                        children: "Director"
-                                                    })
-                                                }),
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Link, {
-                                                    to: `/genres/${movie.Genre.Name}`,
-                                                    __source: {
-                                                        fileName: "src/components/movie-view/movie-view.jsx",
-                                                        lineNumber: 70
-                                                    },
-                                                    __self: undefined,
-                                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                                                        variant: "outline-primary link",
-                                                        __source: {
-                                                            fileName: "src/components/movie-view/movie-view.jsx",
-                                                            lineNumber: 71
-                                                        },
-                                                        __self: undefined,
-                                                        children: "Genre"
-                                                    })
-                                                })
-                                            ]
-                                        })
-                                    })
-                                ]
-                            })
-                        })
-                    ]
-                })
-            })
-        ]
-    }));
-};
-_c = MovieView;
-MovieView.propTypes = {
-    movie: _propTypesDefault.default.shape({
-        Title: _propTypesDefault.default.string.isRequired,
-        Description: _propTypesDefault.default.string.isRequired,
-        Genre: _propTypesDefault.default.shape({
-            Name: _propTypesDefault.default.string.isRequired,
-            Description: _propTypesDefault.default.string.isRequired
-        }),
-        Director: _propTypesDefault.default.shape({
-            Name: _propTypesDefault.default.string.isRequired,
-            Bio: _propTypesDefault.default.string.isRequired
-        }),
-        ImageURL: _propTypesDefault.default.string.isRequired
-    }).isRequired
-};
-exports.default = MovieView;
-var _c;
-$RefreshReg$(_c, "MovieView");
-
-  $parcel$ReactRefreshHelpers$3741.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","prop-types":"1tgq3","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","react-bootstrap/Breadcrumb":"9ph0G","./movie-view.scss":"kvL93","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"kvL93":[function() {},{}],"ck15y":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$f8cc = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$f8cc.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactRouterDom = require("react-router-dom");
-var _moment = require("moment");
-var _momentDefault = parcelHelpers.interopDefault(_moment);
-var _reactBootstrap = require("react-bootstrap");
-var _breadcrumb = require("react-bootstrap/Breadcrumb");
-var _breadcrumbDefault = parcelHelpers.interopDefault(_breadcrumb);
-var _s = $RefreshSig$();
-const DirectorView = ({ director , movies  })=>{
-    _s();
-    const history = _reactRouterDom.useHistory();
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsxs(_breadcrumbDefault.default, {
-                __source: {
-                    fileName: "src/components/director-view/director-view.jsx",
-                    lineNumber: 12
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        href: "/",
-                        __source: {
-                            fileName: "src/components/director-view/director-view.jsx",
-                            lineNumber: 13
-                        },
-                        __self: undefined,
-                        children: "Home"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        className: "bread-link",
-                        onClick: history.goBack,
-                        __source: {
-                            fileName: "src/components/director-view/director-view.jsx",
-                            lineNumber: 14
-                        },
-                        __self: undefined,
-                        children: "Movie"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        active: true,
-                        __source: {
-                            fileName: "src/components/director-view/director-view.jsx",
-                            lineNumber: 17
-                        },
-                        __self: undefined,
-                        children: "Director"
-                    })
-                ]
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-                className: "mt-4 mx-auto",
-                style: {
-                    width: '80%'
-                },
-                __source: {
-                    fileName: "src/components/director-view/director-view.jsx",
-                    lineNumber: 19
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-                    __source: {
-                        fileName: "src/components/director-view/director-view.jsx",
-                        lineNumber: 20
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
-                            as: "h1",
-                            className: "text-center",
-                            __source: {
-                                fileName: "src/components/director-view/director-view.jsx",
-                                lineNumber: 21
-                            },
-                            __self: undefined,
-                            children: director.Name
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                            className: "director-bio",
-                            __source: {
-                                fileName: "src/components/director-view/director-view.jsx",
-                                lineNumber: 24
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                    className: "label h6",
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 25
-                                    },
-                                    __self: undefined,
-                                    children: "Biography "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    className: "value",
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 26
-                                    },
-                                    __self: undefined,
-                                    children: director.Bio
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                            className: "director-birthyear",
-                            __source: {
-                                fileName: "src/components/director-view/director-view.jsx",
-                                lineNumber: 28
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                    className: "label h6",
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 29
-                                    },
-                                    __self: undefined,
-                                    children: "Birth "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    className: "value",
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 30
-                                    },
-                                    __self: undefined,
-                                    children: _momentDefault.default(director.Birth).format('MM/DD/YYYY')
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Title, {
-                            as: "h4",
-                            className: "pt-5",
-                            __source: {
-                                fileName: "src/components/director-view/director-view.jsx",
-                                lineNumber: 35
-                            },
-                            __self: undefined,
-                            children: [
-                                "Movies directed by ",
-                                director.Name,
-                                ' '
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
-                            __source: {
-                                fileName: "src/components/director-view/director-view.jsx",
-                                lineNumber: 38
-                            },
-                            __self: undefined,
-                            children: !!movies ? movies.map((movie)=>!!movie && /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                    xs: 12,
-                                    md: 6,
-                                    lg: 4,
-                                    className: "fav-movie",
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 43
-                                    },
-                                    __self: undefined,
-                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
-                                        __source: {
-                                            fileName: "src/components/director-view/director-view.jsx",
-                                            lineNumber: 50
-                                        },
-                                        __self: undefined,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
-                                            to: `/movies/${movie._id}`,
-                                            __source: {
-                                                fileName: "src/components/director-view/director-view.jsx",
-                                                lineNumber: 51
-                                            },
-                                            __self: undefined,
-                                            children: [
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
-                                                    src: movie.ImageURL,
-                                                    alt: movie.Title,
-                                                    crossOrigin: "anonymous",
-                                                    __source: {
-                                                        fileName: "src/components/director-view/director-view.jsx",
-                                                        lineNumber: 52
-                                                    },
-                                                    __self: undefined
-                                                }),
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
-                                                    __source: {
-                                                        fileName: "src/components/director-view/director-view.jsx",
-                                                        lineNumber: 57
-                                                    },
-                                                    __self: undefined,
-                                                    children: movie.Title
-                                                })
-                                            ]
-                                        })
-                                    })
-                                }, movie._id)
-                            ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                xs: 12,
-                                __source: {
-                                    fileName: "src/components/director-view/director-view.jsx",
-                                    lineNumber: 64
-                                },
-                                __self: undefined,
-                                children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    __source: {
-                                        fileName: "src/components/director-view/director-view.jsx",
-                                        lineNumber: 65
-                                    },
-                                    __self: undefined,
-                                    children: "No movies"
-                                })
-                            })
-                        })
-                    ]
-                })
-            })
-        ]
-    }));
-};
-_s(DirectorView, "9cZfZ04734qoCGIctmKX7+sX6eU=", false, function() {
-    return [_reactRouterDom.useHistory];
-});
-_c = DirectorView;
-exports.default = DirectorView;
-var _c;
-$RefreshReg$(_c, "DirectorView");
-
-  $parcel$ReactRefreshHelpers$f8cc.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-router-dom":"cpyQW","moment":"5Keig","react-bootstrap":"h2YVd","react-bootstrap/Breadcrumb":"9ph0G","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"5Keig":[function(require,module,exports) {
-(function(global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : global.moment = factory();
-})(this, function() {
-    'use strict';
-    var hookCallback;
-    function hooks() {
-        return hookCallback.apply(null, arguments);
-    }
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback(callback) {
-        hookCallback = callback;
-    }
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
-    function isObject(input) {
-        // IE8 will treat undefined and null as object if it wasn't for
-        // input != null
-        return input != null && Object.prototype.toString.call(input) === '[object Object]';
-    }
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
-    function isObjectEmpty(obj) {
-        if (Object.getOwnPropertyNames) return Object.getOwnPropertyNames(obj).length === 0;
-        else {
-            var k;
-            for(k in obj){
-                if (hasOwnProp(obj, k)) return false;
-            }
-            return true;
-        }
-    }
-    function isUndefined(input) {
-        return input === void 0;
-    }
-    function isNumber(input) {
-        return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
-    }
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
-    }
-    function map(arr, fn) {
-        var res = [], i, arrLen = arr.length;
-        for(i = 0; i < arrLen; ++i)res.push(fn(arr[i], i));
-        return res;
-    }
-    function extend(a, b) {
-        for(var i in b)if (hasOwnProp(b, i)) a[i] = b[i];
-        if (hasOwnProp(b, 'toString')) a.toString = b.toString;
-        if (hasOwnProp(b, 'valueOf')) a.valueOf = b.valueOf;
-        return a;
-    }
-    function createUTC(input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty: false,
-            unusedTokens: [],
-            unusedInput: [],
-            overflow: -2,
-            charsLeftOver: 0,
-            nullInput: false,
-            invalidEra: null,
-            invalidMonth: null,
-            invalidFormat: false,
-            userInvalidated: false,
-            iso: false,
-            parsedDateParts: [],
-            era: null,
-            meridiem: null,
-            rfc2822: false,
-            weekdayMismatch: false
-        };
-    }
-    function getParsingFlags(m) {
-        if (m._pf == null) m._pf = defaultParsingFlags();
-        return m._pf;
-    }
-    var some;
-    if (Array.prototype.some) some = Array.prototype.some;
-    else some = function(fun) {
-        var t = Object(this), len = t.length >>> 0, i;
-        for(i = 0; i < len; i++){
-            if (i in t && fun.call(this, t[i], i, t)) return true;
-        }
-        return false;
-    };
-    function isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m), parsedParts = some.call(flags.parsedDateParts, function(i) {
-                return i != null;
-            }), isNowValid = !isNaN(m._d.getTime()) && flags.overflow < 0 && !flags.empty && !flags.invalidEra && !flags.invalidMonth && !flags.invalidWeekday && !flags.weekdayMismatch && !flags.nullInput && !flags.invalidFormat && !flags.userInvalidated && (!flags.meridiem || flags.meridiem && parsedParts);
-            if (m._strict) isNowValid = isNowValid && flags.charsLeftOver === 0 && flags.unusedTokens.length === 0 && flags.bigHour === undefined;
-            if (Object.isFrozen == null || !Object.isFrozen(m)) m._isValid = isNowValid;
-            else return isNowValid;
-        }
-        return m._isValid;
-    }
-    function createInvalid(flags) {
-        var m = createUTC(NaN);
-        if (flags != null) extend(getParsingFlags(m), flags);
-        else getParsingFlags(m).userInvalidated = true;
-        return m;
-    }
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = hooks.momentProperties = [], updateInProgress = false;
-    function copyConfig(to, from) {
-        var i, prop, val, momentPropertiesLen = momentProperties.length;
-        if (!isUndefined(from._isAMomentObject)) to._isAMomentObject = from._isAMomentObject;
-        if (!isUndefined(from._i)) to._i = from._i;
-        if (!isUndefined(from._f)) to._f = from._f;
-        if (!isUndefined(from._l)) to._l = from._l;
-        if (!isUndefined(from._strict)) to._strict = from._strict;
-        if (!isUndefined(from._tzm)) to._tzm = from._tzm;
-        if (!isUndefined(from._isUTC)) to._isUTC = from._isUTC;
-        if (!isUndefined(from._offset)) to._offset = from._offset;
-        if (!isUndefined(from._pf)) to._pf = getParsingFlags(from);
-        if (!isUndefined(from._locale)) to._locale = from._locale;
-        if (momentPropertiesLen > 0) for(i = 0; i < momentPropertiesLen; i++){
-            prop = momentProperties[i];
-            val = from[prop];
-            if (!isUndefined(val)) to[prop] = val;
-        }
-        return to;
-    }
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        if (!this.isValid()) this._d = new Date(NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            hooks.updateOffset(this);
-            updateInProgress = false;
-        }
-    }
-    function isMoment(obj) {
-        return obj instanceof Moment || obj != null && obj._isAMomentObject != null;
-    }
-    function warn(msg) {
-        if (hooks.suppressDeprecationWarnings === false && typeof console !== 'undefined' && console.warn) console.warn('Deprecation warning: ' + msg);
-    }
-    function deprecate(msg, fn) {
-        var firstTime = true;
-        return extend(function() {
-            if (hooks.deprecationHandler != null) hooks.deprecationHandler(null, msg);
-            if (firstTime) {
-                var args = [], arg, i, key, argLen = arguments.length;
-                for(i = 0; i < argLen; i++){
-                    arg = '';
-                    if (typeof arguments[i] === 'object') {
-                        arg += '\n[' + i + '] ';
-                        for(key in arguments[0])if (hasOwnProp(arguments[0], key)) arg += key + ': ' + arguments[0][key] + ', ';
-                        arg = arg.slice(0, -2); // Remove trailing comma and space
-                    } else arg = arguments[i];
-                    args.push(arg);
-                }
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + new Error().stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-    var deprecations = {
-    };
-    function deprecateSimple(name, msg) {
-        if (hooks.deprecationHandler != null) hooks.deprecationHandler(name, msg);
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-    hooks.suppressDeprecationWarnings = false;
-    hooks.deprecationHandler = null;
-    function isFunction(input) {
-        return typeof Function !== 'undefined' && input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-    function set(config) {
-        var prop, i;
-        for(i in config)if (hasOwnProp(config, i)) {
-            prop = config[i];
-            if (isFunction(prop)) this[i] = prop;
-            else this['_' + i] = prop;
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _dayOfMonthOrdinalParse.
-        // TODO: Remove "ordinalParse" fallback in next major release.
-        this._dayOfMonthOrdinalParseLenient = new RegExp((this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) + '|' + /\d{1,2}/.source);
-    }
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({
-        }, parentConfig), prop;
-        for(prop in childConfig)if (hasOwnProp(childConfig, prop)) {
-            if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                res[prop] = {
+                    function t2() {
+                        return e2;
+                    }
+                    e2.isRequired = e2;
+                    var a1 = {
+                        array: e2,
+                        bigint: e2,
+                        bool: e2,
+                        func: e2,
+                        number: e2,
+                        object: e2,
+                        string: e2,
+                        symbol: e2,
+                        any: e2,
+                        arrayOf: t2,
+                        element: e2,
+                        elementType: e2,
+                        instanceOf: t2,
+                        node: e2,
+                        objectOf: t2,
+                        oneOf: t2,
+                        oneOfType: t2,
+                        shape: t2,
+                        exact: t2,
+                        checkPropTypes: i,
+                        resetWarningCache: n
+                    };
+                    return a1.PropTypes = a1, a1;
                 };
-                extend(res[prop], parentConfig[prop]);
-                extend(res[prop], childConfig[prop]);
-            } else if (childConfig[prop] != null) res[prop] = childConfig[prop];
-            else delete res[prop];
-        }
-        for(prop in parentConfig)if (hasOwnProp(parentConfig, prop) && !hasOwnProp(childConfig, prop) && isObject(parentConfig[prop])) // make sure changes to properties don't modify parent config
-        res[prop] = extend({
-        }, res[prop]);
-        return res;
-    }
-    function Locale(config) {
-        if (config != null) this.set(config);
-    }
-    var keys;
-    if (Object.keys) keys = Object.keys;
-    else keys = function(obj) {
-        var i, res = [];
-        for(i in obj)if (hasOwnProp(obj, i)) res.push(i);
-        return res;
-    };
-    var defaultCalendar = {
-        sameDay: '[Today at] LT',
-        nextDay: '[Tomorrow at] LT',
-        nextWeek: 'dddd [at] LT',
-        lastDay: '[Yesterday at] LT',
-        lastWeek: '[Last] dddd [at] LT',
-        sameElse: 'L'
-    };
-    function calendar(key, mom, now) {
-        var output = this._calendar[key] || this._calendar['sameElse'];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number), zerosToFill = targetLength - absNumber.length, sign = number >= 0;
-        return (sign ? forceSign ? '+' : '' : '-') + Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|N{1,5}|YYYYYY|YYYYY|YYYY|YY|y{2,4}|yo?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g, localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, formatFunctions = {
-    }, formatTokenFunctions = {
-    };
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken(token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') func = function() {
-            return this[callback]();
-        };
-        if (token) formatTokenFunctions[token] = func;
-        if (padded) formatTokenFunctions[padded[0]] = function() {
-            return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-        };
-        if (ordinal) formatTokenFunctions[ordinal] = function() {
-            return this.localeData().ordinal(func.apply(this, arguments), token);
-        };
-    }
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) return input.replace(/^\[|\]$/g, '');
-        return input.replace(/\\/g, '');
-    }
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-        for(i = 0, length = array.length; i < length; i++)if (formatTokenFunctions[array[i]]) array[i] = formatTokenFunctions[array[i]];
-        else array[i] = removeFormattingTokens(array[i]);
-        return function(mom) {
-            var output = '', i1;
-            for(i1 = 0; i1 < length; i1++)output += isFunction(array[i1]) ? array[i1].call(mom, format) : array[i1];
-            return output;
-        };
-    }
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) return m.localeData().invalidDate();
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-        return formatFunctions[format](m);
-    }
-    function expandFormat(format, locale) {
-        var i = 5;
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-        localFormattingTokens.lastIndex = 0;
-        while(i >= 0 && localFormattingTokens.test(format)){
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-        return format;
-    }
-    var defaultLongDateFormat = {
-        LTS: 'h:mm:ss A',
-        LT: 'h:mm A',
-        L: 'MM/DD/YYYY',
-        LL: 'MMMM D, YYYY',
-        LLL: 'MMMM D, YYYY h:mm A',
-        LLLL: 'dddd, MMMM D, YYYY h:mm A'
-    };
-    function longDateFormat(key) {
-        var format = this._longDateFormat[key], formatUpper = this._longDateFormat[key.toUpperCase()];
-        if (format || !formatUpper) return format;
-        this._longDateFormat[key] = formatUpper.match(formattingTokens).map(function(tok) {
-            if (tok === 'MMMM' || tok === 'MM' || tok === 'DD' || tok === 'dddd') return tok.slice(1);
-            return tok;
-        }).join('');
-        return this._longDateFormat[key];
-    }
-    var defaultInvalidDate = 'Invalid date';
-    function invalidDate() {
-        return this._invalidDate;
-    }
-    var defaultOrdinal = '%d', defaultDayOfMonthOrdinalParse = /\d{1,2}/;
-    function ordinal(number) {
-        return this._ordinal.replace('%d', number);
-    }
-    var defaultRelativeTime = {
-        future: 'in %s',
-        past: '%s ago',
-        s: 'a few seconds',
-        ss: '%d seconds',
-        m: 'a minute',
-        mm: '%d minutes',
-        h: 'an hour',
-        hh: '%d hours',
-        d: 'a day',
-        dd: '%d days',
-        w: 'a week',
-        ww: '%d weeks',
-        M: 'a month',
-        MM: '%d months',
-        y: 'a year',
-        yy: '%d years'
-    };
-    function relativeTime(number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return isFunction(output) ? output(number, withoutSuffix, string, isFuture) : output.replace(/%d/i, number);
-    }
-    function pastFuture(diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-    var aliases = {
-    };
-    function addUnitAlias(unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {
-        }, normalizedProp, prop;
-        for(prop in inputObject)if (hasOwnProp(inputObject, prop)) {
-            normalizedProp = normalizeUnits(prop);
-            if (normalizedProp) normalizedInput[normalizedProp] = inputObject[prop];
-        }
-        return normalizedInput;
-    }
-    var priorities = {
-    };
-    function addUnitPriority(unit, priority) {
-        priorities[unit] = priority;
-    }
-    function getPrioritizedUnits(unitsObj) {
-        var units = [], u;
-        for(u in unitsObj)if (hasOwnProp(unitsObj, u)) units.push({
-            unit: u,
-            priority: priorities[u]
-        });
-        units.sort(function(a, b) {
-            return a.priority - b.priority;
-        });
-        return units;
-    }
-    function isLeapYear(year) {
-        return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
-    }
-    function absFloor(number) {
-        if (number < 0) // -0 -> 0
-        return Math.ceil(number) || 0;
-        else return Math.floor(number);
-    }
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion, value = 0;
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) value = absFloor(coercedNumber);
-        return value;
-    }
-    function makeGetSet(unit, keepTime) {
-        return function(value) {
-            if (value != null) {
-                set$1(this, unit, value);
-                hooks.updateOffset(this, keepTime);
-                return this;
-            } else return get(this, unit);
-        };
-    }
-    function get(mom, unit) {
-        return mom.isValid() ? mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-    function set$1(mom, unit, value) {
-        if (mom.isValid() && !isNaN(value)) {
-            if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
-                value = toInt(value);
-                mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
-            } else mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
-    }
-    // MOMENTS
-    function stringGet(units) {
-        units = normalizeUnits(units);
-        if (isFunction(this[units])) return this[units]();
-        return this;
-    }
-    function stringSet(units, value) {
-        if (typeof units === 'object') {
-            units = normalizeObjectUnits(units);
-            var prioritized = getPrioritizedUnits(units), i, prioritizedLen = prioritized.length;
-            for(i = 0; i < prioritizedLen; i++)this[prioritized[i].unit](units[prioritized[i].unit]);
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) return this[units](value);
-        }
-        return this;
-    }
-    var match1 = /\d/, match2 = /\d\d/, match3 = /\d{3}/, match4 = /\d{4}/, match6 = /[+-]?\d{6}/, match1to2 = /\d\d?/, match3to4 = /\d\d\d\d?/, match5to6 = /\d\d\d\d\d\d?/, match1to3 = /\d{1,3}/, match1to4 = /\d{1,4}/, match1to6 = /[+-]?\d{1,6}/, matchUnsigned = /\d+/, matchSigned = /[+-]?\d+/, matchOffset = /Z|[+-]\d\d:?\d\d/gi, matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi, matchTimestamp = /[+-]?\d+(\.\d{1,3})?/, // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i, regexes;
-    regexes = {
-    };
-    function addRegexToken(token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function(isStrict, localeData) {
-            return isStrict && strictRegex ? strictRegex : regex;
-        };
-    }
-    function getParseRegexForToken(token, config) {
-        if (!hasOwnProp(regexes, token)) return new RegExp(unescapeFormat(token));
-        return regexes[token](config._strict, config._locale);
-    }
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function(matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
-    var tokens = {
-    };
-    function addParseToken(token, callback) {
-        var i, func = callback, tokenLen;
-        if (typeof token === 'string') token = [
-            token
-        ];
-        if (isNumber(callback)) func = function(input, array) {
-            array[callback] = toInt(input);
-        };
-        tokenLen = token.length;
-        for(i = 0; i < tokenLen; i++)tokens[token[i]] = func;
-    }
-    function addWeekParseToken(token, callback) {
-        addParseToken(token, function(input, array, config, token1) {
-            config._w = config._w || {
-            };
-            callback(input, config._w, config, token1);
-        });
-    }
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) tokens[token](input, config._a, config, token);
-    }
-    var YEAR = 0, MONTH = 1, DATE = 2, HOUR = 3, MINUTE = 4, SECOND = 5, MILLISECOND = 6, WEEK = 7, WEEKDAY = 8;
-    function mod(n, x) {
-        return (n % x + x) % x;
-    }
-    var indexOf;
-    if (Array.prototype.indexOf) indexOf = Array.prototype.indexOf;
-    else indexOf = function(o) {
-        // I know
-        var i;
-        for(i = 0; i < this.length; ++i){
-            if (this[i] === o) return i;
-        }
-        return -1;
-    };
-    function daysInMonth(year, month) {
-        if (isNaN(year) || isNaN(month)) return NaN;
-        var modMonth = mod(month, 12);
-        year += (month - modMonth) / 12;
-        return modMonth === 1 ? isLeapYear(year) ? 29 : 28 : 31 - modMonth % 7 % 2;
-    }
-    // FORMATTING
-    addFormatToken('M', [
-        'MM',
-        2
-    ], 'Mo', function() {
-        return this.month() + 1;
-    });
-    addFormatToken('MMM', 0, 0, function(format) {
-        return this.localeData().monthsShort(this, format);
-    });
-    addFormatToken('MMMM', 0, 0, function(format) {
-        return this.localeData().months(this, format);
-    });
-    // ALIASES
-    addUnitAlias('month', 'M');
-    // PRIORITY
-    addUnitPriority('month', 8);
-    // PARSING
-    addRegexToken('M', match1to2);
-    addRegexToken('MM', match1to2, match2);
-    addRegexToken('MMM', function(isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function(isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-    addParseToken([
-        'M',
-        'MM'
-    ], function(input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-    addParseToken([
-        'MMM',
-        'MMMM'
-    ], function(input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) array[MONTH] = month;
-        else getParsingFlags(config).invalidMonth = input;
-    });
-    // LOCALES
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'), defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_'), MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/, defaultMonthsShortRegex = matchWord, defaultMonthsRegex = matchWord;
-    function localeMonths(m, format) {
-        if (!m) return isArray(this._months) ? this._months : this._months['standalone'];
-        return isArray(this._months) ? this._months[m.month()] : this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
-    }
-    function localeMonthsShort(m, format) {
-        if (!m) return isArray(this._monthsShort) ? this._monthsShort : this._monthsShort['standalone'];
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] : this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-    function handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for(i = 0; i < 12; ++i){
-                mom = createUTC([
-                    2000,
-                    i
-                ]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
-            }
-        }
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else if (format === 'MMM') {
-            ii = indexOf.call(this._shortMonthsParse, llc);
-            if (ii !== -1) return ii;
-            ii = indexOf.call(this._longMonthsParse, llc);
-            return ii !== -1 ? ii : null;
-        } else {
-            ii = indexOf.call(this._longMonthsParse, llc);
-            if (ii !== -1) return ii;
-            ii = indexOf.call(this._shortMonthsParse, llc);
-            return ii !== -1 ? ii : null;
-        }
-    }
-    function localeMonthsParse(monthName, format, strict) {
-        var i, mom, regex;
-        if (this._monthsParseExact) return handleStrictParse.call(this, monthName, format, strict);
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for(i = 0; i < 12; i++){
-            // make the regex if we don't have it already
-            mom = createUTC([
-                2000,
-                i
-            ]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) return i;
-            else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) return i;
-            else if (!strict && this._monthsParse[i].test(monthName)) return i;
-        }
-    }
-    // MOMENTS
-    function setMonth(mom, value) {
-        var dayOfMonth;
-        if (!mom.isValid()) // No op
-        return mom;
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) value = toInt(value);
-            else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (!isNumber(value)) return mom;
-            }
-        }
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-        return mom;
-    }
-    function getSetMonth(value) {
-        if (value != null) {
-            setMonth(this, value);
-            hooks.updateOffset(this, true);
-            return this;
-        } else return get(this, 'Month');
-    }
-    function getDaysInMonth() {
-        return daysInMonth(this.year(), this.month());
-    }
-    function monthsShortRegex(isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) computeMonthsParse.call(this);
-            if (isStrict) return this._monthsShortStrictRegex;
-            else return this._monthsShortRegex;
-        } else {
-            if (!hasOwnProp(this, '_monthsShortRegex')) this._monthsShortRegex = defaultMonthsShortRegex;
-            return this._monthsShortStrictRegex && isStrict ? this._monthsShortStrictRegex : this._monthsShortRegex;
-        }
-    }
-    function monthsRegex(isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) computeMonthsParse.call(this);
-            if (isStrict) return this._monthsStrictRegex;
-            else return this._monthsRegex;
-        } else {
-            if (!hasOwnProp(this, '_monthsRegex')) this._monthsRegex = defaultMonthsRegex;
-            return this._monthsStrictRegex && isStrict ? this._monthsStrictRegex : this._monthsRegex;
-        }
-    }
-    function computeMonthsParse() {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-        var shortPieces = [], longPieces = [], mixedPieces = [], i, mom;
-        for(i = 0; i < 12; i++){
-            // make the regex if we don't have it already
-            mom = createUTC([
-                2000,
-                i
-            ]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for(i = 0; i < 12; i++){
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-        }
-        for(i = 0; i < 24; i++)mixedPieces[i] = regexEscape(mixedPieces[i]);
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-    }
-    // FORMATTING
-    addFormatToken('Y', 0, 0, function() {
-        var y = this.year();
-        return y <= 9999 ? zeroFill(y, 4) : '+' + y;
-    });
-    addFormatToken(0, [
-        'YY',
-        2
-    ], 0, function() {
-        return this.year() % 100;
-    });
-    addFormatToken(0, [
-        'YYYY',
-        4
-    ], 0, 'year');
-    addFormatToken(0, [
-        'YYYYY',
-        5
-    ], 0, 'year');
-    addFormatToken(0, [
-        'YYYYYY',
-        6,
-        true
-    ], 0, 'year');
-    // ALIASES
-    addUnitAlias('year', 'y');
-    // PRIORITIES
-    addUnitPriority('year', 1);
-    // PARSING
-    addRegexToken('Y', matchSigned);
-    addRegexToken('YY', match1to2, match2);
-    addRegexToken('YYYY', match1to4, match4);
-    addRegexToken('YYYYY', match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
-    addParseToken([
-        'YYYYY',
-        'YYYYYY'
-    ], YEAR);
-    addParseToken('YYYY', function(input, array) {
-        array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function(input, array) {
-        array[YEAR] = hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function(input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
-    // HELPERS
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-    // HOOKS
-    hooks.parseTwoDigitYear = function(input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-    };
-    // MOMENTS
-    var getSetYear = makeGetSet('FullYear', true);
-    function getIsLeapYear() {
-        return isLeapYear(this.year());
-    }
-    function createDate(y, m, d, h, M, s, ms) {
-        // can't just apply() to create a date:
-        // https://stackoverflow.com/q/181348
-        var date;
-        // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            // preserve leap years using a full 400 year cycle, then reset
-            date = new Date(y + 400, m, d, h, M, s, ms);
-            if (isFinite(date.getFullYear())) date.setFullYear(y);
-        } else date = new Date(y, m, d, h, M, s, ms);
-        return date;
-    }
-    function createUTCDate(y) {
-        var date, args;
-        // the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) {
-            args = Array.prototype.slice.call(arguments);
-            // preserve leap years using a full 400 year cycle, then reset
-            args[0] = y + 400;
-            date = new Date(Date.UTC.apply(null, args));
-            if (isFinite(date.getUTCFullYear())) date.setUTCFullYear(y);
-        } else date = new Date(Date.UTC.apply(null, arguments));
-        return date;
-    }
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var fwd = 7 + dow - doy, // first-week day local weekday -- which local weekday is fwd
-        fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-        return -fwdlw + fwd - 1;
-    }
-    // https://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7, weekOffset = firstWeekOffset(year, dow, doy), dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset, resYear, resDayOfYear;
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy), week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1, resWeek, resYear;
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy), weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-    // FORMATTING
-    addFormatToken('w', [
-        'ww',
-        2
-    ], 'wo', 'week');
-    addFormatToken('W', [
-        'WW',
-        2
-    ], 'Wo', 'isoWeek');
-    // ALIASES
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-    // PRIORITIES
-    addUnitPriority('week', 5);
-    addUnitPriority('isoWeek', 5);
-    // PARSING
-    addRegexToken('w', match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W', match1to2);
-    addRegexToken('WW', match1to2, match2);
-    addWeekParseToken([
-        'w',
-        'ww',
-        'W',
-        'WW'
-    ], function(input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-    // HELPERS
-    // LOCALES
-    function localeWeek(mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-    var defaultLocaleWeek = {
-        dow: 0,
-        doy: 6
-    };
-    function localeFirstDayOfWeek() {
-        return this._week.dow;
-    }
-    function localeFirstDayOfYear() {
-        return this._week.doy;
-    }
-    // MOMENTS
-    function getSetWeek(input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-    function getSetISOWeek(input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-    // FORMATTING
-    addFormatToken('d', 0, 'do', 'day');
-    addFormatToken('dd', 0, 0, function(format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-    addFormatToken('ddd', 0, 0, function(format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-    addFormatToken('dddd', 0, 0, function(format) {
-        return this.localeData().weekdays(this, format);
-    });
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-    // ALIASES
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-    // PRIORITY
-    addUnitPriority('day', 11);
-    addUnitPriority('weekday', 11);
-    addUnitPriority('isoWeekday', 11);
-    // PARSING
-    addRegexToken('d', match1to2);
-    addRegexToken('e', match1to2);
-    addRegexToken('E', match1to2);
-    addRegexToken('dd', function(isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd', function(isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd', function(isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-    addWeekParseToken([
-        'dd',
-        'ddd',
-        'dddd'
-    ], function(input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) week.d = weekday;
-        else getParsingFlags(config).invalidWeekday = input;
-    });
-    addWeekParseToken([
-        'd',
-        'e',
-        'E'
-    ], function(input, week, config, token) {
-        week[token] = toInt(input);
-    });
-    // HELPERS
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') return input;
-        if (!isNaN(input)) return parseInt(input, 10);
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') return input;
-        return null;
-    }
-    function parseIsoWeekday(input, locale) {
-        if (typeof input === 'string') return locale.weekdaysParse(input) % 7 || 7;
-        return isNaN(input) ? null : input;
-    }
-    // LOCALES
-    function shiftWeekdays(ws, n) {
-        return ws.slice(n, 7).concat(ws.slice(0, n));
-    }
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_'), defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_'), defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_'), defaultWeekdaysRegex = matchWord, defaultWeekdaysShortRegex = matchWord, defaultWeekdaysMinRegex = matchWord;
-    function localeWeekdays(m, format) {
-        var weekdays = isArray(this._weekdays) ? this._weekdays : this._weekdays[m && m !== true && this._weekdays.isFormat.test(format) ? 'format' : 'standalone'];
-        return m === true ? shiftWeekdays(weekdays, this._week.dow) : m ? weekdays[m.day()] : weekdays;
-    }
-    function localeWeekdaysShort(m) {
-        return m === true ? shiftWeekdays(this._weekdaysShort, this._week.dow) : m ? this._weekdaysShort[m.day()] : this._weekdaysShort;
-    }
-    function localeWeekdaysMin(m) {
-        return m === true ? shiftWeekdays(this._weekdaysMin, this._week.dow) : m ? this._weekdaysMin[m.day()] : this._weekdaysMin;
-    }
-    function handleStrictParse$1(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-            for(i = 0; i < 7; ++i){
-                mom = createUTC([
-                    2000,
-                    1
-                ]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
-            }
-        }
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) return ii;
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-    function localeWeekdaysParse(weekdayName, format, strict) {
-        var i, mom, regex;
-        if (this._weekdaysParseExact) return handleStrictParse$1.call(this, weekdayName, format, strict);
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-        for(i = 0; i < 7; i++){
-            // make the regex if we don't have it already
-            mom = createUTC([
-                2000,
-                1
-            ]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) return i;
-            else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) return i;
-            else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) return i;
-            else if (!strict && this._weekdaysParse[i].test(weekdayName)) return i;
-        }
-    }
-    // MOMENTS
-    function getSetDayOfWeek(input) {
-        if (!this.isValid()) return input != null ? this : NaN;
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
-        } else return day;
-    }
-    function getSetLocaleDayOfWeek(input) {
-        if (!this.isValid()) return input != null ? this : NaN;
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-    function getSetISODayOfWeek(input) {
-        if (!this.isValid()) return input != null ? this : NaN;
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-        if (input != null) {
-            var weekday = parseIsoWeekday(input, this.localeData());
-            return this.day(this.day() % 7 ? weekday : weekday - 7);
-        } else return this.day() || 7;
-    }
-    function weekdaysRegex(isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
-            if (isStrict) return this._weekdaysStrictRegex;
-            else return this._weekdaysRegex;
-        } else {
-            if (!hasOwnProp(this, '_weekdaysRegex')) this._weekdaysRegex = defaultWeekdaysRegex;
-            return this._weekdaysStrictRegex && isStrict ? this._weekdaysStrictRegex : this._weekdaysRegex;
-        }
-    }
-    function weekdaysShortRegex(isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
-            if (isStrict) return this._weekdaysShortStrictRegex;
-            else return this._weekdaysShortRegex;
-        } else {
-            if (!hasOwnProp(this, '_weekdaysShortRegex')) this._weekdaysShortRegex = defaultWeekdaysShortRegex;
-            return this._weekdaysShortStrictRegex && isStrict ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
-    }
-    function weekdaysMinRegex(isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) computeWeekdaysParse.call(this);
-            if (isStrict) return this._weekdaysMinStrictRegex;
-            else return this._weekdaysMinRegex;
-        } else {
-            if (!hasOwnProp(this, '_weekdaysMinRegex')) this._weekdaysMinRegex = defaultWeekdaysMinRegex;
-            return this._weekdaysMinStrictRegex && isStrict ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
-    function computeWeekdaysParse() {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [], i, mom, minp, shortp, longp;
-        for(i = 0; i < 7; i++){
-            // make the regex if we don't have it already
-            mom = createUTC([
-                2000,
-                1
-            ]).day(i);
-            minp = regexEscape(this.weekdaysMin(mom, ''));
-            shortp = regexEscape(this.weekdaysShort(mom, ''));
-            longp = regexEscape(this.weekdays(mom, ''));
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
-    // FORMATTING
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
-    function kFormat() {
-        return this.hours() || 24;
-    }
-    addFormatToken('H', [
-        'HH',
-        2
-    ], 0, 'hour');
-    addFormatToken('h', [
-        'hh',
-        2
-    ], 0, hFormat);
-    addFormatToken('k', [
-        'kk',
-        2
-    ], 0, kFormat);
-    addFormatToken('hmm', 0, 0, function() {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-    });
-    addFormatToken('hmmss', 0, 0, function() {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
-    });
-    addFormatToken('Hmm', 0, 0, function() {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
-    addFormatToken('Hmmss', 0, 0, function() {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
-    });
-    function meridiem(token, lowercase) {
-        addFormatToken(token, 0, 0, function() {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
-    }
-    meridiem('a', true);
-    meridiem('A', false);
-    // ALIASES
-    addUnitAlias('hour', 'h');
-    // PRIORITY
-    addUnitPriority('hour', 13);
-    // PARSING
-    function matchMeridiem(isStrict, locale) {
-        return locale._meridiemParse;
-    }
-    addRegexToken('a', matchMeridiem);
-    addRegexToken('A', matchMeridiem);
-    addRegexToken('H', match1to2);
-    addRegexToken('h', match1to2);
-    addRegexToken('k', match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-    addRegexToken('kk', match1to2, match2);
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-    addParseToken([
-        'H',
-        'HH'
-    ], HOUR);
-    addParseToken([
-        'k',
-        'kk'
-    ], function(input, array, config) {
-        var kInput = toInt(input);
-        array[HOUR] = kInput === 24 ? 0 : kInput;
-    });
-    addParseToken([
-        'a',
-        'A'
-    ], function(input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken([
-        'h',
-        'hh'
-    ], function(input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function(input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function(input, array, config) {
-        var pos1 = input.length - 4, pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function(input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function(input, array, config) {
-        var pos1 = input.length - 4, pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-    // LOCALES
-    function localeIsPM(input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return (input + '').toLowerCase().charAt(0) === 'p';
-    }
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i, // Setting the hour should keep the time, because the user explicitly
-    // specified which hour they want. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    getSetHour = makeGetSet('Hours', true);
-    function localeMeridiem(hours, minutes, isLower) {
-        if (hours > 11) return isLower ? 'pm' : 'PM';
-        else return isLower ? 'am' : 'AM';
-    }
-    var baseConfig = {
-        calendar: defaultCalendar,
-        longDateFormat: defaultLongDateFormat,
-        invalidDate: defaultInvalidDate,
-        ordinal: defaultOrdinal,
-        dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
-        relativeTime: defaultRelativeTime,
-        months: defaultLocaleMonths,
-        monthsShort: defaultLocaleMonthsShort,
-        week: defaultLocaleWeek,
-        weekdays: defaultLocaleWeekdays,
-        weekdaysMin: defaultLocaleWeekdaysMin,
-        weekdaysShort: defaultLocaleWeekdaysShort,
-        meridiemParse: defaultLocaleMeridiemParse
-    };
-    // internal storage for locale config files
-    var locales = {
-    }, localeFamilies = {
-    }, globalLocale;
-    function commonPrefix(arr1, arr2) {
-        var i, minl = Math.min(arr1.length, arr2.length);
-        for(i = 0; i < minl; i += 1){
-            if (arr1[i] !== arr2[i]) return i;
-        }
-        return minl;
-    }
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
-        while(i < names.length){
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while(j > 0){
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) return locale;
-                if (next && next.length >= j && commonPrefix(split, next) >= j - 1) break;
-                j--;
-            }
-            i++;
-        }
-        return globalLocale;
-    }
-    function isLocaleNameSane(name) {
-        // Prevent names that look like filesystem paths, i.e contain '/' or '\'
-        return name.match('^[^/\\\\]*$') != null;
-    }
-    function loadLocale(name) {
-        var oldLocale = null, aliasedRequire;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (locales[name] === undefined && typeof module !== 'undefined' && module && module.exports && isLocaleNameSane(name)) try {
-            oldLocale = globalLocale._abbr;
-            aliasedRequire = undefined;
-            aliasedRequire('./locale/' + name);
-            getSetGlobalLocale(oldLocale);
-        } catch (e) {
-            // mark as not found to avoid repeating expensive file require call causing high CPU
-            // when trying to find en-US, en_US, en-us for every format call
-            locales[name] = null; // null means not found
-        }
-        return locales[name];
-    }
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function getSetGlobalLocale(key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) data = getLocale(key);
-            else data = defineLocale(key, values);
-            if (data) // moment.duration._locale = moment._locale = data;
-            globalLocale = data;
-            else if (typeof console !== 'undefined' && console.warn) //warn user if arguments are passed but the locale could not be set
-            console.warn('Locale ' + key + ' not found. Did you forget to load it?');
-        }
-        return globalLocale._abbr;
-    }
-    function defineLocale(name, config) {
-        if (config !== null) {
-            var locale, parentConfig = baseConfig;
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride', "use moment.updateLocale(localeName, config) to change an existing locale. moment.defineLocale(localeName, config) should only be used for creating a new locale See http://momentjs.com/guides/#/warnings/define-locale/ for more info.");
-                parentConfig = locales[name]._config;
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) parentConfig = locales[config.parentLocale]._config;
-                else {
-                    locale = loadLocale(config.parentLocale);
-                    if (locale != null) parentConfig = locale._config;
-                    else {
-                        if (!localeFamilies[config.parentLocale]) localeFamilies[config.parentLocale] = [];
-                        localeFamilies[config.parentLocale].push({
-                            name: name,
-                            config: config
-                        });
-                        return null;
-                    }
-                }
-            }
-            locales[name] = new Locale(mergeConfigs(parentConfig, config));
-            if (localeFamilies[name]) localeFamilies[name].forEach(function(x) {
-                defineLocale(x.name, x.config);
-            });
-            // backwards compat for now: also set the locale
-            // make sure we set the locale AFTER all child locales have been
-            // created, so we won't end up with the child locale set.
-            getSetGlobalLocale(name);
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale, tmpLocale, parentConfig = baseConfig;
-            if (locales[name] != null && locales[name].parentLocale != null) // Update existing child locale in-place to avoid memory-leaks
-            locales[name].set(mergeConfigs(locales[name]._config, config));
-            else {
-                // MERGE
-                tmpLocale = loadLocale(name);
-                if (tmpLocale != null) parentConfig = tmpLocale._config;
-                config = mergeConfigs(parentConfig, config);
-                if (tmpLocale == null) // updateLocale is called for creating a new locale
-                // Set abbr so it will have a name (getters return
-                // undefined otherwise).
-                config.abbr = name;
-                locale = new Locale(config);
-                locale.parentLocale = locales[name];
-                locales[name] = locale;
-            }
-            // backwards compat for now: also set the locale
-            getSetGlobalLocale(name);
-        } else // pass null for config to unupdate, useful for tests
-        if (locales[name] != null) {
-            if (locales[name].parentLocale != null) {
-                locales[name] = locales[name].parentLocale;
-                if (name === getSetGlobalLocale()) getSetGlobalLocale(name);
-            } else if (locales[name] != null) delete locales[name];
-        }
-        return locales[name];
-    }
-    // returns locale data
-    function getLocale(key) {
-        var locale;
-        if (key && key._locale && key._locale._abbr) key = key._locale._abbr;
-        if (!key) return globalLocale;
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
-            if (locale) return locale;
-            key = [
-                key
-            ];
-        }
-        return chooseLocale(key);
-    }
-    function listLocales() {
-        return keys(locales);
-    }
-    function checkOverflow(m) {
-        var overflow, a = m._a;
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow = a[MONTH] < 0 || a[MONTH] > 11 ? MONTH : a[DATE] < 1 || a[DATE] > daysInMonth(a[YEAR], a[MONTH]) ? DATE : a[HOUR] < 0 || a[HOUR] > 24 || a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0) ? HOUR : a[MINUTE] < 0 || a[MINUTE] > 59 ? MINUTE : a[SECOND] < 0 || a[SECOND] > 59 ? SECOND : a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND : -1;
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) overflow = DATE;
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) overflow = WEEK;
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) overflow = WEEKDAY;
-            getParsingFlags(m).overflow = overflow;
-        }
-        return m;
-    }
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d|))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, tzRegex = /Z|[+-]\d\d(?::?\d\d)?/, isoDates = [
-        [
-            'YYYYYY-MM-DD',
-            /[+-]\d{6}-\d\d-\d\d/
-        ],
-        [
-            'YYYY-MM-DD',
-            /\d{4}-\d\d-\d\d/
-        ],
-        [
-            'GGGG-[W]WW-E',
-            /\d{4}-W\d\d-\d/
-        ],
-        [
-            'GGGG-[W]WW',
-            /\d{4}-W\d\d/,
-            false
-        ],
-        [
-            'YYYY-DDD',
-            /\d{4}-\d{3}/
-        ],
-        [
-            'YYYY-MM',
-            /\d{4}-\d\d/,
-            false
-        ],
-        [
-            'YYYYYYMMDD',
-            /[+-]\d{10}/
-        ],
-        [
-            'YYYYMMDD',
-            /\d{8}/
-        ],
-        [
-            'GGGG[W]WWE',
-            /\d{4}W\d{3}/
-        ],
-        [
-            'GGGG[W]WW',
-            /\d{4}W\d{2}/,
-            false
-        ],
-        [
-            'YYYYDDD',
-            /\d{7}/
-        ],
-        [
-            'YYYYMM',
-            /\d{6}/,
-            false
-        ],
-        [
-            'YYYY',
-            /\d{4}/,
-            false
-        ], 
-    ], // iso time formats and regexes
-    isoTimes = [
-        [
-            'HH:mm:ss.SSSS',
-            /\d\d:\d\d:\d\d\.\d+/
-        ],
-        [
-            'HH:mm:ss,SSSS',
-            /\d\d:\d\d:\d\d,\d+/
-        ],
-        [
-            'HH:mm:ss',
-            /\d\d:\d\d:\d\d/
-        ],
-        [
-            'HH:mm',
-            /\d\d:\d\d/
-        ],
-        [
-            'HHmmss.SSSS',
-            /\d\d\d\d\d\d\.\d+/
-        ],
-        [
-            'HHmmss,SSSS',
-            /\d\d\d\d\d\d,\d+/
-        ],
-        [
-            'HHmmss',
-            /\d\d\d\d\d\d/
-        ],
-        [
-            'HHmm',
-            /\d\d\d\d/
-        ],
-        [
-            'HH',
-            /\d\d/
-        ], 
-    ], aspNetJsonRegex = /^\/?Date\((-?\d+)/i, // RFC 2822 regex: For details see https://tools.ietf.org/html/rfc2822#section-3.3
-    rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/, obsOffsets = {
-        UT: 0,
-        GMT: 0,
-        EDT: -240,
-        EST: -300,
-        CDT: -300,
-        CST: -360,
-        MDT: -360,
-        MST: -420,
-        PDT: -420,
-        PST: -480
-    };
-    // date from iso format
-    function configFromISO(config) {
-        var i, l, string = config._i, match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string), allowTime, dateFormat, timeFormat, tzFormat, isoDatesLen = isoDates.length, isoTimesLen = isoTimes.length;
-        if (match) {
-            getParsingFlags(config).iso = true;
-            for(i = 0, l = isoDatesLen; i < l; i++)if (isoDates[i][1].exec(match[1])) {
-                dateFormat = isoDates[i][0];
-                allowTime = isoDates[i][2] !== false;
-                break;
-            }
-            if (dateFormat == null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[3]) {
-                for(i = 0, l = isoTimesLen; i < l; i++)if (isoTimes[i][1].exec(match[3])) {
-                    // match[2] should be 'T' or space
-                    timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                    break;
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) tzFormat = 'Z';
-                else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else config._isValid = false;
-    }
-    function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
-        var result = [
-            untruncateYear(yearStr),
-            defaultLocaleMonthsShort.indexOf(monthStr),
-            parseInt(dayStr, 10),
-            parseInt(hourStr, 10),
-            parseInt(minuteStr, 10), 
-        ];
-        if (secondStr) result.push(parseInt(secondStr, 10));
-        return result;
-    }
-    function untruncateYear(yearStr) {
-        var year = parseInt(yearStr, 10);
-        if (year <= 49) return 2000 + year;
-        else if (year <= 999) return 1900 + year;
-        return year;
-    }
-    function preprocessRFC2822(s) {
-        // Remove comments and folding whitespace and replace multiple-spaces with a single space
-        return s.replace(/\([^()]*\)|[\n\t]/g, ' ').replace(/(\s\s+)/g, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    }
-    function checkWeekday(weekdayStr, parsedInput, config) {
-        if (weekdayStr) {
-            // TODO: Replace the vanilla JS Date object with an independent day-of-week check.
-            var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr), weekdayActual = new Date(parsedInput[0], parsedInput[1], parsedInput[2]).getDay();
-            if (weekdayProvided !== weekdayActual) {
-                getParsingFlags(config).weekdayMismatch = true;
-                config._isValid = false;
-                return false;
-            }
-        }
-        return true;
-    }
-    function calculateOffset(obsOffset, militaryOffset, numOffset) {
-        if (obsOffset) return obsOffsets[obsOffset];
-        else if (militaryOffset) // the only allowed military tz is Z
-        return 0;
-        else {
-            var hm = parseInt(numOffset, 10), m = hm % 100, h = (hm - m) / 100;
-            return h * 60 + m;
-        }
-    }
-    // date and time from ref 2822 format
-    function configFromRFC2822(config) {
-        var match = rfc2822.exec(preprocessRFC2822(config._i)), parsedArray;
-        if (match) {
-            parsedArray = extractFromRFC2822Strings(match[4], match[3], match[2], match[5], match[6], match[7]);
-            if (!checkWeekday(match[1], parsedArray, config)) return;
-            config._a = parsedArray;
-            config._tzm = calculateOffset(match[8], match[9], match[10]);
-            config._d = createUTCDate.apply(null, config._a);
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-            getParsingFlags(config).rfc2822 = true;
-        } else config._isValid = false;
-    }
-    // date from 1) ASP.NET, 2) ISO, 3) RFC 2822 formats, or 4) optional fallback if parsing isn't strict
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
-            return;
-        }
-        configFromISO(config);
-        if (config._isValid === false) delete config._isValid;
-        else return;
-        configFromRFC2822(config);
-        if (config._isValid === false) delete config._isValid;
-        else return;
-        if (config._strict) config._isValid = false;
-        else // Final attempt, use Input Fallback
-        hooks.createFromInputFallback(config);
-    }
-    hooks.createFromInputFallback = deprecate("value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.", function(config) {
-        config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-    });
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) return a;
-        if (b != null) return b;
-        return c;
-    }
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(hooks.now());
-        if (config._useUTC) return [
-            nowValue.getUTCFullYear(),
-            nowValue.getUTCMonth(),
-            nowValue.getUTCDate(), 
-        ];
-        return [
-            nowValue.getFullYear(),
-            nowValue.getMonth(),
-            nowValue.getDate()
-        ];
-    }
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray(config) {
-        var i, date, input = [], currentDate, expectedWeekday, yearToUse;
-        if (config._d) return;
-        currentDate = currentDateArray(config);
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) dayOfYearFromWeekInfo(config);
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear != null) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-            if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) getParsingFlags(config)._overflowDayOfYear = true;
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
-        }
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for(i = 0; i < 3 && config._a[i] == null; ++i)config._a[i] = input[i] = currentDate[i];
-        // Zero out whatever was not defaulted, including time
-        for(; i < 7; i++)config._a[i] = input[i] = config._a[i] == null ? i === 2 ? 1 : 0 : config._a[i];
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 && config._a[MINUTE] === 0 && config._a[SECOND] === 0 && config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        if (config._nextDay) config._a[HOUR] = 24;
-        // check for mismatching day of week
-        if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) getParsingFlags(config).weekdayMismatch = true;
-    }
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow, curWeek;
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) weekdayOverflow = true;
-        } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-            curWeek = weekOfYear(createLocal(), dow, doy);
-            weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
-            // Default to current week.
-            week = defaults(w.w, curWeek.week);
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) weekdayOverflow = true;
-            } else if (w.e != null) {
-                // local weekday -- counting starts from beginning of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) weekdayOverflow = true;
-            } else // default to beginning of week
-            weekday = dow;
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) getParsingFlags(config)._overflowWeeks = true;
-        else if (weekdayOverflow != null) getParsingFlags(config)._overflowWeekday = true;
-        else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
-        }
-    }
-    // constant that refers to the ISO standard
-    hooks.ISO_8601 = function() {
-    };
-    // constant that refers to the RFC 2822 form
-    hooks.RFC_2822 = function() {
-    };
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === hooks.ISO_8601) {
-            configFromISO(config);
-            return;
-        }
-        if (config._f === hooks.RFC_2822) {
-            configFromRFC2822(config);
-            return;
-        }
-        config._a = [];
-        getParsingFlags(config).empty = true;
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i, i, parsedInput, tokens1, token, skipped, stringLength = string.length, totalParsedInputLength = 0, era, tokenLen;
-        tokens1 = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-        tokenLen = tokens1.length;
-        for(i = 0; i < tokenLen; i++){
-            token = tokens1[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) getParsingFlags(config).unusedInput.push(skipped);
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
-            }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) getParsingFlags(config).empty = false;
-                else getParsingFlags(config).unusedTokens.push(token);
-                addTimeToArrayFromToken(token, parsedInput, config);
-            } else if (config._strict && !parsedInput) getParsingFlags(config).unusedTokens.push(token);
-        }
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) getParsingFlags(config).unusedInput.push(string);
-        // clear _12h flag if hour is <= 12
-        if (config._a[HOUR] <= 12 && getParsingFlags(config).bigHour === true && config._a[HOUR] > 0) getParsingFlags(config).bigHour = undefined;
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-        // handle era
-        era = getParsingFlags(config).era;
-        if (era !== null) config._a[YEAR] = config._locale.erasConvertYear(era, config._a[YEAR]);
-        configFromArray(config);
-        checkOverflow(config);
-    }
-    function meridiemFixWrap(locale, hour, meridiem1) {
-        var isPm;
-        if (meridiem1 == null) // nothing to do
-        return hour;
-        if (locale.meridiemHour != null) return locale.meridiemHour(hour, meridiem1);
-        else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem1);
-            if (isPm && hour < 12) hour += 12;
-            if (!isPm && hour === 12) hour = 0;
-            return hour;
-        } else // this is not supposed to happen
-        return hour;
-    }
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig, bestMoment, scoreToBeat, i, currentScore, validFormatFound, bestFormatIsValid = false, configfLen = config._f.length;
-        if (configfLen === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-        for(i = 0; i < configfLen; i++){
-            currentScore = 0;
-            validFormatFound = false;
-            tempConfig = copyConfig({
-            }, config);
-            if (config._useUTC != null) tempConfig._useUTC = config._useUTC;
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-            if (isValid(tempConfig)) validFormatFound = true;
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-            getParsingFlags(tempConfig).score = currentScore;
-            if (!bestFormatIsValid) {
-                if (scoreToBeat == null || currentScore < scoreToBeat || validFormatFound) {
-                    scoreToBeat = currentScore;
-                    bestMoment = tempConfig;
-                    if (validFormatFound) bestFormatIsValid = true;
-                }
-            } else if (currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-        extend(config, bestMoment || tempConfig);
-    }
-    function configFromObject(config) {
-        if (config._d) return;
-        var i = normalizeObjectUnits(config._i), dayOrDate = i.day === undefined ? i.date : i.day;
-        config._a = map([
-            i.year,
-            i.month,
-            dayOrDate,
-            i.hour,
-            i.minute,
-            i.second,
-            i.millisecond
-        ], function(obj) {
-            return obj && parseInt(obj, 10);
-        });
-        configFromArray(config);
-    }
-    function createFromConfig(config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-        return res;
-    }
-    function prepareConfig(config) {
-        var input = config._i, format = config._f;
-        config._locale = config._locale || getLocale(config._l);
-        if (input === null || format === undefined && input === '') return createInvalid({
-            nullInput: true
-        });
-        if (typeof input === 'string') config._i = input = config._locale.preparse(input);
-        if (isMoment(input)) return new Moment(checkOverflow(input));
-        else if (isDate(input)) config._d = input;
-        else if (isArray(format)) configFromStringAndArray(config);
-        else if (format) configFromStringAndFormat(config);
-        else configFromInput(config);
-        if (!isValid(config)) config._d = null;
-        return config;
-    }
-    function configFromInput(config) {
-        var input = config._i;
-        if (isUndefined(input)) config._d = new Date(hooks.now());
-        else if (isDate(input)) config._d = new Date(input.valueOf());
-        else if (typeof input === 'string') configFromString(config);
-        else if (isArray(input)) {
-            config._a = map(input.slice(0), function(obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (isObject(input)) configFromObject(config);
-        else if (isNumber(input)) // from milliseconds
-        config._d = new Date(input);
-        else hooks.createFromInputFallback(config);
-    }
-    function createLocalOrUTC(input, format, locale, strict, isUTC) {
-        var c = {
-        };
-        if (format === true || format === false) {
-            strict = format;
-            format = undefined;
-        }
-        if (locale === true || locale === false) {
-            strict = locale;
-            locale = undefined;
-        }
-        if (isObject(input) && isObjectEmpty(input) || isArray(input) && input.length === 0) input = undefined;
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-        return createFromConfig(c);
-    }
-    function createLocal(input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-    var prototypeMin = deprecate('moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/', function() {
-        var other = createLocal.apply(null, arguments);
-        if (this.isValid() && other.isValid()) return other < this ? this : other;
-        else return createInvalid();
-    }), prototypeMax = deprecate('moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/', function() {
-        var other = createLocal.apply(null, arguments);
-        if (this.isValid() && other.isValid()) return other > this ? this : other;
-        else return createInvalid();
-    });
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) moments = moments[0];
-        if (!moments.length) return createLocal();
-        res = moments[0];
-        for(i = 1; i < moments.length; ++i)if (!moments[i].isValid() || moments[i][fn](res)) res = moments[i];
-        return res;
-    }
-    // TODO: Use [].sort instead?
-    function min() {
-        var args = [].slice.call(arguments, 0);
-        return pickBy('isBefore', args);
-    }
-    function max() {
-        var args = [].slice.call(arguments, 0);
-        return pickBy('isAfter', args);
-    }
-    var now = function() {
-        return Date.now ? Date.now() : +new Date();
-    };
-    var ordering = [
-        'year',
-        'quarter',
-        'month',
-        'week',
-        'day',
-        'hour',
-        'minute',
-        'second',
-        'millisecond', 
-    ];
-    function isDurationValid(m) {
-        var key, unitHasDecimal = false, i, orderLen = ordering.length;
-        for(key in m){
-            if (hasOwnProp(m, key) && !(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) return false;
-        }
-        for(i = 0; i < orderLen; ++i)if (m[ordering[i]]) {
-            if (unitHasDecimal) return false; // only allow non-integers for smallest unit
-            if (parseFloat(m[ordering[i]]) !== toInt(m[ordering[i]])) unitHasDecimal = true;
-        }
-        return true;
-    }
-    function isValid$1() {
-        return this._isValid;
-    }
-    function createInvalid$1() {
-        return createDuration(NaN);
-    }
-    function Duration(duration) {
-        var normalizedInput = normalizeObjectUnits(duration), years = normalizedInput.year || 0, quarters = normalizedInput.quarter || 0, months = normalizedInput.month || 0, weeks = normalizedInput.week || normalizedInput.isoWeek || 0, days = normalizedInput.day || 0, hours = normalizedInput.hour || 0, minutes = normalizedInput.minute || 0, seconds = normalizedInput.second || 0, milliseconds = normalizedInput.millisecond || 0;
-        this._isValid = isDurationValid(normalizedInput);
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds + seconds * 1000 + minutes * 60000 + hours * 3600000; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days + weeks * 7;
-        // It is impossible to translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months + quarters * 3 + years * 12;
-        this._data = {
-        };
-        this._locale = getLocale();
-        this._bubble();
-    }
-    function isDuration(obj) {
-        return obj instanceof Duration;
-    }
-    function absRound(number) {
-        if (number < 0) return Math.round(-1 * number) * -1;
-        else return Math.round(number);
-    }
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length), lengthDiff = Math.abs(array1.length - array2.length), diffs = 0, i;
-        for(i = 0; i < len; i++)if (dontConvert && array1[i] !== array2[i] || !dontConvert && toInt(array1[i]) !== toInt(array2[i])) diffs++;
-        return diffs + lengthDiff;
-    }
-    // FORMATTING
-    function offset(token, separator) {
-        addFormatToken(token, 0, 0, function() {
-            var offset1 = this.utcOffset(), sign = '+';
-            if (offset1 < 0) {
-                offset1 = -offset1;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset1 / 60), 2) + separator + zeroFill(~~offset1 % 60, 2);
-        });
-    }
-    offset('Z', ':');
-    offset('ZZ', '');
-    // PARSING
-    addRegexToken('Z', matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken([
-        'Z',
-        'ZZ'
-    ], function(input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
-    });
-    // HELPERS
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-    function offsetFromString(matcher, string) {
-        var matches = (string || '').match(matcher), chunk, parts, minutes;
-        if (matches === null) return null;
-        chunk = matches[matches.length - 1] || [];
-        parts = (chunk + '').match(chunkOffset) || [
-            '-',
-            0,
-            0
-        ];
-        minutes = +(parts[1] * 60) + toInt(parts[2]);
-        return minutes === 0 ? 0 : parts[0] === '+' ? minutes : -minutes;
-    }
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            hooks.updateOffset(res, false);
-            return res;
-        } else return createLocal(input).local();
-    }
-    function getDateOffset(m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset());
-    }
-    // HOOKS
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    hooks.updateOffset = function() {
-    };
-    // MOMENTS
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset(input, keepLocalTime, keepMinutes) {
-        var offset1 = this._offset || 0, localAdjust;
-        if (!this.isValid()) return input != null ? this : NaN;
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-                if (input === null) return this;
-            } else if (Math.abs(input) < 16 && !keepMinutes) input = input * 60;
-            if (!this._isUTC && keepLocalTime) localAdjust = getDateOffset(this);
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) this.add(localAdjust, 'm');
-            if (offset1 !== input) {
-                if (!keepLocalTime || this._changeInProgress) addSubtract(this, createDuration(input - offset1, 'm'), 1, false);
-                else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
-        } else return this._isUTC ? offset1 : getDateOffset(this);
-    }
-    function getSetZone(input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') input = -input;
-            this.utcOffset(input, keepLocalTime);
-            return this;
-        } else return -this.utcOffset();
-    }
-    function setOffsetToUTC(keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-    function setOffsetToLocal(keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-            if (keepLocalTime) this.subtract(getDateOffset(this), 'm');
-        }
-        return this;
-    }
-    function setOffsetToParsedOffset() {
-        if (this._tzm != null) this.utcOffset(this._tzm, false, true);
-        else if (typeof this._i === 'string') {
-            var tZone = offsetFromString(matchOffset, this._i);
-            if (tZone != null) this.utcOffset(tZone);
-            else this.utcOffset(0, true);
-        }
-        return this;
-    }
-    function hasAlignedHourOffset(input) {
-        if (!this.isValid()) return false;
-        input = input ? createLocal(input).utcOffset() : 0;
-        return (this.utcOffset() - input) % 60 === 0;
-    }
-    function isDaylightSavingTime() {
-        return this.utcOffset() > this.clone().month(0).utcOffset() || this.utcOffset() > this.clone().month(5).utcOffset();
-    }
-    function isDaylightSavingTimeShifted() {
-        if (!isUndefined(this._isDSTShifted)) return this._isDSTShifted;
-        var c = {
-        }, other;
-        copyConfig(c, this);
-        c = prepareConfig(c);
-        if (c._a) {
-            other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
-            this._isDSTShifted = this.isValid() && compareArrays(c._a, other.toArray()) > 0;
-        } else this._isDSTShifted = false;
-        return this._isDSTShifted;
-    }
-    function isLocal() {
-        return this.isValid() ? !this._isUTC : false;
-    }
-    function isUtcOffset() {
-        return this.isValid() ? this._isUTC : false;
-    }
-    function isUtc() {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(-|\+)?(?:(\d*)[. ])?(\d+):(\d+)(?::(\d+)(\.\d*)?)?$/, // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
-    function createDuration(input, key) {
-        var duration = input, // matching against regexp is expensive, do it on demand
-        match = null, sign, ret, diffRes;
-        if (isDuration(input)) duration = {
-            ms: input._milliseconds,
-            d: input._days,
-            M: input._months
-        };
-        else if (isNumber(input) || !isNaN(+input)) {
-            duration = {
-            };
-            if (key) duration[key] = +input;
-            else duration.milliseconds = +input;
-        } else if (match = aspNetRegex.exec(input)) {
-            sign = match[1] === '-' ? -1 : 1;
-            duration = {
-                y: 0,
-                d: toInt(match[DATE]) * sign,
-                h: toInt(match[HOUR]) * sign,
-                m: toInt(match[MINUTE]) * sign,
-                s: toInt(match[SECOND]) * sign,
-                ms: toInt(absRound(match[MILLISECOND] * 1000)) * sign
-            };
-        } else if (match = isoRegex.exec(input)) {
-            sign = match[1] === '-' ? -1 : 1;
-            duration = {
-                y: parseIso(match[2], sign),
-                M: parseIso(match[3], sign),
-                w: parseIso(match[4], sign),
-                d: parseIso(match[5], sign),
-                h: parseIso(match[6], sign),
-                m: parseIso(match[7], sign),
-                s: parseIso(match[8], sign)
-            };
-        } else if (duration == null) // checks for null or undefined
-        duration = {
-        };
-        else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
-            duration = {
-            };
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
-        ret = new Duration(duration);
-        if (isDuration(input) && hasOwnProp(input, '_locale')) ret._locale = input._locale;
-        if (isDuration(input) && hasOwnProp(input, '_isValid')) ret._isValid = input._isValid;
-        return ret;
-    }
-    createDuration.fn = Duration.prototype;
-    createDuration.invalid = createInvalid$1;
-    function parseIso(inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-    function positiveMomentsDifference(base, other) {
-        var res = {
-        };
-        res.months = other.month() - base.month() + (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) --res.months;
-        res.milliseconds = +other - +base.clone().add(res.months, 'M');
-        return res;
-    }
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) return {
-            milliseconds: 0,
-            months: 0
-        };
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) res = positiveMomentsDifference(base, other);
-        else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-        return res;
-    }
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function(val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' + 'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
-                tmp = val;
-                val = period;
-                period = tmp;
-            }
-            dur = createDuration(val, period);
-            addSubtract(this, dur, direction);
-            return this;
-        };
-    }
-    function addSubtract(mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds, days = absRound(duration._days), months = absRound(duration._months);
-        if (!mom.isValid()) // No op
-        return;
-        updateOffset = updateOffset == null ? true : updateOffset;
-        if (months) setMonth(mom, get(mom, 'Month') + months * isAdding);
-        if (days) set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
-        if (milliseconds) mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        if (updateOffset) hooks.updateOffset(mom, days || months);
-    }
-    var add = createAdder(1, 'add'), subtract = createAdder(-1, 'subtract');
-    function isString(input) {
-        return typeof input === 'string' || input instanceof String;
-    }
-    // type MomentInput = Moment | Date | string | number | (number | string)[] | MomentInputObject | void; // null | undefined
-    function isMomentInput(input) {
-        return isMoment(input) || isDate(input) || isString(input) || isNumber(input) || isNumberOrStringArray(input) || isMomentInputObject(input) || input === null || input === undefined;
-    }
-    function isMomentInputObject(input) {
-        var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties = [
-            'years',
-            'year',
-            'y',
-            'months',
-            'month',
-            'M',
-            'days',
-            'day',
-            'd',
-            'dates',
-            'date',
-            'D',
-            'hours',
-            'hour',
-            'h',
-            'minutes',
-            'minute',
-            'm',
-            'seconds',
-            'second',
-            's',
-            'milliseconds',
-            'millisecond',
-            'ms', 
-        ], i, property, propertyLen = properties.length;
-        for(i = 0; i < propertyLen; i += 1){
-            property = properties[i];
-            propertyTest = propertyTest || hasOwnProp(input, property);
-        }
-        return objectTest && propertyTest;
-    }
-    function isNumberOrStringArray(input) {
-        var arrayTest = isArray(input), dataTypeTest = false;
-        if (arrayTest) dataTypeTest = input.filter(function(item) {
-            return !isNumber(item) && isString(input);
-        }).length === 0;
-        return arrayTest && dataTypeTest;
-    }
-    function isCalendarSpec(input) {
-        var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties = [
-            'sameDay',
-            'nextDay',
-            'lastDay',
-            'nextWeek',
-            'lastWeek',
-            'sameElse', 
-        ], i, property;
-        for(i = 0; i < properties.length; i += 1){
-            property = properties[i];
-            propertyTest = propertyTest || hasOwnProp(input, property);
-        }
-        return objectTest && propertyTest;
-    }
-    function getCalendarFormat(myMoment, now1) {
-        var diff = myMoment.diff(now1, 'days', true);
-        return diff < -6 ? 'sameElse' : diff < -1 ? 'lastWeek' : diff < 0 ? 'lastDay' : diff < 1 ? 'sameDay' : diff < 2 ? 'nextDay' : diff < 7 ? 'nextWeek' : 'sameElse';
-    }
-    function calendar$1(time, formats) {
-        // Support for single parameter, formats only overload to the calendar function
-        if (arguments.length === 1) {
-            if (!arguments[0]) {
-                time = undefined;
-                formats = undefined;
-            } else if (isMomentInput(arguments[0])) {
-                time = arguments[0];
-                formats = undefined;
-            } else if (isCalendarSpec(arguments[0])) {
-                formats = arguments[0];
-                time = undefined;
-            }
-        }
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now1 = time || createLocal(), sod = cloneWithOffset(now1, this).startOf('day'), format = hooks.calendarFormat(this, sod) || 'sameElse', output = formats && (isFunction(formats[format]) ? formats[format].call(this, now1) : formats[format]);
-        return this.format(output || this.localeData().calendar(format, this, createLocal(now1)));
-    }
-    function clone() {
-        return new Moment(this);
-    }
-    function isAfter(input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) return false;
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') return this.valueOf() > localInput.valueOf();
-        else return localInput.valueOf() < this.clone().startOf(units).valueOf();
-    }
-    function isBefore(input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) return false;
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') return this.valueOf() < localInput.valueOf();
-        else return this.clone().endOf(units).valueOf() < localInput.valueOf();
-    }
-    function isBetween(from, to, units, inclusivity) {
-        var localFrom = isMoment(from) ? from : createLocal(from), localTo = isMoment(to) ? to : createLocal(to);
-        if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) return false;
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) && (inclusivity[1] === ')' ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
-    }
-    function isSame(input, units) {
-        var localInput = isMoment(input) ? input : createLocal(input), inputMs;
-        if (!(this.isValid() && localInput.isValid())) return false;
-        units = normalizeUnits(units) || 'millisecond';
-        if (units === 'millisecond') return this.valueOf() === localInput.valueOf();
-        else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
-    }
-    function isSameOrAfter(input, units) {
-        return this.isSame(input, units) || this.isAfter(input, units);
-    }
-    function isSameOrBefore(input, units) {
-        return this.isSame(input, units) || this.isBefore(input, units);
-    }
-    function diff(input, units, asFloat) {
-        var that, zoneDelta, output;
-        if (!this.isValid()) return NaN;
-        that = cloneWithOffset(input, this);
-        if (!that.isValid()) return NaN;
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 60000;
-        units = normalizeUnits(units);
-        switch(units){
-            case 'year':
-                output = monthDiff(this, that) / 12;
-                break;
-            case 'month':
-                output = monthDiff(this, that);
-                break;
-            case 'quarter':
-                output = monthDiff(this, that) / 3;
-                break;
-            case 'second':
-                output = (this - that) / 1000;
-                break; // 1000
-            case 'minute':
-                output = (this - that) / 60000;
-                break; // 1000 * 60
-            case 'hour':
-                output = (this - that) / 3600000;
-                break; // 1000 * 60 * 60
-            case 'day':
-                output = (this - that - zoneDelta) / 86400000;
-                break; // 1000 * 60 * 60 * 24, negate dst
-            case 'week':
-                output = (this - that - zoneDelta) / 604800000;
-                break; // 1000 * 60 * 60 * 24 * 7, negate dst
-            default:
-                output = this - that;
-        }
-        return asFloat ? output : absFloor(output);
-    }
-    function monthDiff(a, b) {
-        if (a.date() < b.date()) // end-of-month calculations work correct when the start month has more
-        // days than the end month.
-        return -monthDiff(b, a);
-        // difference in months
-        var wholeMonthDiff = (b.year() - a.year()) * 12 + (b.month() - a.month()), // b is in (anchor - 1 month, anchor + 1 month)
-        anchor = a.clone().add(wholeMonthDiff, 'months'), anchor2, adjust;
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
-    }
-    hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
-    function toString() {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
-    function toISOString(keepOffset) {
-        if (!this.isValid()) return null;
-        var utc = keepOffset !== true, m = utc ? this.clone().utc() : this;
-        if (m.year() < 0 || m.year() > 9999) return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
-        if (isFunction(Date.prototype.toISOString)) {
-            // native implementation is ~50x faster, use it when we can
-            if (utc) return this.toDate().toISOString();
-            else return new Date(this.valueOf() + this.utcOffset() * 60000).toISOString().replace('Z', formatMoment(m, 'Z'));
-        }
-        return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
-    }
-    /**
-     * Return a human readable representation of a moment that can
-     * also be evaluated to get a new moment which is the same
-     *
-     * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
-     */ function inspect() {
-        if (!this.isValid()) return 'moment.invalid(/* ' + this._i + ' */)';
-        var func = 'moment', zone = '', prefix, year, datetime, suffix;
-        if (!this.isLocal()) {
-            func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
-            zone = 'Z';
-        }
-        prefix = '[' + func + '("]';
-        year = 0 <= this.year() && this.year() <= 9999 ? 'YYYY' : 'YYYYYY';
-        datetime = '-MM-DD[T]HH:mm:ss.SSS';
-        suffix = zone + '[")]';
-        return this.format(prefix + year + datetime + suffix);
-    }
-    function format(inputString) {
-        if (!inputString) inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-    function from(time, withoutSuffix) {
-        if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) return createDuration({
-            to: this,
-            from: time
-        }).locale(this.locale()).humanize(!withoutSuffix);
-        else return this.localeData().invalidDate();
-    }
-    function fromNow(withoutSuffix) {
-        return this.from(createLocal(), withoutSuffix);
-    }
-    function to(time, withoutSuffix) {
-        if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) return createDuration({
-            from: this,
-            to: time
-        }).locale(this.locale()).humanize(!withoutSuffix);
-        else return this.localeData().invalidDate();
-    }
-    function toNow(withoutSuffix) {
-        return this.to(createLocal(), withoutSuffix);
-    }
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale(key) {
-        var newLocaleData;
-        if (key === undefined) return this._locale._abbr;
-        else {
-            newLocaleData = getLocale(key);
-            if (newLocaleData != null) this._locale = newLocaleData;
-            return this;
-        }
-    }
-    var lang = deprecate('moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.', function(key) {
-        if (key === undefined) return this.localeData();
-        else return this.locale(key);
-    });
-    function localeData() {
-        return this._locale;
-    }
-    var MS_PER_SECOND = 1000, MS_PER_MINUTE = 60 * MS_PER_SECOND, MS_PER_HOUR = 60 * MS_PER_MINUTE, MS_PER_400_YEARS = 3506328 * MS_PER_HOUR;
-    // actual modulo - handles negative numbers (for dates before 1970):
-    function mod$1(dividend, divisor) {
-        return (dividend % divisor + divisor) % divisor;
-    }
-    function localStartOfDate(y, m, d) {
-        // the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) // preserve leap years using a full 400 year cycle, then reset
-        return new Date(y + 400, m, d) - MS_PER_400_YEARS;
-        else return new Date(y, m, d).valueOf();
-    }
-    function utcStartOfDate(y, m, d) {
-        // Date.UTC remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0) // preserve leap years using a full 400 year cycle, then reset
-        return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
-        else return Date.UTC(y, m, d);
-    }
-    function startOf(units) {
-        var time, startOfDate;
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond' || !this.isValid()) return this;
-        startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-        switch(units){
-            case 'year':
-                time = startOfDate(this.year(), 0, 1);
-                break;
-            case 'quarter':
-                time = startOfDate(this.year(), this.month() - this.month() % 3, 1);
-                break;
-            case 'month':
-                time = startOfDate(this.year(), this.month(), 1);
-                break;
-            case 'week':
-                time = startOfDate(this.year(), this.month(), this.date() - this.weekday());
-                break;
-            case 'isoWeek':
-                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1));
-                break;
-            case 'day':
-            case 'date':
-                time = startOfDate(this.year(), this.month(), this.date());
-                break;
-            case 'hour':
-                time = this._d.valueOf();
-                time -= mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR);
-                break;
-            case 'minute':
-                time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_MINUTE);
-                break;
-            case 'second':
-                time = this._d.valueOf();
-                time -= mod$1(time, MS_PER_SECOND);
-                break;
-        }
-        this._d.setTime(time);
-        hooks.updateOffset(this, true);
-        return this;
-    }
-    function endOf(units) {
-        var time, startOfDate;
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond' || !this.isValid()) return this;
-        startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-        switch(units){
-            case 'year':
-                time = startOfDate(this.year() + 1, 0, 1) - 1;
-                break;
-            case 'quarter':
-                time = startOfDate(this.year(), this.month() - this.month() % 3 + 3, 1) - 1;
-                break;
-            case 'month':
-                time = startOfDate(this.year(), this.month() + 1, 1) - 1;
-                break;
-            case 'week':
-                time = startOfDate(this.year(), this.month(), this.date() - this.weekday() + 7) - 1;
-                break;
-            case 'isoWeek':
-                time = startOfDate(this.year(), this.month(), this.date() - (this.isoWeekday() - 1) + 7) - 1;
-                break;
-            case 'day':
-            case 'date':
-                time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
-                break;
-            case 'hour':
-                time = this._d.valueOf();
-                time += MS_PER_HOUR - mod$1(time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE), MS_PER_HOUR) - 1;
-                break;
-            case 'minute':
-                time = this._d.valueOf();
-                time += MS_PER_MINUTE - mod$1(time, MS_PER_MINUTE) - 1;
-                break;
-            case 'second':
-                time = this._d.valueOf();
-                time += MS_PER_SECOND - mod$1(time, MS_PER_SECOND) - 1;
-                break;
-        }
-        this._d.setTime(time);
-        hooks.updateOffset(this, true);
-        return this;
-    }
-    function valueOf() {
-        return this._d.valueOf() - (this._offset || 0) * 60000;
-    }
-    function unix() {
-        return Math.floor(this.valueOf() / 1000);
-    }
-    function toDate() {
-        return new Date(this.valueOf());
-    }
-    function toArray() {
-        var m = this;
-        return [
-            m.year(),
-            m.month(),
-            m.date(),
-            m.hour(),
-            m.minute(),
-            m.second(),
-            m.millisecond(), 
-        ];
-    }
-    function toObject() {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-    function toJSON() {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-    function isValid$2() {
-        return isValid(this);
-    }
-    function parsingFlags() {
-        return extend({
-        }, getParsingFlags(this));
-    }
-    function invalidAt() {
-        return getParsingFlags(this).overflow;
-    }
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-    addFormatToken('N', 0, 0, 'eraAbbr');
-    addFormatToken('NN', 0, 0, 'eraAbbr');
-    addFormatToken('NNN', 0, 0, 'eraAbbr');
-    addFormatToken('NNNN', 0, 0, 'eraName');
-    addFormatToken('NNNNN', 0, 0, 'eraNarrow');
-    addFormatToken('y', [
-        'y',
-        1
-    ], 'yo', 'eraYear');
-    addFormatToken('y', [
-        'yy',
-        2
-    ], 0, 'eraYear');
-    addFormatToken('y', [
-        'yyy',
-        3
-    ], 0, 'eraYear');
-    addFormatToken('y', [
-        'yyyy',
-        4
-    ], 0, 'eraYear');
-    addRegexToken('N', matchEraAbbr);
-    addRegexToken('NN', matchEraAbbr);
-    addRegexToken('NNN', matchEraAbbr);
-    addRegexToken('NNNN', matchEraName);
-    addRegexToken('NNNNN', matchEraNarrow);
-    addParseToken([
-        'N',
-        'NN',
-        'NNN',
-        'NNNN',
-        'NNNNN'
-    ], function(input, array, config, token) {
-        var era = config._locale.erasParse(input, token, config._strict);
-        if (era) getParsingFlags(config).era = era;
-        else getParsingFlags(config).invalidEra = input;
-    });
-    addRegexToken('y', matchUnsigned);
-    addRegexToken('yy', matchUnsigned);
-    addRegexToken('yyy', matchUnsigned);
-    addRegexToken('yyyy', matchUnsigned);
-    addRegexToken('yo', matchEraYearOrdinal);
-    addParseToken([
-        'y',
-        'yy',
-        'yyy',
-        'yyyy'
-    ], YEAR);
-    addParseToken([
-        'yo'
-    ], function(input, array, config, token) {
-        var match;
-        if (config._locale._eraYearOrdinalRegex) match = input.match(config._locale._eraYearOrdinalRegex);
-        if (config._locale.eraYearOrdinalParse) array[YEAR] = config._locale.eraYearOrdinalParse(input, match);
-        else array[YEAR] = parseInt(input, 10);
-    });
-    function localeEras(m, format1) {
-        var i, l, date, eras = this._eras || getLocale('en')._eras;
-        for(i = 0, l = eras.length; i < l; ++i){
-            switch(typeof eras[i].since){
-                case 'string':
-                    // truncate time
-                    date = hooks(eras[i].since).startOf('day');
-                    eras[i].since = date.valueOf();
-                    break;
-            }
-            switch(typeof eras[i].until){
-                case 'undefined':
-                    eras[i].until = Infinity;
-                    break;
-                case 'string':
-                    // truncate time
-                    date = hooks(eras[i].until).startOf('day').valueOf();
-                    eras[i].until = date.valueOf();
-                    break;
-            }
-        }
-        return eras;
-    }
-    function localeErasParse(eraName, format1, strict) {
-        var i, l, eras = this.eras(), name, abbr, narrow;
-        eraName = eraName.toUpperCase();
-        for(i = 0, l = eras.length; i < l; ++i){
-            name = eras[i].name.toUpperCase();
-            abbr = eras[i].abbr.toUpperCase();
-            narrow = eras[i].narrow.toUpperCase();
-            if (strict) switch(format1){
-                case 'N':
-                case 'NN':
-                case 'NNN':
-                    if (abbr === eraName) return eras[i];
-                    break;
-                case 'NNNN':
-                    if (name === eraName) return eras[i];
-                    break;
-                case 'NNNNN':
-                    if (narrow === eraName) return eras[i];
-                    break;
-            }
-            else if ([
-                name,
-                abbr,
-                narrow
-            ].indexOf(eraName) >= 0) return eras[i];
-        }
-    }
-    function localeErasConvertYear(era, year) {
-        var dir = era.since <= era.until ? 1 : -1;
-        if (year === undefined) return hooks(era.since).year();
-        else return hooks(era.since).year() + (year - era.offset) * dir;
-    }
-    function getEraName() {
-        var i, l, val, eras = this.localeData().eras();
-        for(i = 0, l = eras.length; i < l; ++i){
-            // truncate time
-            val = this.clone().startOf('day').valueOf();
-            if (eras[i].since <= val && val <= eras[i].until) return eras[i].name;
-            if (eras[i].until <= val && val <= eras[i].since) return eras[i].name;
-        }
-        return '';
-    }
-    function getEraNarrow() {
-        var i, l, val, eras = this.localeData().eras();
-        for(i = 0, l = eras.length; i < l; ++i){
-            // truncate time
-            val = this.clone().startOf('day').valueOf();
-            if (eras[i].since <= val && val <= eras[i].until) return eras[i].narrow;
-            if (eras[i].until <= val && val <= eras[i].since) return eras[i].narrow;
-        }
-        return '';
-    }
-    function getEraAbbr() {
-        var i, l, val, eras = this.localeData().eras();
-        for(i = 0, l = eras.length; i < l; ++i){
-            // truncate time
-            val = this.clone().startOf('day').valueOf();
-            if (eras[i].since <= val && val <= eras[i].until) return eras[i].abbr;
-            if (eras[i].until <= val && val <= eras[i].since) return eras[i].abbr;
-        }
-        return '';
-    }
-    function getEraYear() {
-        var i, l, dir, val, eras = this.localeData().eras();
-        for(i = 0, l = eras.length; i < l; ++i){
-            dir = eras[i].since <= eras[i].until ? 1 : -1;
-            // truncate time
-            val = this.clone().startOf('day').valueOf();
-            if (eras[i].since <= val && val <= eras[i].until || eras[i].until <= val && val <= eras[i].since) return (this.year() - hooks(eras[i].since).year()) * dir + eras[i].offset;
-        }
-        return this.year();
-    }
-    function erasNameRegex(isStrict) {
-        if (!hasOwnProp(this, '_erasNameRegex')) computeErasParse.call(this);
-        return isStrict ? this._erasNameRegex : this._erasRegex;
-    }
-    function erasAbbrRegex(isStrict) {
-        if (!hasOwnProp(this, '_erasAbbrRegex')) computeErasParse.call(this);
-        return isStrict ? this._erasAbbrRegex : this._erasRegex;
-    }
-    function erasNarrowRegex(isStrict) {
-        if (!hasOwnProp(this, '_erasNarrowRegex')) computeErasParse.call(this);
-        return isStrict ? this._erasNarrowRegex : this._erasRegex;
-    }
-    function matchEraAbbr(isStrict, locale1) {
-        return locale1.erasAbbrRegex(isStrict);
-    }
-    function matchEraName(isStrict, locale1) {
-        return locale1.erasNameRegex(isStrict);
-    }
-    function matchEraNarrow(isStrict, locale1) {
-        return locale1.erasNarrowRegex(isStrict);
-    }
-    function matchEraYearOrdinal(isStrict, locale1) {
-        return locale1._eraYearOrdinalRegex || matchUnsigned;
-    }
-    function computeErasParse() {
-        var abbrPieces = [], namePieces = [], narrowPieces = [], mixedPieces = [], i, l, eras = this.eras();
-        for(i = 0, l = eras.length; i < l; ++i){
-            namePieces.push(regexEscape(eras[i].name));
-            abbrPieces.push(regexEscape(eras[i].abbr));
-            narrowPieces.push(regexEscape(eras[i].narrow));
-            mixedPieces.push(regexEscape(eras[i].name));
-            mixedPieces.push(regexEscape(eras[i].abbr));
-            mixedPieces.push(regexEscape(eras[i].narrow));
-        }
-        this._erasRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._erasNameRegex = new RegExp('^(' + namePieces.join('|') + ')', 'i');
-        this._erasAbbrRegex = new RegExp('^(' + abbrPieces.join('|') + ')', 'i');
-        this._erasNarrowRegex = new RegExp('^(' + narrowPieces.join('|') + ')', 'i');
-    }
-    // FORMATTING
-    addFormatToken(0, [
-        'gg',
-        2
-    ], 0, function() {
-        return this.weekYear() % 100;
-    });
-    addFormatToken(0, [
-        'GG',
-        2
-    ], 0, function() {
-        return this.isoWeekYear() % 100;
-    });
-    function addWeekYearFormatToken(token, getter) {
-        addFormatToken(0, [
-            token,
-            token.length
-        ], 0, getter);
-    }
-    addWeekYearFormatToken('gggg', 'weekYear');
-    addWeekYearFormatToken('ggggg', 'weekYear');
-    addWeekYearFormatToken('GGGG', 'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-    // ALIASES
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-    // PRIORITY
-    addUnitPriority('weekYear', 1);
-    addUnitPriority('isoWeekYear', 1);
-    // PARSING
-    addRegexToken('G', matchSigned);
-    addRegexToken('g', matchSigned);
-    addRegexToken('GG', match1to2, match2);
-    addRegexToken('gg', match1to2, match2);
-    addRegexToken('GGGG', match1to4, match4);
-    addRegexToken('gggg', match1to4, match4);
-    addRegexToken('GGGGG', match1to6, match6);
-    addRegexToken('ggggg', match1to6, match6);
-    addWeekParseToken([
-        'gggg',
-        'ggggg',
-        'GGGG',
-        'GGGGG'
-    ], function(input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-    addWeekParseToken([
-        'gg',
-        'GG'
-    ], function(input, week, config, token) {
-        week[token] = hooks.parseTwoDigitYear(input);
-    });
-    // MOMENTS
-    function getSetWeekYear(input) {
-        return getSetWeekYearHelper.call(this, input, this.week(), this.weekday(), this.localeData()._week.dow, this.localeData()._week.doy);
-    }
-    function getSetISOWeekYear(input) {
-        return getSetWeekYearHelper.call(this, input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-    function getISOWeeksInYear() {
-        return weeksInYear(this.year(), 1, 4);
-    }
-    function getISOWeeksInISOWeekYear() {
-        return weeksInYear(this.isoWeekYear(), 1, 4);
-    }
-    function getWeeksInYear() {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-    function getWeeksInWeekYear() {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.weekYear(), weekInfo.dow, weekInfo.doy);
-    }
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) return weekOfYear(this, dow, doy).year;
-        else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) week = weeksTarget;
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
-        }
-    }
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy), date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
-        return this;
-    }
-    // FORMATTING
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-    // ALIASES
-    addUnitAlias('quarter', 'Q');
-    // PRIORITY
-    addUnitPriority('quarter', 7);
-    // PARSING
-    addRegexToken('Q', match1);
-    addParseToken('Q', function(input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-    // MOMENTS
-    function getSetQuarter(input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-    }
-    // FORMATTING
-    addFormatToken('D', [
-        'DD',
-        2
-    ], 'Do', 'date');
-    // ALIASES
-    addUnitAlias('date', 'D');
-    // PRIORITY
-    addUnitPriority('date', 9);
-    // PARSING
-    addRegexToken('D', match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function(isStrict, locale1) {
-        // TODO: Remove "ordinalParse" fallback in next major release.
-        return isStrict ? locale1._dayOfMonthOrdinalParse || locale1._ordinalParse : locale1._dayOfMonthOrdinalParseLenient;
-    });
-    addParseToken([
-        'D',
-        'DD'
-    ], DATE);
-    addParseToken('Do', function(input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0]);
-    });
-    // MOMENTS
-    var getSetDayOfMonth = makeGetSet('Date', true);
-    // FORMATTING
-    addFormatToken('DDD', [
-        'DDDD',
-        3
-    ], 'DDDo', 'dayOfYear');
-    // ALIASES
-    addUnitAlias('dayOfYear', 'DDD');
-    // PRIORITY
-    addUnitPriority('dayOfYear', 4);
-    // PARSING
-    addRegexToken('DDD', match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken([
-        'DDD',
-        'DDDD'
-    ], function(input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-    // HELPERS
-    // MOMENTS
-    function getSetDayOfYear(input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 86400000) + 1;
-        return input == null ? dayOfYear : this.add(input - dayOfYear, 'd');
-    }
-    // FORMATTING
-    addFormatToken('m', [
-        'mm',
-        2
-    ], 0, 'minute');
-    // ALIASES
-    addUnitAlias('minute', 'm');
-    // PRIORITY
-    addUnitPriority('minute', 14);
-    // PARSING
-    addRegexToken('m', match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken([
-        'm',
-        'mm'
-    ], MINUTE);
-    // MOMENTS
-    var getSetMinute = makeGetSet('Minutes', false);
-    // FORMATTING
-    addFormatToken('s', [
-        'ss',
-        2
-    ], 0, 'second');
-    // ALIASES
-    addUnitAlias('second', 's');
-    // PRIORITY
-    addUnitPriority('second', 15);
-    // PARSING
-    addRegexToken('s', match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken([
-        's',
-        'ss'
-    ], SECOND);
-    // MOMENTS
-    var getSetSecond = makeGetSet('Seconds', false);
-    // FORMATTING
-    addFormatToken('S', 0, 0, function() {
-        return ~~(this.millisecond() / 100);
-    });
-    addFormatToken(0, [
-        'SS',
-        2
-    ], 0, function() {
-        return ~~(this.millisecond() / 10);
-    });
-    addFormatToken(0, [
-        'SSS',
-        3
-    ], 0, 'millisecond');
-    addFormatToken(0, [
-        'SSSS',
-        4
-    ], 0, function() {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, [
-        'SSSSS',
-        5
-    ], 0, function() {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, [
-        'SSSSSS',
-        6
-    ], 0, function() {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, [
-        'SSSSSSS',
-        7
-    ], 0, function() {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, [
-        'SSSSSSSS',
-        8
-    ], 0, function() {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, [
-        'SSSSSSSSS',
-        9
-    ], 0, function() {
-        return this.millisecond() * 1000000;
-    });
-    // ALIASES
-    addUnitAlias('millisecond', 'ms');
-    // PRIORITY
-    addUnitPriority('millisecond', 16);
-    // PARSING
-    addRegexToken('S', match1to3, match1);
-    addRegexToken('SS', match1to3, match2);
-    addRegexToken('SSS', match1to3, match3);
-    var token, getSetMillisecond;
-    for(token = 'SSSS'; token.length <= 9; token += 'S')addRegexToken(token, matchUnsigned);
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    }
-    for(token = 'S'; token.length <= 9; token += 'S')addParseToken(token, parseMs);
-    getSetMillisecond = makeGetSet('Milliseconds', false);
-    // FORMATTING
-    addFormatToken('z', 0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-    // MOMENTS
-    function getZoneAbbr() {
-        return this._isUTC ? 'UTC' : '';
-    }
-    function getZoneName() {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-    var proto = Moment.prototype;
-    proto.add = add;
-    proto.calendar = calendar$1;
-    proto.clone = clone;
-    proto.diff = diff;
-    proto.endOf = endOf;
-    proto.format = format;
-    proto.from = from;
-    proto.fromNow = fromNow;
-    proto.to = to;
-    proto.toNow = toNow;
-    proto.get = stringGet;
-    proto.invalidAt = invalidAt;
-    proto.isAfter = isAfter;
-    proto.isBefore = isBefore;
-    proto.isBetween = isBetween;
-    proto.isSame = isSame;
-    proto.isSameOrAfter = isSameOrAfter;
-    proto.isSameOrBefore = isSameOrBefore;
-    proto.isValid = isValid$2;
-    proto.lang = lang;
-    proto.locale = locale;
-    proto.localeData = localeData;
-    proto.max = prototypeMax;
-    proto.min = prototypeMin;
-    proto.parsingFlags = parsingFlags;
-    proto.set = stringSet;
-    proto.startOf = startOf;
-    proto.subtract = subtract;
-    proto.toArray = toArray;
-    proto.toObject = toObject;
-    proto.toDate = toDate;
-    proto.toISOString = toISOString;
-    proto.inspect = inspect;
-    if (typeof Symbol !== 'undefined' && Symbol.for != null) proto[Symbol.for('nodejs.util.inspect.custom')] = function() {
-        return 'Moment<' + this.format() + '>';
-    };
-    proto.toJSON = toJSON;
-    proto.toString = toString;
-    proto.unix = unix;
-    proto.valueOf = valueOf;
-    proto.creationData = creationData;
-    proto.eraName = getEraName;
-    proto.eraNarrow = getEraNarrow;
-    proto.eraAbbr = getEraAbbr;
-    proto.eraYear = getEraYear;
-    proto.year = getSetYear;
-    proto.isLeapYear = getIsLeapYear;
-    proto.weekYear = getSetWeekYear;
-    proto.isoWeekYear = getSetISOWeekYear;
-    proto.quarter = proto.quarters = getSetQuarter;
-    proto.month = getSetMonth;
-    proto.daysInMonth = getDaysInMonth;
-    proto.week = proto.weeks = getSetWeek;
-    proto.isoWeek = proto.isoWeeks = getSetISOWeek;
-    proto.weeksInYear = getWeeksInYear;
-    proto.weeksInWeekYear = getWeeksInWeekYear;
-    proto.isoWeeksInYear = getISOWeeksInYear;
-    proto.isoWeeksInISOWeekYear = getISOWeeksInISOWeekYear;
-    proto.date = getSetDayOfMonth;
-    proto.day = proto.days = getSetDayOfWeek;
-    proto.weekday = getSetLocaleDayOfWeek;
-    proto.isoWeekday = getSetISODayOfWeek;
-    proto.dayOfYear = getSetDayOfYear;
-    proto.hour = proto.hours = getSetHour;
-    proto.minute = proto.minutes = getSetMinute;
-    proto.second = proto.seconds = getSetSecond;
-    proto.millisecond = proto.milliseconds = getSetMillisecond;
-    proto.utcOffset = getSetOffset;
-    proto.utc = setOffsetToUTC;
-    proto.local = setOffsetToLocal;
-    proto.parseZone = setOffsetToParsedOffset;
-    proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    proto.isDST = isDaylightSavingTime;
-    proto.isLocal = isLocal;
-    proto.isUtcOffset = isUtcOffset;
-    proto.isUtc = isUtc;
-    proto.isUTC = isUtc;
-    proto.zoneAbbr = getZoneAbbr;
-    proto.zoneName = getZoneName;
-    proto.dates = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    proto.years = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    proto.zone = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
-    proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
-    function createUnix(input) {
-        return createLocal(input * 1000);
-    }
-    function createInZone() {
-        return createLocal.apply(null, arguments).parseZone();
-    }
-    function preParsePostFormat(string) {
-        return string;
-    }
-    var proto$1 = Locale.prototype;
-    proto$1.calendar = calendar;
-    proto$1.longDateFormat = longDateFormat;
-    proto$1.invalidDate = invalidDate;
-    proto$1.ordinal = ordinal;
-    proto$1.preparse = preParsePostFormat;
-    proto$1.postformat = preParsePostFormat;
-    proto$1.relativeTime = relativeTime;
-    proto$1.pastFuture = pastFuture;
-    proto$1.set = set;
-    proto$1.eras = localeEras;
-    proto$1.erasParse = localeErasParse;
-    proto$1.erasConvertYear = localeErasConvertYear;
-    proto$1.erasAbbrRegex = erasAbbrRegex;
-    proto$1.erasNameRegex = erasNameRegex;
-    proto$1.erasNarrowRegex = erasNarrowRegex;
-    proto$1.months = localeMonths;
-    proto$1.monthsShort = localeMonthsShort;
-    proto$1.monthsParse = localeMonthsParse;
-    proto$1.monthsRegex = monthsRegex;
-    proto$1.monthsShortRegex = monthsShortRegex;
-    proto$1.week = localeWeek;
-    proto$1.firstDayOfYear = localeFirstDayOfYear;
-    proto$1.firstDayOfWeek = localeFirstDayOfWeek;
-    proto$1.weekdays = localeWeekdays;
-    proto$1.weekdaysMin = localeWeekdaysMin;
-    proto$1.weekdaysShort = localeWeekdaysShort;
-    proto$1.weekdaysParse = localeWeekdaysParse;
-    proto$1.weekdaysRegex = weekdaysRegex;
-    proto$1.weekdaysShortRegex = weekdaysShortRegex;
-    proto$1.weekdaysMinRegex = weekdaysMinRegex;
-    proto$1.isPM = localeIsPM;
-    proto$1.meridiem = localeMeridiem;
-    function get$1(format1, index, field, setter) {
-        var locale1 = getLocale(), utc = createUTC().set(setter, index);
-        return locale1[field](utc, format1);
-    }
-    function listMonthsImpl(format1, index, field) {
-        if (isNumber(format1)) {
-            index = format1;
-            format1 = undefined;
-        }
-        format1 = format1 || '';
-        if (index != null) return get$1(format1, index, field, 'month');
-        var i, out = [];
-        for(i = 0; i < 12; i++)out[i] = get$1(format1, i, field, 'month');
-        return out;
-    }
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl(localeSorted, format1, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (isNumber(format1)) {
-                index = format1;
-                format1 = undefined;
-            }
-            format1 = format1 || '';
-        } else {
-            format1 = localeSorted;
-            index = format1;
-            localeSorted = false;
-            if (isNumber(format1)) {
-                index = format1;
-                format1 = undefined;
-            }
-            format1 = format1 || '';
-        }
-        var locale1 = getLocale(), shift = localeSorted ? locale1._week.dow : 0, i, out = [];
-        if (index != null) return get$1(format1, (index + shift) % 7, field, 'day');
-        for(i = 0; i < 7; i++)out[i] = get$1(format1, (i + shift) % 7, field, 'day');
-        return out;
-    }
-    function listMonths(format1, index) {
-        return listMonthsImpl(format1, index, 'months');
-    }
-    function listMonthsShort(format1, index) {
-        return listMonthsImpl(format1, index, 'monthsShort');
-    }
-    function listWeekdays(localeSorted, format1, index) {
-        return listWeekdaysImpl(localeSorted, format1, index, 'weekdays');
-    }
-    function listWeekdaysShort(localeSorted, format1, index) {
-        return listWeekdaysImpl(localeSorted, format1, index, 'weekdaysShort');
-    }
-    function listWeekdaysMin(localeSorted, format1, index) {
-        return listWeekdaysImpl(localeSorted, format1, index, 'weekdaysMin');
-    }
-    getSetGlobalLocale('en', {
-        eras: [
-            {
-                since: '0001-01-01',
-                until: Infinity,
-                offset: 1,
-                name: 'Anno Domini',
-                narrow: 'AD',
-                abbr: 'AD'
             },
-            {
-                since: '0000-12-31',
-                until: -Infinity,
-                offset: 1,
-                name: 'Before Christ',
-                narrow: 'BC',
-                abbr: 'BC'
-            }, 
-        ],
-        dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal: function(number) {
-            var b = number % 10, output = toInt(number % 100 / 10) === 1 ? 'th' : b === 1 ? 'st' : b === 2 ? 'nd' : b === 3 ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-    // Side effect imports
-    hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
-    hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
-    var mathAbs = Math.abs;
-    function abs() {
-        var data = this._data;
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days = mathAbs(this._days);
-        this._months = mathAbs(this._months);
-        data.milliseconds = mathAbs(data.milliseconds);
-        data.seconds = mathAbs(data.seconds);
-        data.minutes = mathAbs(data.minutes);
-        data.hours = mathAbs(data.hours);
-        data.months = mathAbs(data.months);
-        data.years = mathAbs(data.years);
-        return this;
-    }
-    function addSubtract$1(duration, input, value, direction) {
-        var other = createDuration(input, value);
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days += direction * other._days;
-        duration._months += direction * other._months;
-        return duration._bubble();
-    }
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function add$1(input, value) {
-        return addSubtract$1(this, input, value, 1);
-    }
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function subtract$1(input, value) {
-        return addSubtract$1(this, input, value, -1);
-    }
-    function absCeil(number) {
-        if (number < 0) return Math.floor(number);
-        else return Math.ceil(number);
-    }
-    function bubble() {
-        var milliseconds = this._milliseconds, days = this._days, months = this._months, data = this._data, seconds, minutes, hours, years, monthsFromDays;
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!(milliseconds >= 0 && days >= 0 && months >= 0 || milliseconds <= 0 && days <= 0 && months <= 0)) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 86400000;
-            days = 0;
-            months = 0;
-        }
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-        seconds = absFloor(milliseconds / 1000);
-        data.seconds = seconds % 60;
-        minutes = absFloor(seconds / 60);
-        data.minutes = minutes % 60;
-        hours = absFloor(minutes / 60);
-        data.hours = hours % 24;
-        days += absFloor(hours / 24);
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-        data.days = days;
-        data.months = months;
-        data.years = years;
-        return this;
-    }
-    function daysToMonths(days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-    function monthsToDays(months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-    function as(units) {
-        if (!this.isValid()) return NaN;
-        var days, months, milliseconds = this._milliseconds;
-        units = normalizeUnits(units);
-        if (units === 'month' || units === 'quarter' || units === 'year') {
-            days = this._days + milliseconds / 86400000;
-            months = this._months + daysToMonths(days);
-            switch(units){
-                case 'month':
-                    return months;
-                case 'quarter':
-                    return months / 3;
-                case 'year':
-                    return months / 12;
+            697: (e1, t1, a)=>{
+                e1.exports = a(703)();
+            },
+            414: (e1)=>{
+                "use strict";
+                e1.exports = "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED";
+            },
+            98: (t1)=>{
+                "use strict";
+                t1.exports = e;
             }
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch(units){
-                case 'week':
-                    return days / 7 + milliseconds / 604800000;
-                case 'day':
-                    return days + milliseconds / 86400000;
-                case 'hour':
-                    return days * 24 + milliseconds / 3600000;
-                case 'minute':
-                    return days * 1440 + milliseconds / 60000;
-                case 'second':
-                    return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond':
-                    return Math.floor(days * 86400000) + milliseconds;
-                default:
-                    throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-    // TODO: Use this.as('ms')?
-    function valueOf$1() {
-        if (!this.isValid()) return NaN;
-        return this._milliseconds + this._days * 86400000 + this._months % 12 * 2592000000 + toInt(this._months / 12) * 31536000000;
-    }
-    function makeAs(alias) {
-        return function() {
-            return this.as(alias);
+        }, a = {
         };
-    }
-    var asMilliseconds = makeAs('ms'), asSeconds = makeAs('s'), asMinutes = makeAs('m'), asHours = makeAs('h'), asDays = makeAs('d'), asWeeks = makeAs('w'), asMonths = makeAs('M'), asQuarters = makeAs('Q'), asYears = makeAs('y');
-    function clone$1() {
-        return createDuration(this);
-    }
-    function get$2(units) {
-        units = normalizeUnits(units);
-        return this.isValid() ? this[units + 's']() : NaN;
-    }
-    function makeGetter(name) {
-        return function() {
-            return this.isValid() ? this._data[name] : NaN;
-        };
-    }
-    var milliseconds = makeGetter('milliseconds'), seconds = makeGetter('seconds'), minutes = makeGetter('minutes'), hours = makeGetter('hours'), days = makeGetter('days'), months = makeGetter('months'), years = makeGetter('years');
-    function weeks() {
-        return absFloor(this.days() / 7);
-    }
-    var round = Math.round, thresholds = {
-        ss: 44,
-        s: 45,
-        m: 45,
-        h: 22,
-        d: 26,
-        w: null,
-        M: 11
-    };
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale1) {
-        return locale1.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-    }
-    function relativeTime$1(posNegDuration, withoutSuffix, thresholds1, locale1) {
-        var duration = createDuration(posNegDuration).abs(), seconds1 = round(duration.as('s')), minutes1 = round(duration.as('m')), hours1 = round(duration.as('h')), days1 = round(duration.as('d')), months1 = round(duration.as('M')), weeks1 = round(duration.as('w')), years1 = round(duration.as('y')), a = seconds1 <= thresholds1.ss && [
-            's',
-            seconds1
-        ] || seconds1 < thresholds1.s && [
-            'ss',
-            seconds1
-        ] || minutes1 <= 1 && [
-            'm'
-        ] || minutes1 < thresholds1.m && [
-            'mm',
-            minutes1
-        ] || hours1 <= 1 && [
-            'h'
-        ] || hours1 < thresholds1.h && [
-            'hh',
-            hours1
-        ] || days1 <= 1 && [
-            'd'
-        ] || days1 < thresholds1.d && [
-            'dd',
-            days1
-        ];
-        if (thresholds1.w != null) a = a || weeks1 <= 1 && [
-            'w'
-        ] || weeks1 < thresholds1.w && [
-            'ww',
-            weeks1
-        ];
-        a = a || months1 <= 1 && [
-            'M'
-        ] || months1 < thresholds1.M && [
-            'MM',
-            months1
-        ] || years1 <= 1 && [
-            'y'
-        ] || [
-            'yy',
-            years1
-        ];
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale1;
-        return substituteTimeAgo.apply(null, a);
-    }
-    // This function allows you to set the rounding function for relative time strings
-    function getSetRelativeTimeRounding(roundingFunction) {
-        if (roundingFunction === undefined) return round;
-        if (typeof roundingFunction === 'function') {
-            round = roundingFunction;
-            return true;
-        }
-        return false;
-    }
-    // This function allows you to set a threshold for relative time strings
-    function getSetRelativeTimeThreshold(threshold, limit) {
-        if (thresholds[threshold] === undefined) return false;
-        if (limit === undefined) return thresholds[threshold];
-        thresholds[threshold] = limit;
-        if (threshold === 's') thresholds.ss = limit - 1;
-        return true;
-    }
-    function humanize(argWithSuffix, argThresholds) {
-        if (!this.isValid()) return this.localeData().invalidDate();
-        var withSuffix = false, th = thresholds, locale1, output;
-        if (typeof argWithSuffix === 'object') {
-            argThresholds = argWithSuffix;
-            argWithSuffix = false;
-        }
-        if (typeof argWithSuffix === 'boolean') withSuffix = argWithSuffix;
-        if (typeof argThresholds === 'object') {
-            th = Object.assign({
-            }, thresholds, argThresholds);
-            if (argThresholds.s != null && argThresholds.ss == null) th.ss = argThresholds.s - 1;
-        }
-        locale1 = this.localeData();
-        output = relativeTime$1(this, !withSuffix, th, locale1);
-        if (withSuffix) output = locale1.pastFuture(+this, output);
-        return locale1.postformat(output);
-    }
-    var abs$1 = Math.abs;
-    function sign(x) {
-        return (x > 0) - (x < 0) || +x;
-    }
-    function toISOString$1() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        if (!this.isValid()) return this.localeData().invalidDate();
-        var seconds1 = abs$1(this._milliseconds) / 1000, days1 = abs$1(this._days), months1 = abs$1(this._months), minutes1, hours1, years1, s, total = this.asSeconds(), totalSign, ymSign, daysSign, hmsSign;
-        if (!total) // this is the same as C#'s (Noda) and python (isodate)...
-        // but not other JS (goog.date)
-        return 'P0D';
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes1 = absFloor(seconds1 / 60);
-        hours1 = absFloor(minutes1 / 60);
-        seconds1 %= 60;
-        minutes1 %= 60;
-        // 12 months -> 1 year
-        years1 = absFloor(months1 / 12);
-        months1 %= 12;
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        s = seconds1 ? seconds1.toFixed(3).replace(/\.?0+$/, '') : '';
-        totalSign = total < 0 ? '-' : '';
-        ymSign = sign(this._months) !== sign(total) ? '-' : '';
-        daysSign = sign(this._days) !== sign(total) ? '-' : '';
-        hmsSign = sign(this._milliseconds) !== sign(total) ? '-' : '';
-        return totalSign + 'P' + (years1 ? ymSign + years1 + 'Y' : '') + (months1 ? ymSign + months1 + 'M' : '') + (days1 ? daysSign + days1 + 'D' : '') + (hours1 || minutes1 || seconds1 ? 'T' : '') + (hours1 ? hmsSign + hours1 + 'H' : '') + (minutes1 ? hmsSign + minutes1 + 'M' : '') + (seconds1 ? hmsSign + s + 'S' : '');
-    }
-    var proto$2 = Duration.prototype;
-    proto$2.isValid = isValid$1;
-    proto$2.abs = abs;
-    proto$2.add = add$1;
-    proto$2.subtract = subtract$1;
-    proto$2.as = as;
-    proto$2.asMilliseconds = asMilliseconds;
-    proto$2.asSeconds = asSeconds;
-    proto$2.asMinutes = asMinutes;
-    proto$2.asHours = asHours;
-    proto$2.asDays = asDays;
-    proto$2.asWeeks = asWeeks;
-    proto$2.asMonths = asMonths;
-    proto$2.asQuarters = asQuarters;
-    proto$2.asYears = asYears;
-    proto$2.valueOf = valueOf$1;
-    proto$2._bubble = bubble;
-    proto$2.clone = clone$1;
-    proto$2.get = get$2;
-    proto$2.milliseconds = milliseconds;
-    proto$2.seconds = seconds;
-    proto$2.minutes = minutes;
-    proto$2.hours = hours;
-    proto$2.days = days;
-    proto$2.weeks = weeks;
-    proto$2.months = months;
-    proto$2.years = years;
-    proto$2.humanize = humanize;
-    proto$2.toISOString = toISOString$1;
-    proto$2.toString = toISOString$1;
-    proto$2.toJSON = toISOString$1;
-    proto$2.locale = locale;
-    proto$2.localeData = localeData;
-    proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
-    proto$2.lang = lang;
-    // FORMATTING
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
-    // PARSING
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function(input, array, config) {
-        config._d = new Date(parseFloat(input) * 1000);
-    });
-    addParseToken('x', function(input, array, config) {
-        config._d = new Date(toInt(input));
-    });
-    //! moment.js
-    hooks.version = '2.29.4';
-    setHookCallback(createLocal);
-    hooks.fn = proto;
-    hooks.min = min;
-    hooks.max = max;
-    hooks.now = now;
-    hooks.utc = createUTC;
-    hooks.unix = createUnix;
-    hooks.months = listMonths;
-    hooks.isDate = isDate;
-    hooks.locale = getSetGlobalLocale;
-    hooks.invalid = createInvalid;
-    hooks.duration = createDuration;
-    hooks.isMoment = isMoment;
-    hooks.weekdays = listWeekdays;
-    hooks.parseZone = createInZone;
-    hooks.localeData = getLocale;
-    hooks.isDuration = isDuration;
-    hooks.monthsShort = listMonthsShort;
-    hooks.weekdaysMin = listWeekdaysMin;
-    hooks.defineLocale = defineLocale;
-    hooks.updateLocale = updateLocale;
-    hooks.locales = listLocales;
-    hooks.weekdaysShort = listWeekdaysShort;
-    hooks.normalizeUnits = normalizeUnits;
-    hooks.relativeTimeRounding = getSetRelativeTimeRounding;
-    hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
-    hooks.calendarFormat = getCalendarFormat;
-    hooks.prototype = proto;
-    // currently HTML5 input type only supports 24-hour formats
-    hooks.HTML5_FMT = {
-        DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',
-        DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',
-        DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',
-        DATE: 'YYYY-MM-DD',
-        TIME: 'HH:mm',
-        TIME_SECONDS: 'HH:mm:ss',
-        TIME_MS: 'HH:mm:ss.SSS',
-        WEEK: 'GGGG-[W]WW',
-        MONTH: 'YYYY-MM'
-    };
-    return hooks;
-});
-
-},{}],"8WCoL":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$5f0a = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$5f0a.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactRedux = require("react-redux");
-var _reactRouterDom = require("react-router-dom");
-var _reactBootstrap = require("react-bootstrap");
-var _breadcrumb = require("react-bootstrap/Breadcrumb");
-var _breadcrumbDefault = parcelHelpers.interopDefault(_breadcrumb);
-var _s = $RefreshSig$();
-const GenreView = ({ genre , movies  })=>{
-    _s();
-    const history = _reactRouterDom.useHistory();
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_jsxRuntime.Fragment, {
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsxs(_breadcrumbDefault.default, {
-                __source: {
-                    fileName: "src/components/genre-view/genre-view.jsx",
-                    lineNumber: 12
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        href: "/",
-                        __source: {
-                            fileName: "src/components/genre-view/genre-view.jsx",
-                            lineNumber: 13
-                        },
-                        __self: undefined,
-                        children: "Home"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        className: "bread-link",
-                        onClick: history.goBack,
-                        __source: {
-                            fileName: "src/components/genre-view/genre-view.jsx",
-                            lineNumber: 14
-                        },
-                        __self: undefined,
-                        children: "Movie"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        active: true,
-                        __source: {
-                            fileName: "src/components/genre-view/genre-view.jsx",
-                            lineNumber: 17
-                        },
-                        __self: undefined,
-                        children: "Genre"
-                    })
-                ]
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-                className: "mt-4 mx-auto",
-                style: {
-                    width: '80%'
-                },
-                __source: {
-                    fileName: "src/components/genre-view/genre-view.jsx",
-                    lineNumber: 20
-                },
-                __self: undefined,
-                children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-                    __source: {
-                        fileName: "src/components/genre-view/genre-view.jsx",
-                        lineNumber: 21
-                    },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
-                            as: "h1",
-                            className: "text-center",
-                            __source: {
-                                fileName: "src/components/genre-view/genre-view.jsx",
-                                lineNumber: 22
-                            },
-                            __self: undefined,
-                            children: genre.Name
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs("div", {
-                            className: "genre-desc",
-                            __source: {
-                                fileName: "src/components/genre-view/genre-view.jsx",
-                                lineNumber: 25
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx("span", {
-                                    className: "label h6",
-                                    __source: {
-                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                        lineNumber: 26
-                                    },
-                                    __self: undefined,
-                                    children: "Description "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    className: "value",
-                                    __source: {
-                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                        lineNumber: 27
-                                    },
-                                    __self: undefined,
-                                    children: genre.Description
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Title, {
-                            as: "h4",
-                            className: "pt-5",
-                            __source: {
-                                fileName: "src/components/genre-view/genre-view.jsx",
-                                lineNumber: 30
-                            },
-                            __self: undefined,
-                            children: [
-                                genre.Name,
-                                " Movies"
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
-                            __source: {
-                                fileName: "src/components/genre-view/genre-view.jsx",
-                                lineNumber: 33
-                            },
-                            __self: undefined,
-                            children: !!movies ? movies.map((movie)=>!!movie && /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                    xs: 12,
-                                    md: 6,
-                                    lg: 4,
-                                    className: "fav-movie",
-                                    __source: {
-                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                        lineNumber: 38
-                                    },
-                                    __self: undefined,
-                                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
-                                        __source: {
-                                            fileName: "src/components/genre-view/genre-view.jsx",
-                                            lineNumber: 45
-                                        },
-                                        __self: undefined,
-                                        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
-                                            to: `/movies/${movie._id}`,
-                                            __source: {
-                                                fileName: "src/components/genre-view/genre-view.jsx",
-                                                lineNumber: 46
-                                            },
-                                            __self: undefined,
-                                            children: [
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
-                                                    src: movie.ImageURL,
-                                                    alt: movie.Title,
-                                                    crossOrigin: "anonymous",
-                                                    __source: {
-                                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                                        lineNumber: 47
-                                                    },
-                                                    __self: undefined
-                                                }),
-                                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
-                                                    __source: {
-                                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                                        lineNumber: 52
-                                                    },
-                                                    __self: undefined,
-                                                    children: movie.Title
-                                                })
-                                            ]
-                                        })
-                                    })
-                                }, movie._id)
-                            ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                                xs: 12,
-                                __source: {
-                                    fileName: "src/components/genre-view/genre-view.jsx",
-                                    lineNumber: 59
-                                },
-                                __self: undefined,
-                                children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                                    __source: {
-                                        fileName: "src/components/genre-view/genre-view.jsx",
-                                        lineNumber: 60
-                                    },
-                                    __self: undefined,
-                                    children: "No movies"
-                                })
-                            })
-                        })
-                    ]
-                })
-            })
-        ]
-    }));
-};
-_s(GenreView, "9cZfZ04734qoCGIctmKX7+sX6eU=", false, function() {
-    return [_reactRouterDom.useHistory];
-});
-_c = GenreView;
-exports.default = GenreView;
-var _c;
-$RefreshReg$(_c, "GenreView");
-
-  $parcel$ReactRefreshHelpers$5f0a.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-redux":"2L0if","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","react-bootstrap/Breadcrumb":"9ph0G","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"2L0if":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "batch", ()=>_reactBatchedUpdates.unstable_batchedUpdates
-);
-var _reactBatchedUpdates = require("./utils/reactBatchedUpdates");
-var _batch = require("./utils/batch"); // Enable batched updates in our subscriptions for use
-var _exports = require("./exports");
-parcelHelpers.exportAll(_exports, exports);
-// with standard React renderers (ReactDOM, React Native)
-_batch.setBatch(_reactBatchedUpdates.unstable_batchedUpdates);
-
-},{"./exports":"amFLd","./utils/reactBatchedUpdates":"kaP8a","./utils/batch":"2g3ZY","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"amFLd":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Provider", ()=>_providerDefault.default
-);
-parcelHelpers.export(exports, "connectAdvanced", ()=>_connectAdvancedDefault.default
-);
-parcelHelpers.export(exports, "ReactReduxContext", ()=>_context.ReactReduxContext
-);
-parcelHelpers.export(exports, "connect", ()=>_connectDefault.default
-);
-parcelHelpers.export(exports, "useDispatch", ()=>_useDispatch.useDispatch
-);
-parcelHelpers.export(exports, "createDispatchHook", ()=>_useDispatch.createDispatchHook
-);
-parcelHelpers.export(exports, "useSelector", ()=>_useSelector.useSelector
-);
-parcelHelpers.export(exports, "createSelectorHook", ()=>_useSelector.createSelectorHook
-);
-parcelHelpers.export(exports, "useStore", ()=>_useStore.useStore
-);
-parcelHelpers.export(exports, "createStoreHook", ()=>_useStore.createStoreHook
-);
-parcelHelpers.export(exports, "shallowEqual", ()=>_shallowEqualDefault.default
-);
-var _provider = require("./components/Provider");
-var _providerDefault = parcelHelpers.interopDefault(_provider);
-var _connectAdvanced = require("./components/connectAdvanced");
-var _connectAdvancedDefault = parcelHelpers.interopDefault(_connectAdvanced);
-var _context = require("./components/Context");
-var _connect = require("./connect/connect");
-var _connectDefault = parcelHelpers.interopDefault(_connect);
-var _useDispatch = require("./hooks/useDispatch");
-var _useSelector = require("./hooks/useSelector");
-var _useStore = require("./hooks/useStore");
-var _shallowEqual = require("./utils/shallowEqual");
-var _shallowEqualDefault = parcelHelpers.interopDefault(_shallowEqual);
-
-},{"./components/Provider":"efEZ1","./components/connectAdvanced":"5cRBV","./components/Context":"gT1Jg","./connect/connect":"9zpXe","./hooks/useDispatch":"2CDvn","./hooks/useSelector":"27k1i","./hooks/useStore":"fDPAT","./utils/shallowEqual":"leLul","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"efEZ1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _propTypes = require("prop-types");
-var _propTypesDefault = parcelHelpers.interopDefault(_propTypes);
-var _context = require("./Context");
-var _subscription = require("../utils/Subscription");
-var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
-function Provider(_ref) {
-    var store = _ref.store, context = _ref.context, children = _ref.children;
-    var contextValue = _react.useMemo(function() {
-        var subscription = _subscription.createSubscription(store);
-        subscription.onStateChange = subscription.notifyNestedSubs;
-        return {
-            store: store,
-            subscription: subscription
-        };
-    }, [
-        store
-    ]);
-    var previousState = _react.useMemo(function() {
-        return store.getState();
-    }, [
-        store
-    ]);
-    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
-        var subscription = contextValue.subscription;
-        subscription.trySubscribe();
-        if (previousState !== store.getState()) subscription.notifyNestedSubs();
-        return function() {
-            subscription.tryUnsubscribe();
-            subscription.onStateChange = null;
-        };
-    }, [
-        contextValue,
-        previousState
-    ]);
-    var Context = context || _context.ReactReduxContext;
-    return(/*#__PURE__*/ _reactDefault.default.createElement(Context.Provider, {
-        value: contextValue
-    }, children));
-}
-Provider.propTypes = {
-    store: _propTypesDefault.default.shape({
-        subscribe: _propTypesDefault.default.func.isRequired,
-        dispatch: _propTypesDefault.default.func.isRequired,
-        getState: _propTypesDefault.default.func.isRequired
-    }),
-    context: _propTypesDefault.default.object,
-    children: _propTypesDefault.default.any
-};
-exports.default = Provider;
-
-},{"react":"6TuXu","prop-types":"1tgq3","./Context":"gT1Jg","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"gT1Jg":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ReactReduxContext", ()=>ReactReduxContext
-);
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var ReactReduxContext = /*#__PURE__*/ _reactDefault.default.createContext(null);
-ReactReduxContext.displayName = 'ReactRedux';
-exports.default = ReactReduxContext;
-
-},{"react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"6rtcC":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createSubscription", ()=>createSubscription
-);
-var _batch = require("./batch"); // encapsulates the subscription logic for connecting a component to the redux store, as
-// well as nesting subscriptions of descendant components, so that we can ensure the
-// ancestor components re-render before descendants
-function createListenerCollection() {
-    var batch = _batch.getBatch();
-    var first = null;
-    var last = null;
-    return {
-        clear: function clear() {
-            first = null;
-            last = null;
-        },
-        notify: function notify() {
-            batch(function() {
-                var listener = first;
-                while(listener){
-                    listener.callback();
-                    listener = listener.next;
+        function r(e1) {
+            var n = a[e1];
+            if ((void 0) !== n) return n.exports;
+            var i = a[e1] = {
+                exports: {
                 }
-            });
-        },
-        get: function get() {
-            var listeners = [];
-            var listener = first;
-            while(listener){
-                listeners.push(listener);
-                listener = listener.next;
-            }
-            return listeners;
-        },
-        subscribe: function subscribe(callback) {
-            var isSubscribed = true;
-            var listener = last = {
-                callback: callback,
-                next: null,
-                prev: last
             };
-            if (listener.prev) listener.prev.next = listener;
-            else first = listener;
-            return function unsubscribe() {
-                if (!isSubscribed || first === null) return;
-                isSubscribed = false;
-                if (listener.next) listener.next.prev = listener.prev;
-                else last = listener.prev;
-                if (listener.prev) listener.prev.next = listener.next;
-                else first = listener.next;
-            };
+            return t[e1](i, i.exports, r), i.exports;
         }
-    };
-}
-var nullListeners = {
-    notify: function notify() {
-    },
-    get: function get() {
-        return [];
-    }
-};
-function createSubscription(store, parentSub) {
-    var unsubscribe;
-    var listeners = nullListeners;
-    function addNestedSub(listener) {
-        trySubscribe();
-        return listeners.subscribe(listener);
-    }
-    function notifyNestedSubs() {
-        listeners.notify();
-    }
-    function handleChangeWrapper() {
-        if (subscription.onStateChange) subscription.onStateChange();
-    }
-    function isSubscribed() {
-        return Boolean(unsubscribe);
-    }
-    function trySubscribe() {
-        if (!unsubscribe) {
-            unsubscribe = parentSub ? parentSub.addNestedSub(handleChangeWrapper) : store.subscribe(handleChangeWrapper);
-            listeners = createListenerCollection();
-        }
-    }
-    function tryUnsubscribe() {
-        if (unsubscribe) {
-            unsubscribe();
-            unsubscribe = undefined;
-            listeners.clear();
-            listeners = nullListeners;
-        }
-    }
-    var subscription = {
-        addNestedSub: addNestedSub,
-        notifyNestedSubs: notifyNestedSubs,
-        handleChangeWrapper: handleChangeWrapper,
-        isSubscribed: isSubscribed,
-        trySubscribe: trySubscribe,
-        tryUnsubscribe: tryUnsubscribe,
-        getListeners: function getListeners() {
-            return listeners;
-        }
-    };
-    return subscription;
-}
-
-},{"./batch":"2g3ZY","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2g3ZY":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setBatch", ()=>setBatch
-);
-parcelHelpers.export(exports, "getBatch", ()=>getBatch
-);
-// Default to a dummy "batch" implementation that just runs the callback
-function defaultNoopBatch(callback) {
-    callback();
-}
-var batch = defaultNoopBatch; // Allow injecting another batching function later
-var setBatch = function setBatch1(newBatch) {
-    return batch = newBatch;
-}; // Supply a getter just to skip dealing with ESM bindings
-var getBatch = function getBatch1() {
-    return batch;
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2TWoQ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "useIsomorphicLayoutEffect", ()=>useIsomorphicLayoutEffect
-);
-var _react = require("react"); // React currently throws a warning when using useLayoutEffect on the server.
-var useIsomorphicLayoutEffect = typeof window !== 'undefined' && typeof window.document !== 'undefined' && typeof window.document.createElement !== 'undefined' ? _react.useLayoutEffect : _react.useEffect;
-
-},{"react":"6TuXu","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"5cRBV":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _extends = require("@babel/runtime/helpers/esm/extends");
-var _extendsDefault = parcelHelpers.interopDefault(_extends);
-var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
-var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
-var _hoistNonReactStatics = require("hoist-non-react-statics");
-var _hoistNonReactStaticsDefault = parcelHelpers.interopDefault(_hoistNonReactStatics);
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactIs = require("react-is");
-var _subscription = require("../utils/Subscription");
-var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
-var _context = require("./Context"); // Define some constant arrays just to avoid re-creating these
-var _excluded = [
-    "getDisplayName",
-    "methodName",
-    "renderCountProp",
-    "shouldHandleStateChanges",
-    "storeKey",
-    "withRef",
-    "forwardRef",
-    "context"
-], _excluded2 = [
-    "reactReduxForwardedRef"
-];
-var EMPTY_ARRAY = [];
-var NO_SUBSCRIPTION_ARRAY = [
-    null,
-    null
-];
-var stringifyComponent = function stringifyComponent1(Comp) {
-    try {
-        return JSON.stringify(Comp);
-    } catch (err) {
-        return String(Comp);
-    }
-};
-function storeStateUpdatesReducer(state, action) {
-    var updateCount = state[1];
-    return [
-        action.payload,
-        updateCount + 1
-    ];
-}
-function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
-    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
-        return effectFunc.apply(void 0, effectArgs);
-    }, dependencies);
-}
-function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs) {
-    // We want to capture the wrapper props and child props we used for later comparisons
-    lastWrapperProps.current = wrapperProps;
-    lastChildProps.current = actualChildProps;
-    renderIsScheduled.current = false; // If the render was from a store update, clear out that reference and cascade the subscriber update
-    if (childPropsFromStoreUpdate.current) {
-        childPropsFromStoreUpdate.current = null;
-        notifyNestedSubs();
-    }
-}
-function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
-    // If we're not subscribed to the store, nothing to do here
-    if (!shouldHandleStateChanges) return; // Capture values for checking if and when this component unmounts
-    var didUnsubscribe = false;
-    var lastThrownError = null; // We'll run this callback every time a store subscription update propagates to this component
-    var checkForUpdates = function checkForUpdates1() {
-        if (didUnsubscribe) // Don't run stale listeners.
-        // Redux doesn't guarantee unsubscriptions happen until next dispatch.
-        return;
-        var latestStoreState = store.getState();
-        var newChildProps, error;
-        try {
-            // Actually run the selector with the most recent store state and wrapper props
-            // to determine what the child props should be
-            newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
-        } catch (e) {
-            error = e;
-            lastThrownError = e;
-        }
-        if (!error) lastThrownError = null;
-         // If the child props haven't changed, nothing to do here - cascade the subscription update
-        if (newChildProps === lastChildProps.current) {
-            if (!renderIsScheduled.current) notifyNestedSubs();
-        } else {
-            // Save references to the new child props.  Note that we track the "child props from store update"
-            // as a ref instead of a useState/useReducer because we need a way to determine if that value has
-            // been processed.  If this went into useState/useReducer, we couldn't clear out the value without
-            // forcing another re-render, which we don't want.
-            lastChildProps.current = newChildProps;
-            childPropsFromStoreUpdate.current = newChildProps;
-            renderIsScheduled.current = true; // If the child props _did_ change (or we caught an error), this wrapper component needs to re-render
-            forceComponentUpdateDispatch({
-                type: 'STORE_UPDATED',
-                payload: {
-                    error: error
-                }
-            });
-        }
-    }; // Actually subscribe to the nearest connected ancestor (or store)
-    subscription.onStateChange = checkForUpdates;
-    subscription.trySubscribe(); // Pull data from the store after first render in case the store has
-    // changed since we began.
-    checkForUpdates();
-    var unsubscribeWrapper = function unsubscribeWrapper1() {
-        didUnsubscribe = true;
-        subscription.tryUnsubscribe();
-        subscription.onStateChange = null;
-        if (lastThrownError) // It's possible that we caught an error due to a bad mapState function, but the
-        // parent re-rendered without this component and we're about to unmount.
-        // This shouldn't happen as long as we do top-down subscriptions correctly, but
-        // if we ever do those wrong, this throw will surface the error in our tests.
-        // In that case, throw the error from here so it doesn't get lost.
-        throw lastThrownError;
-    };
-    return unsubscribeWrapper;
-}
-var initStateUpdates = function initStateUpdates1() {
-    return [
-        null,
-        0
-    ];
-};
-function connectAdvanced(/*
-  selectorFactory is a func that is responsible for returning the selector function used to
-  compute new props from state, props, and dispatch. For example:
-     export default connectAdvanced((dispatch, options) => (state, props) => ({
-      thing: state.things[props.thingId],
-      saveThing: fields => dispatch(actionCreators.saveThing(props.thingId, fields)),
-    }))(YourComponent)
-   Access to dispatch is provided to the factory so selectorFactories can bind actionCreators
-  outside of their selector as an optimization. Options passed to connectAdvanced are passed to
-  the selectorFactory, along with displayName and WrappedComponent, as the second argument.
-   Note that selectorFactory is responsible for all caching/memoization of inbound and outbound
-  props. Do not use connectAdvanced directly without memoizing results between calls to your
-  selector, otherwise the Connect component will re-render on every state or props change.
-*/ selectorFactory, _ref) {
-    if (_ref === void 0) _ref = {
-    };
-    var _ref2 = _ref, _ref2$getDisplayName = _ref2.getDisplayName, getDisplayName = _ref2$getDisplayName === void 0 ? function(name) {
-        return "ConnectAdvanced(" + name + ")";
-    } : _ref2$getDisplayName, _ref2$methodName = _ref2.methodName, methodName = _ref2$methodName === void 0 ? 'connectAdvanced' : _ref2$methodName, _ref2$renderCountProp = _ref2.renderCountProp, renderCountProp = _ref2$renderCountProp === void 0 ? undefined : _ref2$renderCountProp, _ref2$shouldHandleSta = _ref2.shouldHandleStateChanges, shouldHandleStateChanges = _ref2$shouldHandleSta === void 0 ? true : _ref2$shouldHandleSta, _ref2$storeKey = _ref2.storeKey, storeKey = _ref2$storeKey === void 0 ? 'store' : _ref2$storeKey, _ref2$withRef = _ref2.withRef, withRef = _ref2$withRef === void 0 ? false : _ref2$withRef, _ref2$forwardRef = _ref2.forwardRef, forwardRef = _ref2$forwardRef === void 0 ? false : _ref2$forwardRef, _ref2$context = _ref2.context, context = _ref2$context === void 0 ? _context.ReactReduxContext : _ref2$context, connectOptions = _objectWithoutPropertiesLooseDefault.default(_ref2, _excluded);
-    if (renderCountProp !== undefined) throw new Error("renderCountProp is removed. render counting is built into the latest React Dev Tools profiling extension");
-    if (withRef) throw new Error('withRef is removed. To access the wrapped instance, use a ref on the connected component');
-    var customStoreWarningMessage = "To use a custom Redux store for specific components, create a custom React context with React.createContext(), and pass the context object to React Redux's Provider and specific components like: <Provider context={MyContext}><ConnectedComponent context={MyContext} /></Provider>. You may also pass a {context : MyContext} option to connect";
-    if (storeKey !== 'store') throw new Error('storeKey has been removed and does not do anything. ' + customStoreWarningMessage);
-    var Context = context;
-    return function wrapWithConnect(WrappedComponent) {
-        if (!_reactIs.isValidElementType(WrappedComponent)) throw new Error("You must pass a component to the function returned by " + (methodName + ". Instead received " + stringifyComponent(WrappedComponent)));
-        var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-        var displayName = getDisplayName(wrappedComponentName);
-        var selectorFactoryOptions = _extendsDefault.default({
-        }, connectOptions, {
-            getDisplayName: getDisplayName,
-            methodName: methodName,
-            renderCountProp: renderCountProp,
-            shouldHandleStateChanges: shouldHandleStateChanges,
-            storeKey: storeKey,
-            displayName: displayName,
-            wrappedComponentName: wrappedComponentName,
-            WrappedComponent: WrappedComponent
-        });
-        var pure = connectOptions.pure;
-        function createChildSelector(store) {
-            return selectorFactory(store.dispatch, selectorFactoryOptions);
-        } // If we aren't running in "pure" mode, we don't want to memoize values.
-        // To avoid conditionally calling hooks, we fall back to a tiny wrapper
-        // that just executes the given callback immediately.
-        var usePureOnlyMemo = pure ? _react.useMemo : function(callback) {
-            return callback();
-        };
-        function ConnectFunction(props) {
-            var _useMemo = _react.useMemo(function() {
-                // Distinguish between actual "data" props that were passed to the wrapper component,
-                // and values needed to control behavior (forwarded refs, alternate context instances).
-                // To maintain the wrapperProps object reference, memoize this destructuring.
-                var reactReduxForwardedRef = props.reactReduxForwardedRef, wrapperProps = _objectWithoutPropertiesLooseDefault.default(props, _excluded2);
-                return [
-                    props.context,
-                    reactReduxForwardedRef,
-                    wrapperProps
-                ];
-            }, [
-                props
-            ]), propsContext = _useMemo[0], reactReduxForwardedRef = _useMemo[1], wrapperProps = _useMemo[2];
-            var ContextToUse = _react.useMemo(function() {
-                // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
-                // Memoize the check that determines which context instance we should use.
-                return propsContext && propsContext.Consumer && _reactIs.isContextConsumer(/*#__PURE__*/ _reactDefault.default.createElement(propsContext.Consumer, null)) ? propsContext : Context;
-            }, [
-                propsContext,
-                Context
-            ]); // Retrieve the store and ancestor subscription via context, if available
-            var contextValue = _react.useContext(ContextToUse); // The store _must_ exist as either a prop or in context.
-            // We'll check to see if it _looks_ like a Redux store first.
-            // This allows us to pass through a `store` prop that is just a plain value.
-            var didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
-            var didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
-            if (!didStoreComeFromProps && !didStoreComeFromContext) throw new Error("Could not find \"store\" in the context of " + ("\"" + displayName + "\". Either wrap the root component in a <Provider>, ") + "or pass a custom React context provider to <Provider> and the corresponding " + ("React context consumer to " + displayName + " in connect options."));
-             // Based on the previous check, one of these must be true
-            var store = didStoreComeFromProps ? props.store : contextValue.store;
-            var childPropsSelector = _react.useMemo(function() {
-                // The child props selector needs the store reference as an input.
-                // Re-create this selector whenever the store changes.
-                return createChildSelector(store);
-            }, [
-                store
-            ]);
-            var _useMemo2 = _react.useMemo(function() {
-                if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY; // This Subscription's source should match where store came from: props vs. context. A component
-                // connected to the store via props shouldn't use subscription from context, or vice versa.
-                // This Subscription's source should match where store came from: props vs. context. A component
-                // connected to the store via props shouldn't use subscription from context, or vice versa.
-                var subscription = _subscription.createSubscription(store, didStoreComeFromProps ? null : contextValue.subscription); // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
-                // the middle of the notification loop, where `subscription` will then be null. This can
-                // probably be avoided if Subscription's listeners logic is changed to not call listeners
-                // that have been unsubscribed in the  middle of the notification loop.
-                // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
-                // the middle of the notification loop, where `subscription` will then be null. This can
-                // probably be avoided if Subscription's listeners logic is changed to not call listeners
-                // that have been unsubscribed in the  middle of the notification loop.
-                var notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription);
-                return [
-                    subscription,
-                    notifyNestedSubs
-                ];
-            }, [
-                store,
-                didStoreComeFromProps,
-                contextValue
-            ]), subscription = _useMemo2[0], notifyNestedSubs = _useMemo2[1]; // Determine what {store, subscription} value should be put into nested context, if necessary,
-            // and memoize that value to avoid unnecessary context updates.
-            var overriddenContextValue = _react.useMemo(function() {
-                if (didStoreComeFromProps) // This component is directly subscribed to a store from props.
-                // We don't want descendants reading from this store - pass down whatever
-                // the existing context value is from the nearest connected ancestor.
-                return contextValue;
-                 // Otherwise, put this component's subscription instance into context, so that
-                // connected descendants won't update until after this component is done
-                return _extendsDefault.default({
-                }, contextValue, {
-                    subscription: subscription
-                });
-            }, [
-                didStoreComeFromProps,
-                contextValue,
-                subscription
-            ]); // We need to force this wrapper component to re-render whenever a Redux store update
-            // causes a change to the calculated child component props (or we caught an error in mapState)
-            var _useReducer = _react.useReducer(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates), _useReducer$ = _useReducer[0], previousStateUpdateResult = _useReducer$[0], forceComponentUpdateDispatch = _useReducer[1]; // Propagate any mapState/mapDispatch errors upwards
-            if (previousStateUpdateResult && previousStateUpdateResult.error) throw previousStateUpdateResult.error;
-             // Set up refs to coordinate values between the subscription effect and the render logic
-            var lastChildProps = _react.useRef();
-            var lastWrapperProps = _react.useRef(wrapperProps);
-            var childPropsFromStoreUpdate = _react.useRef();
-            var renderIsScheduled = _react.useRef(false);
-            var actualChildProps = usePureOnlyMemo(function() {
-                // Tricky logic here:
-                // - This render may have been triggered by a Redux store update that produced new child props
-                // - However, we may have gotten new wrapper props after that
-                // If we have new child props, and the same wrapper props, we know we should use the new child props as-is.
-                // But, if we have new wrapper props, those might change the child props, so we have to recalculate things.
-                // So, we'll use the child props from store update only if the wrapper props are the same as last time.
-                if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) return childPropsFromStoreUpdate.current;
-                 // TODO We're reading the store directly in render() here. Bad idea?
-                // This will likely cause Bad Things (TM) to happen in Concurrent Mode.
-                // Note that we do this because on renders _not_ caused by store updates, we need the latest store state
-                // to determine what the child props should be.
-                return childPropsSelector(store.getState(), wrapperProps);
-            }, [
-                store,
-                previousStateUpdateResult,
-                wrapperProps
-            ]); // We need this to execute synchronously every time we re-render. However, React warns
-            // about useLayoutEffect in SSR, so we try to detect environment and fall back to
-            // just useEffect instead to avoid the warning, since neither will run anyway.
-            useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [
-                lastWrapperProps,
-                lastChildProps,
-                renderIsScheduled,
-                wrapperProps,
-                actualChildProps,
-                childPropsFromStoreUpdate,
-                notifyNestedSubs
-            ]); // Our re-subscribe logic only runs when the store/subscription setup changes
-            useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [
-                shouldHandleStateChanges,
-                store,
-                subscription,
-                childPropsSelector,
-                lastWrapperProps,
-                lastChildProps,
-                renderIsScheduled,
-                childPropsFromStoreUpdate,
-                notifyNestedSubs,
-                forceComponentUpdateDispatch
-            ], [
-                store,
-                subscription,
-                childPropsSelector
-            ]); // Now that all that's done, we can finally try to actually render the child component.
-            // We memoize the elements for the rendered child component as an optimization.
-            var renderedWrappedComponent = _react.useMemo(function() {
-                return(/*#__PURE__*/ _reactDefault.default.createElement(WrappedComponent, _extendsDefault.default({
-                }, actualChildProps, {
-                    ref: reactReduxForwardedRef
-                })));
-            }, [
-                reactReduxForwardedRef,
-                WrappedComponent,
-                actualChildProps
-            ]); // If React sees the exact same element reference as last time, it bails out of re-rendering
-            // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
-            var renderedChild = _react.useMemo(function() {
-                if (shouldHandleStateChanges) // If this component is subscribed to store updates, we need to pass its own
-                // subscription instance down to our descendants. That means rendering the same
-                // Context instance, and putting a different value into the context.
-                return(/*#__PURE__*/ _reactDefault.default.createElement(ContextToUse.Provider, {
-                    value: overriddenContextValue
-                }, renderedWrappedComponent));
-                return renderedWrappedComponent;
-            }, [
-                ContextToUse,
-                renderedWrappedComponent,
-                overriddenContextValue
-            ]);
-            return renderedChild;
-        } // If we're in "pure" mode, ensure our wrapper component only re-renders when incoming props have changed.
-        var Connect = pure ? _reactDefault.default.memo(ConnectFunction) : ConnectFunction;
-        Connect.WrappedComponent = WrappedComponent;
-        Connect.displayName = ConnectFunction.displayName = displayName;
-        if (forwardRef) {
-            var forwarded = _reactDefault.default.forwardRef(function forwardConnectRef(props, ref) {
-                return(/*#__PURE__*/ _reactDefault.default.createElement(Connect, _extendsDefault.default({
-                }, props, {
-                    reactReduxForwardedRef: ref
-                })));
-            });
-            forwarded.displayName = displayName;
-            forwarded.WrappedComponent = WrappedComponent;
-            return _hoistNonReactStaticsDefault.default(forwarded, WrappedComponent);
-        }
-        return _hoistNonReactStaticsDefault.default(Connect, WrappedComponent);
-    };
-}
-exports.default = connectAdvanced;
-
-},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","hoist-non-react-statics":"jfzb6","react":"6TuXu","react-is":"bCfxJ","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","./Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"bCfxJ":[function(require,module,exports) {
-'use strict';
-module.exports = require('./cjs/react-is.development.js');
-
-},{"./cjs/react-is.development.js":"eyUIi"}],"eyUIi":[function(require,module,exports) {
-/** @license React v17.0.2
- * react-is.development.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */ 'use strict';
-(function() {
-    // ATTENTION
-    // When adding new symbols to this file,
-    // Please consider also adding to 'react-devtools-shared/src/backend/ReactSymbols'
-    // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
-    // nor polyfill, then a plain number is used for performance.
-    var REACT_ELEMENT_TYPE = 60103;
-    var REACT_PORTAL_TYPE = 60106;
-    var REACT_FRAGMENT_TYPE = 60107;
-    var REACT_STRICT_MODE_TYPE = 60108;
-    var REACT_PROFILER_TYPE = 60114;
-    var REACT_PROVIDER_TYPE = 60109;
-    var REACT_CONTEXT_TYPE = 60110;
-    var REACT_FORWARD_REF_TYPE = 60112;
-    var REACT_SUSPENSE_TYPE = 60113;
-    var REACT_SUSPENSE_LIST_TYPE = 60120;
-    var REACT_MEMO_TYPE = 60115;
-    var REACT_LAZY_TYPE = 60116;
-    var REACT_BLOCK_TYPE = 60121;
-    var REACT_SERVER_BLOCK_TYPE = 60122;
-    var REACT_FUNDAMENTAL_TYPE = 60117;
-    var REACT_SCOPE_TYPE = 60119;
-    var REACT_OPAQUE_ID_TYPE = 60128;
-    var REACT_DEBUG_TRACING_MODE_TYPE = 60129;
-    var REACT_OFFSCREEN_TYPE = 60130;
-    var REACT_LEGACY_HIDDEN_TYPE = 60131;
-    if (typeof Symbol === 'function' && Symbol.for) {
-        var symbolFor = Symbol.for;
-        REACT_ELEMENT_TYPE = symbolFor('react.element');
-        REACT_PORTAL_TYPE = symbolFor('react.portal');
-        REACT_FRAGMENT_TYPE = symbolFor('react.fragment');
-        REACT_STRICT_MODE_TYPE = symbolFor('react.strict_mode');
-        REACT_PROFILER_TYPE = symbolFor('react.profiler');
-        REACT_PROVIDER_TYPE = symbolFor('react.provider');
-        REACT_CONTEXT_TYPE = symbolFor('react.context');
-        REACT_FORWARD_REF_TYPE = symbolFor('react.forward_ref');
-        REACT_SUSPENSE_TYPE = symbolFor('react.suspense');
-        REACT_SUSPENSE_LIST_TYPE = symbolFor('react.suspense_list');
-        REACT_MEMO_TYPE = symbolFor('react.memo');
-        REACT_LAZY_TYPE = symbolFor('react.lazy');
-        REACT_BLOCK_TYPE = symbolFor('react.block');
-        REACT_SERVER_BLOCK_TYPE = symbolFor('react.server.block');
-        REACT_FUNDAMENTAL_TYPE = symbolFor('react.fundamental');
-        REACT_SCOPE_TYPE = symbolFor('react.scope');
-        REACT_OPAQUE_ID_TYPE = symbolFor('react.opaque.id');
-        REACT_DEBUG_TRACING_MODE_TYPE = symbolFor('react.debug_trace_mode');
-        REACT_OFFSCREEN_TYPE = symbolFor('react.offscreen');
-        REACT_LEGACY_HIDDEN_TYPE = symbolFor('react.legacy_hidden');
-    }
-    // Filter certain DOM attributes (e.g. src, href) if their values are empty strings.
-    var enableScopeAPI = false; // Experimental Create Event Handle API.
-    function isValidElementType(type) {
-        if (typeof type === 'string' || typeof type === 'function') return true;
-         // Note: typeof might be other than 'symbol' or 'number' (e.g. if it's a polyfill).
-        if (type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_DEBUG_TRACING_MODE_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_LEGACY_HIDDEN_TYPE || enableScopeAPI) return true;
-        if (typeof type === 'object' && type !== null) {
-            if (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_BLOCK_TYPE || type[0] === REACT_SERVER_BLOCK_TYPE) return true;
-        }
-        return false;
-    }
-    function typeOf(object) {
-        if (typeof object === 'object' && object !== null) {
-            var $$typeof = object.$$typeof;
-            switch($$typeof){
-                case REACT_ELEMENT_TYPE:
-                    var type = object.type;
-                    switch(type){
-                        case REACT_FRAGMENT_TYPE:
-                        case REACT_PROFILER_TYPE:
-                        case REACT_STRICT_MODE_TYPE:
-                        case REACT_SUSPENSE_TYPE:
-                        case REACT_SUSPENSE_LIST_TYPE:
-                            return type;
-                        default:
-                            var $$typeofType = type && type.$$typeof;
-                            switch($$typeofType){
-                                case REACT_CONTEXT_TYPE:
-                                case REACT_FORWARD_REF_TYPE:
-                                case REACT_LAZY_TYPE:
-                                case REACT_MEMO_TYPE:
-                                case REACT_PROVIDER_TYPE:
-                                    return $$typeofType;
-                                default:
-                                    return $$typeof;
-                            }
-                    }
-                case REACT_PORTAL_TYPE:
-                    return $$typeof;
-            }
-        }
-        return undefined;
-    }
-    var ContextConsumer = REACT_CONTEXT_TYPE;
-    var ContextProvider = REACT_PROVIDER_TYPE;
-    var Element1 = REACT_ELEMENT_TYPE;
-    var ForwardRef = REACT_FORWARD_REF_TYPE;
-    var Fragment = REACT_FRAGMENT_TYPE;
-    var Lazy = REACT_LAZY_TYPE;
-    var Memo = REACT_MEMO_TYPE;
-    var Portal = REACT_PORTAL_TYPE;
-    var Profiler = REACT_PROFILER_TYPE;
-    var StrictMode = REACT_STRICT_MODE_TYPE;
-    var Suspense = REACT_SUSPENSE_TYPE;
-    var hasWarnedAboutDeprecatedIsAsyncMode = false;
-    var hasWarnedAboutDeprecatedIsConcurrentMode = false; // AsyncMode should be deprecated
-    function isAsyncMode(object) {
-        if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-            hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-            console['warn']("The ReactIs.isAsyncMode() alias has been deprecated, and will be removed in React 18+.");
-        }
-        return false;
-    }
-    function isConcurrentMode(object) {
-        if (!hasWarnedAboutDeprecatedIsConcurrentMode) {
-            hasWarnedAboutDeprecatedIsConcurrentMode = true; // Using console['warn'] to evade Babel and ESLint
-            console['warn']("The ReactIs.isConcurrentMode() alias has been deprecated, and will be removed in React 18+.");
-        }
-        return false;
-    }
-    function isContextConsumer(object) {
-        return typeOf(object) === REACT_CONTEXT_TYPE;
-    }
-    function isContextProvider(object) {
-        return typeOf(object) === REACT_PROVIDER_TYPE;
-    }
-    function isElement(object) {
-        return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-    }
-    function isForwardRef(object) {
-        return typeOf(object) === REACT_FORWARD_REF_TYPE;
-    }
-    function isFragment(object) {
-        return typeOf(object) === REACT_FRAGMENT_TYPE;
-    }
-    function isLazy(object) {
-        return typeOf(object) === REACT_LAZY_TYPE;
-    }
-    function isMemo(object) {
-        return typeOf(object) === REACT_MEMO_TYPE;
-    }
-    function isPortal(object) {
-        return typeOf(object) === REACT_PORTAL_TYPE;
-    }
-    function isProfiler(object) {
-        return typeOf(object) === REACT_PROFILER_TYPE;
-    }
-    function isStrictMode(object) {
-        return typeOf(object) === REACT_STRICT_MODE_TYPE;
-    }
-    function isSuspense(object) {
-        return typeOf(object) === REACT_SUSPENSE_TYPE;
-    }
-    exports.ContextConsumer = ContextConsumer;
-    exports.ContextProvider = ContextProvider;
-    exports.Element = Element1;
-    exports.ForwardRef = ForwardRef;
-    exports.Fragment = Fragment;
-    exports.Lazy = Lazy;
-    exports.Memo = Memo;
-    exports.Portal = Portal;
-    exports.Profiler = Profiler;
-    exports.StrictMode = StrictMode;
-    exports.Suspense = Suspense;
-    exports.isAsyncMode = isAsyncMode;
-    exports.isConcurrentMode = isConcurrentMode;
-    exports.isContextConsumer = isContextConsumer;
-    exports.isContextProvider = isContextProvider;
-    exports.isElement = isElement;
-    exports.isForwardRef = isForwardRef;
-    exports.isFragment = isFragment;
-    exports.isLazy = isLazy;
-    exports.isMemo = isMemo;
-    exports.isPortal = isPortal;
-    exports.isProfiler = isProfiler;
-    exports.isStrictMode = isStrictMode;
-    exports.isSuspense = isSuspense;
-    exports.isValidElementType = isValidElementType;
-    exports.typeOf = typeOf;
-})();
-
-},{}],"9zpXe":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// different options opens up some testing and extensibility scenarios
-parcelHelpers.export(exports, "createConnect", ()=>createConnect
-);
-var _extends = require("@babel/runtime/helpers/esm/extends");
-var _extendsDefault = parcelHelpers.interopDefault(_extends);
-var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
-var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
-var _connectAdvanced = require("../components/connectAdvanced");
-var _connectAdvancedDefault = parcelHelpers.interopDefault(_connectAdvanced);
-var _shallowEqual = require("../utils/shallowEqual");
-var _shallowEqualDefault = parcelHelpers.interopDefault(_shallowEqual);
-var _mapDispatchToProps = require("./mapDispatchToProps");
-var _mapDispatchToPropsDefault = parcelHelpers.interopDefault(_mapDispatchToProps);
-var _mapStateToProps = require("./mapStateToProps");
-var _mapStateToPropsDefault = parcelHelpers.interopDefault(_mapStateToProps);
-var _mergeProps = require("./mergeProps");
-var _mergePropsDefault = parcelHelpers.interopDefault(_mergeProps);
-var _selectorFactory = require("./selectorFactory");
-var _selectorFactoryDefault = parcelHelpers.interopDefault(_selectorFactory);
-var _excluded = [
-    "pure",
-    "areStatesEqual",
-    "areOwnPropsEqual",
-    "areStatePropsEqual",
-    "areMergedPropsEqual"
-];
-/*
-  connect is a facade over connectAdvanced. It turns its args into a compatible
-  selectorFactory, which has the signature:
-
-    (dispatch, options) => (nextState, nextOwnProps) => nextFinalProps
-  
-  connect passes its args to connectAdvanced as options, which will in turn pass them to
-  selectorFactory each time a Connect component instance is instantiated or hot reloaded.
-
-  selectorFactory returns a final props selector from its mapStateToProps,
-  mapStateToPropsFactories, mapDispatchToProps, mapDispatchToPropsFactories, mergeProps,
-  mergePropsFactories, and pure args.
-
-  The resulting final props selector is called by the Connect component instance whenever
-  it receives new props or store state.
- */ function match(arg, factories, name) {
-    for(var i = factories.length - 1; i >= 0; i--){
-        var result = factories[i](arg);
-        if (result) return result;
-    }
-    return function(dispatch, options) {
-        throw new Error("Invalid value of type " + typeof arg + " for " + name + " argument when connecting component " + options.wrappedComponentName + ".");
-    };
-}
-function strictEqual(a, b) {
-    return a === b;
-} // createConnect with default args builds the 'official' connect behavior. Calling it with
-function createConnect(_temp) {
-    var _ref = _temp === void 0 ? {
-    } : _temp, _ref$connectHOC = _ref.connectHOC, connectHOC = _ref$connectHOC === void 0 ? _connectAdvancedDefault.default : _ref$connectHOC, _ref$mapStateToPropsF = _ref.mapStateToPropsFactories, mapStateToPropsFactories = _ref$mapStateToPropsF === void 0 ? _mapStateToPropsDefault.default : _ref$mapStateToPropsF, _ref$mapDispatchToPro = _ref.mapDispatchToPropsFactories, mapDispatchToPropsFactories = _ref$mapDispatchToPro === void 0 ? _mapDispatchToPropsDefault.default : _ref$mapDispatchToPro, _ref$mergePropsFactor = _ref.mergePropsFactories, mergePropsFactories = _ref$mergePropsFactor === void 0 ? _mergePropsDefault.default : _ref$mergePropsFactor, _ref$selectorFactory = _ref.selectorFactory, selectorFactory = _ref$selectorFactory === void 0 ? _selectorFactoryDefault.default : _ref$selectorFactory;
-    return function connect(mapStateToProps, mapDispatchToProps, mergeProps, _ref2) {
-        if (_ref2 === void 0) _ref2 = {
-        };
-        var _ref3 = _ref2, _ref3$pure = _ref3.pure, pure = _ref3$pure === void 0 ? true : _ref3$pure, _ref3$areStatesEqual = _ref3.areStatesEqual, areStatesEqual = _ref3$areStatesEqual === void 0 ? strictEqual : _ref3$areStatesEqual, _ref3$areOwnPropsEqua = _ref3.areOwnPropsEqual, areOwnPropsEqual = _ref3$areOwnPropsEqua === void 0 ? _shallowEqualDefault.default : _ref3$areOwnPropsEqua, _ref3$areStatePropsEq = _ref3.areStatePropsEqual, areStatePropsEqual = _ref3$areStatePropsEq === void 0 ? _shallowEqualDefault.default : _ref3$areStatePropsEq, _ref3$areMergedPropsE = _ref3.areMergedPropsEqual, areMergedPropsEqual = _ref3$areMergedPropsE === void 0 ? _shallowEqualDefault.default : _ref3$areMergedPropsE, extraOptions = _objectWithoutPropertiesLooseDefault.default(_ref3, _excluded);
-        var initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
-        var initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
-        var initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
-        return connectHOC(selectorFactory, _extendsDefault.default({
-            // used in error messages
-            methodName: 'connect',
-            // used to compute Connect's displayName from the wrapped component's displayName.
-            getDisplayName: function getDisplayName(name) {
-                return "Connect(" + name + ")";
-            },
-            // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
-            shouldHandleStateChanges: Boolean(mapStateToProps),
-            // passed through to selectorFactory
-            initMapStateToProps: initMapStateToProps,
-            initMapDispatchToProps: initMapDispatchToProps,
-            initMergeProps: initMergeProps,
-            pure: pure,
-            areStatesEqual: areStatesEqual,
-            areOwnPropsEqual: areOwnPropsEqual,
-            areStatePropsEqual: areStatePropsEqual,
-            areMergedPropsEqual: areMergedPropsEqual
-        }, extraOptions));
-    };
-}
-exports.default = /*#__PURE__*/ createConnect();
-
-},{"@babel/runtime/helpers/esm/extends":"bKAu6","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","../components/connectAdvanced":"5cRBV","../utils/shallowEqual":"leLul","./mapDispatchToProps":"5WOJW","./mapStateToProps":"fi6QF","./mergeProps":"j48TE","./selectorFactory":"2XZ1a","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"leLul":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function is(x, y) {
-    if (x === y) return x !== 0 || y !== 0 || 1 / x === 1 / y;
-    else return x !== x && y !== y;
-}
-function shallowEqual(objA, objB) {
-    if (is(objA, objB)) return true;
-    if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) return false;
-    var keysA = Object.keys(objA);
-    var keysB = Object.keys(objB);
-    if (keysA.length !== keysB.length) return false;
-    for(var i = 0; i < keysA.length; i++){
-        if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) return false;
-    }
-    return true;
-}
-exports.default = shallowEqual;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"5WOJW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "whenMapDispatchToPropsIsFunction", ()=>whenMapDispatchToPropsIsFunction
-);
-parcelHelpers.export(exports, "whenMapDispatchToPropsIsMissing", ()=>whenMapDispatchToPropsIsMissing
-);
-parcelHelpers.export(exports, "whenMapDispatchToPropsIsObject", ()=>whenMapDispatchToPropsIsObject
-);
-var _bindActionCreators = require("../utils/bindActionCreators");
-var _bindActionCreatorsDefault = parcelHelpers.interopDefault(_bindActionCreators);
-var _wrapMapToProps = require("./wrapMapToProps");
-function whenMapDispatchToPropsIsFunction(mapDispatchToProps) {
-    return typeof mapDispatchToProps === 'function' ? _wrapMapToProps.wrapMapToPropsFunc(mapDispatchToProps, 'mapDispatchToProps') : undefined;
-}
-function whenMapDispatchToPropsIsMissing(mapDispatchToProps) {
-    return !mapDispatchToProps ? _wrapMapToProps.wrapMapToPropsConstant(function(dispatch) {
-        return {
-            dispatch: dispatch
-        };
-    }) : undefined;
-}
-function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
-    return mapDispatchToProps && typeof mapDispatchToProps === 'object' ? _wrapMapToProps.wrapMapToPropsConstant(function(dispatch) {
-        return _bindActionCreatorsDefault.default(mapDispatchToProps, dispatch);
-    }) : undefined;
-}
-exports.default = [
-    whenMapDispatchToPropsIsFunction,
-    whenMapDispatchToPropsIsMissing,
-    whenMapDispatchToPropsIsObject
-];
-
-},{"../utils/bindActionCreators":"dTgYQ","./wrapMapToProps":"cK0KG","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"dTgYQ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function bindActionCreators(actionCreators, dispatch) {
-    var boundActionCreators = {
-    };
-    var _loop = function _loop1(key) {
-        var actionCreator = actionCreators[key];
-        if (typeof actionCreator === 'function') boundActionCreators[key] = function() {
-            return dispatch(actionCreator.apply(void 0, arguments));
-        };
-    };
-    for(var key in actionCreators)_loop(key);
-    return boundActionCreators;
-}
-exports.default = bindActionCreators;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"cK0KG":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "wrapMapToPropsConstant", ()=>wrapMapToPropsConstant
-) // dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
-;
-// to the mapToProps function being wrapped. It is also used by makePurePropsSelector to determine
-// whether mapToProps needs to be invoked when props have changed.
-//
-// A length of one signals that mapToProps does not depend on props from the parent component.
-// A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
-// therefore not reporting its length accurately..
-parcelHelpers.export(exports, "getDependsOnOwnProps", ()=>getDependsOnOwnProps
-) // Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
-;
-// this function wraps mapToProps in a proxy function which does several things:
-//
-//  * Detects whether the mapToProps function being called depends on props, which
-//    is used by selectorFactory to decide if it should reinvoke on props changes.
-//
-//  * On first call, handles mapToProps if returns another function, and treats that
-//    new function as the true mapToProps for subsequent calls.
-//
-//  * On first call, verifies the first result is a plain object, in order to warn
-//    the developer that their mapToProps function is not returning a valid result.
-//
-parcelHelpers.export(exports, "wrapMapToPropsFunc", ()=>wrapMapToPropsFunc
-);
-var _verifyPlainObject = require("../utils/verifyPlainObject");
-var _verifyPlainObjectDefault = parcelHelpers.interopDefault(_verifyPlainObject);
-function wrapMapToPropsConstant(getConstant) {
-    return function initConstantSelector(dispatch, options) {
-        var constant = getConstant(dispatch, options);
-        function constantSelector() {
-            return constant;
-        }
-        constantSelector.dependsOnOwnProps = false;
-        return constantSelector;
-    };
-}
-function getDependsOnOwnProps(mapToProps) {
-    return mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1;
-}
-function wrapMapToPropsFunc(mapToProps, methodName) {
-    return function initProxySelector(dispatch, _ref) {
-        var displayName = _ref.displayName;
-        var proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
-            return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch);
-        }; // allow detectFactoryAndVerify to get ownProps
-        proxy.dependsOnOwnProps = true;
-        proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
-            proxy.mapToProps = mapToProps;
-            proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
-            var props = proxy(stateOrDispatch, ownProps);
-            if (typeof props === 'function') {
-                proxy.mapToProps = props;
-                proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
-                props = proxy(stateOrDispatch, ownProps);
-            }
-            _verifyPlainObjectDefault.default(props, displayName, methodName);
-            return props;
-        };
-        return proxy;
-    };
-}
-
-},{"../utils/verifyPlainObject":"8txK0","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"8txK0":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _isPlainObject = require("./isPlainObject");
-var _isPlainObjectDefault = parcelHelpers.interopDefault(_isPlainObject);
-var _warning = require("./warning");
-var _warningDefault = parcelHelpers.interopDefault(_warning);
-function verifyPlainObject(value, displayName, methodName) {
-    if (!_isPlainObjectDefault.default(value)) _warningDefault.default(methodName + "() in " + displayName + " must return a plain object. Instead received " + value + ".");
-}
-exports.default = verifyPlainObject;
-
-},{"./isPlainObject":"awooc","./warning":"fl0jd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"awooc":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function isPlainObject(obj) {
-    if (typeof obj !== 'object' || obj === null) return false;
-    var proto = Object.getPrototypeOf(obj);
-    if (proto === null) return true;
-    var baseProto = proto;
-    while(Object.getPrototypeOf(baseProto) !== null)baseProto = Object.getPrototypeOf(baseProto);
-    return proto === baseProto;
-}
-exports.default = isPlainObject;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fl0jd":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-function warning(message) {
-    /* eslint-disable no-console */ if (typeof console !== 'undefined' && typeof console.error === 'function') console.error(message);
-    /* eslint-enable no-console */ try {
-        // This error was thrown as a convenience so that if you enable
-        // "break on all exceptions" in your console,
-        // it would pause the execution at this line.
-        throw new Error(message);
-    /* eslint-disable no-empty */ } catch (e) {
-    }
-/* eslint-enable no-empty */ }
-exports.default = warning;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fi6QF":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "whenMapStateToPropsIsFunction", ()=>whenMapStateToPropsIsFunction
-);
-parcelHelpers.export(exports, "whenMapStateToPropsIsMissing", ()=>whenMapStateToPropsIsMissing
-);
-var _wrapMapToProps = require("./wrapMapToProps");
-function whenMapStateToPropsIsFunction(mapStateToProps) {
-    return typeof mapStateToProps === 'function' ? _wrapMapToProps.wrapMapToPropsFunc(mapStateToProps, 'mapStateToProps') : undefined;
-}
-function whenMapStateToPropsIsMissing(mapStateToProps) {
-    return !mapStateToProps ? _wrapMapToProps.wrapMapToPropsConstant(function() {
-        return {
-        };
-    }) : undefined;
-}
-exports.default = [
-    whenMapStateToPropsIsFunction,
-    whenMapStateToPropsIsMissing
-];
-
-},{"./wrapMapToProps":"cK0KG","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"j48TE":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "defaultMergeProps", ()=>defaultMergeProps
-);
-parcelHelpers.export(exports, "wrapMergePropsFunc", ()=>wrapMergePropsFunc
-);
-parcelHelpers.export(exports, "whenMergePropsIsFunction", ()=>whenMergePropsIsFunction
-);
-parcelHelpers.export(exports, "whenMergePropsIsOmitted", ()=>whenMergePropsIsOmitted
-);
-var _extends = require("@babel/runtime/helpers/esm/extends");
-var _extendsDefault = parcelHelpers.interopDefault(_extends);
-var _verifyPlainObject = require("../utils/verifyPlainObject");
-var _verifyPlainObjectDefault = parcelHelpers.interopDefault(_verifyPlainObject);
-function defaultMergeProps(stateProps, dispatchProps, ownProps) {
-    return _extendsDefault.default({
-    }, ownProps, stateProps, dispatchProps);
-}
-function wrapMergePropsFunc(mergeProps) {
-    return function initMergePropsProxy(dispatch, _ref) {
-        var displayName = _ref.displayName, pure = _ref.pure, areMergedPropsEqual = _ref.areMergedPropsEqual;
-        var hasRunOnce = false;
-        var mergedProps;
-        return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
-            var nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-            if (hasRunOnce) {
-                if (!pure || !areMergedPropsEqual(nextMergedProps, mergedProps)) mergedProps = nextMergedProps;
-            } else {
-                hasRunOnce = true;
-                mergedProps = nextMergedProps;
-                _verifyPlainObjectDefault.default(mergedProps, displayName, 'mergeProps');
-            }
-            return mergedProps;
-        };
-    };
-}
-function whenMergePropsIsFunction(mergeProps) {
-    return typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
-}
-function whenMergePropsIsOmitted(mergeProps) {
-    return !mergeProps ? function() {
-        return defaultMergeProps;
-    } : undefined;
-}
-exports.default = [
-    whenMergePropsIsFunction,
-    whenMergePropsIsOmitted
-];
-
-},{"@babel/runtime/helpers/esm/extends":"bKAu6","../utils/verifyPlainObject":"8txK0","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2XZ1a":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "impureFinalPropsSelectorFactory", ()=>impureFinalPropsSelectorFactory
-);
-parcelHelpers.export(exports, "pureFinalPropsSelectorFactory", ()=>pureFinalPropsSelectorFactory
-) // TODO: Add more comments
-;
-var _objectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
-var _objectWithoutPropertiesLooseDefault = parcelHelpers.interopDefault(_objectWithoutPropertiesLoose);
-var _verifySubselectors = require("./verifySubselectors");
-var _verifySubselectorsDefault = parcelHelpers.interopDefault(_verifySubselectors);
-var _excluded = [
-    "initMapStateToProps",
-    "initMapDispatchToProps",
-    "initMergeProps"
-];
-function impureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch) {
-    return function impureFinalPropsSelector(state, ownProps) {
-        return mergeProps(mapStateToProps(state, ownProps), mapDispatchToProps(dispatch, ownProps), ownProps);
-    };
-}
-function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, _ref) {
-    var areStatesEqual = _ref.areStatesEqual, areOwnPropsEqual = _ref.areOwnPropsEqual, areStatePropsEqual = _ref.areStatePropsEqual;
-    var hasRunAtLeastOnce = false;
-    var state;
-    var ownProps;
-    var stateProps;
-    var dispatchProps;
-    var mergedProps;
-    function handleFirstCall(firstState, firstOwnProps) {
-        state = firstState;
-        ownProps = firstOwnProps;
-        stateProps = mapStateToProps(state, ownProps);
-        dispatchProps = mapDispatchToProps(dispatch, ownProps);
-        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-        hasRunAtLeastOnce = true;
-        return mergedProps;
-    }
-    function handleNewPropsAndNewState() {
-        stateProps = mapStateToProps(state, ownProps);
-        if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
-        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-        return mergedProps;
-    }
-    function handleNewProps() {
-        if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps);
-        if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
-        mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-        return mergedProps;
-    }
-    function handleNewState() {
-        var nextStateProps = mapStateToProps(state, ownProps);
-        var statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps);
-        stateProps = nextStateProps;
-        if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
-        return mergedProps;
-    }
-    function handleSubsequentCalls(nextState, nextOwnProps) {
-        var propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
-        var stateChanged = !areStatesEqual(nextState, state);
-        state = nextState;
-        ownProps = nextOwnProps;
-        if (propsChanged && stateChanged) return handleNewPropsAndNewState();
-        if (propsChanged) return handleNewProps();
-        if (stateChanged) return handleNewState();
-        return mergedProps;
-    }
-    return function pureFinalPropsSelector(nextState, nextOwnProps) {
-        return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
-    };
-}
-function finalPropsSelectorFactory(dispatch, _ref2) {
-    var initMapStateToProps = _ref2.initMapStateToProps, initMapDispatchToProps = _ref2.initMapDispatchToProps, initMergeProps = _ref2.initMergeProps, options = _objectWithoutPropertiesLooseDefault.default(_ref2, _excluded);
-    var mapStateToProps = initMapStateToProps(dispatch, options);
-    var mapDispatchToProps = initMapDispatchToProps(dispatch, options);
-    var mergeProps = initMergeProps(dispatch, options);
-    _verifySubselectorsDefault.default(mapStateToProps, mapDispatchToProps, mergeProps, options.displayName);
-    var selectorFactory = options.pure ? pureFinalPropsSelectorFactory : impureFinalPropsSelectorFactory;
-    return selectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
-}
-exports.default = finalPropsSelectorFactory;
-
-},{"@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"3Rubg","./verifySubselectors":"lInRo","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"lInRo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _warning = require("../utils/warning");
-var _warningDefault = parcelHelpers.interopDefault(_warning);
-function verify(selector, methodName, displayName) {
-    if (!selector) throw new Error("Unexpected value for " + methodName + " in " + displayName + ".");
-    else if (methodName === 'mapStateToProps' || methodName === 'mapDispatchToProps') {
-        if (!Object.prototype.hasOwnProperty.call(selector, 'dependsOnOwnProps')) _warningDefault.default("The selector for " + methodName + " of " + displayName + " did not specify a value for dependsOnOwnProps.");
-    }
-}
-function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, displayName) {
-    verify(mapStateToProps, 'mapStateToProps', displayName);
-    verify(mapDispatchToProps, 'mapDispatchToProps', displayName);
-    verify(mergeProps, 'mergeProps', displayName);
-}
-exports.default = verifySubselectors;
-
-},{"../utils/warning":"fl0jd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"2CDvn":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * Hook factory, which creates a `useDispatch` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useDispatch` hook bound to the specified context.
- */ parcelHelpers.export(exports, "createDispatchHook", ()=>createDispatchHook
-);
-parcelHelpers.export(exports, "useDispatch", ()=>useDispatch
-);
-var _context = require("../components/Context");
-var _useStore = require("./useStore");
-function createDispatchHook(context) {
-    if (context === void 0) context = _context.ReactReduxContext;
-    var useStore = context === _context.ReactReduxContext ? _useStore.useStore : _useStore.createStoreHook(context);
-    return function useDispatch() {
-        var store = useStore();
-        return store.dispatch;
-    };
-}
-var useDispatch = /*#__PURE__*/ createDispatchHook();
-
-},{"../components/Context":"gT1Jg","./useStore":"fDPAT","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"fDPAT":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * Hook factory, which creates a `useStore` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useStore` hook bound to the specified context.
- */ parcelHelpers.export(exports, "createStoreHook", ()=>createStoreHook
-);
-parcelHelpers.export(exports, "useStore", ()=>useStore
-);
-var _react = require("react");
-var _context = require("../components/Context");
-var _useReduxContext = require("./useReduxContext");
-function createStoreHook(context) {
-    if (context === void 0) context = _context.ReactReduxContext;
-    var useReduxContext = context === _context.ReactReduxContext ? _useReduxContext.useReduxContext : function() {
-        return _react.useContext(context);
-    };
-    return function useStore() {
-        var _useReduxContext1 = useReduxContext(), store = _useReduxContext1.store;
-        return store;
-    };
-}
-var useStore = /*#__PURE__*/ createStoreHook();
-
-},{"react":"6TuXu","../components/Context":"gT1Jg","./useReduxContext":"516XC","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"516XC":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * A hook to access the value of the `ReactReduxContext`. This is a low-level
- * hook that you should usually not need to call directly.
- *
- * @returns {any} the value of the `ReactReduxContext`
- *
- * @example
- *
- * import React from 'react'
- * import { useReduxContext } from 'react-redux'
- *
- * export const CounterComponent = ({ value }) => {
- *   const { store } = useReduxContext()
- *   return <div>{store.getState()}</div>
- * }
- */ parcelHelpers.export(exports, "useReduxContext", ()=>useReduxContext
-);
-var _react = require("react");
-var _context = require("../components/Context");
-function useReduxContext() {
-    var contextValue = _react.useContext(_context.ReactReduxContext);
-    if (!contextValue) throw new Error('could not find react-redux context value; please ensure the component is wrapped in a <Provider>');
-    return contextValue;
-}
-
-},{"react":"6TuXu","../components/Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"27k1i":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * Hook factory, which creates a `useSelector` hook bound to a given context.
- *
- * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
- * @returns {Function} A `useSelector` hook bound to the specified context.
- */ parcelHelpers.export(exports, "createSelectorHook", ()=>createSelectorHook
-);
-parcelHelpers.export(exports, "useSelector", ()=>useSelector
-);
-var _react = require("react");
-var _useReduxContext = require("./useReduxContext");
-var _subscription = require("../utils/Subscription");
-var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
-var _context = require("../components/Context");
-var refEquality = function refEquality1(a, b) {
-    return a === b;
-};
-function useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub) {
-    var _useReducer = _react.useReducer(function(s) {
-        return s + 1;
-    }, 0), forceRender = _useReducer[1];
-    var subscription = _react.useMemo(function() {
-        return _subscription.createSubscription(store, contextSub);
-    }, [
-        store,
-        contextSub
-    ]);
-    var latestSubscriptionCallbackError = _react.useRef();
-    var latestSelector = _react.useRef();
-    var latestStoreState = _react.useRef();
-    var latestSelectedState = _react.useRef();
-    var storeState = store.getState();
-    var selectedState;
-    try {
-        if (selector !== latestSelector.current || storeState !== latestStoreState.current || latestSubscriptionCallbackError.current) {
-            var newSelectedState = selector(storeState); // ensure latest selected state is reused so that a custom equality function can result in identical references
-            if (latestSelectedState.current === undefined || !equalityFn(newSelectedState, latestSelectedState.current)) selectedState = newSelectedState;
-            else selectedState = latestSelectedState.current;
-        } else selectedState = latestSelectedState.current;
-    } catch (err) {
-        if (latestSubscriptionCallbackError.current) err.message += "\nThe error may be correlated with this previous error:\n" + latestSubscriptionCallbackError.current.stack + "\n\n";
-        throw err;
-    }
-    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
-        latestSelector.current = selector;
-        latestStoreState.current = storeState;
-        latestSelectedState.current = selectedState;
-        latestSubscriptionCallbackError.current = undefined;
-    });
-    _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect(function() {
-        function checkForUpdates() {
-            try {
-                var newStoreState = store.getState(); // Avoid calling selector multiple times if the store's state has not changed
-                if (newStoreState === latestStoreState.current) return;
-                var _newSelectedState = latestSelector.current(newStoreState);
-                if (equalityFn(_newSelectedState, latestSelectedState.current)) return;
-                latestSelectedState.current = _newSelectedState;
-                latestStoreState.current = newStoreState;
-            } catch (err) {
-                // we ignore all errors here, since when the component
-                // is re-rendered, the selectors are called again, and
-                // will throw again, if neither props nor store state
-                // changed
-                latestSubscriptionCallbackError.current = err;
-            }
-            forceRender();
-        }
-        subscription.onStateChange = checkForUpdates;
-        subscription.trySubscribe();
-        checkForUpdates();
-        return function() {
-            return subscription.tryUnsubscribe();
-        };
-    }, [
-        store,
-        subscription
-    ]);
-    return selectedState;
-}
-function createSelectorHook(context) {
-    if (context === void 0) context = _context.ReactReduxContext;
-    var useReduxContext = context === _context.ReactReduxContext ? _useReduxContext.useReduxContext : function() {
-        return _react.useContext(context);
-    };
-    return function useSelector(selector, equalityFn) {
-        if (equalityFn === void 0) equalityFn = refEquality;
-        if (!selector) throw new Error("You must pass a selector to useSelector");
-        if (typeof selector !== 'function') throw new Error("You must pass a function as a selector to useSelector");
-        if (typeof equalityFn !== 'function') throw new Error("You must pass a function as an equality function to useSelector");
-        var _useReduxContext1 = useReduxContext(), store = _useReduxContext1.store, contextSub = _useReduxContext1.subscription;
-        var selectedState = useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub);
-        _react.useDebugValue(selectedState);
-        return selectedState;
-    };
-}
-var useSelector = /*#__PURE__*/ createSelectorHook();
-
-},{"react":"6TuXu","./useReduxContext":"516XC","../utils/Subscription":"6rtcC","../utils/useIsomorphicLayoutEffect":"2TWoQ","../components/Context":"gT1Jg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"kaP8a":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/* eslint-disable import/no-unresolved */ parcelHelpers.export(exports, "unstable_batchedUpdates", ()=>_reactDom.unstable_batchedUpdates
-);
-var _reactDom = require("react-dom");
-
-},{"react-dom":"gkWJK","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw"}],"jyMAr":[function() {},{}],"bpxKL":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$4e37 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$4e37.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactBootstrap = require("react-bootstrap");
-var _navBarScss = require("./nav-bar.scss");
-const MyNavbar = ({ user  })=>{
-    const onLoggedOut = ()=>{
-        localStorage.clear();
-        window.open('/', '_self');
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar, {
-        sticky: "top",
-        bg: "light",
-        expand: "lg",
-        className: "navbar w-12 pb-2",
-        __source: {
-            fileName: "src/components/nav-bar/nav-bar.jsx",
-            lineNumber: 13
-        },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Container, {
-            fluid: true,
-            className: "px-4",
-            __source: {
-                fileName: "src/components/nav-bar/nav-bar.jsx",
-                lineNumber: 14
-            },
-            __self: undefined,
-            children: [
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Brand, {
-                    href: "/",
-                    __source: {
-                        fileName: "src/components/nav-bar/nav-bar.jsx",
-                        lineNumber: 15
-                    },
-                    __self: undefined,
-                    children: "myFlix"
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Toggle, {
-                    "aria-controls": "basic-navbar-nav",
-                    __source: {
-                        fileName: "src/components/nav-bar/nav-bar.jsx",
-                        lineNumber: 16
-                    },
-                    __self: undefined
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Navbar.Collapse, {
-                    className: "justify-content-end",
-                    id: "basic-navbar-nav",
-                    __source: {
-                        fileName: "src/components/nav-bar/nav-bar.jsx",
-                        lineNumber: 17
-                    },
-                    __self: undefined,
-                    children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Nav, {
-                        className: "justify-content-end",
-                        __source: {
-                            fileName: "src/components/nav-bar/nav-bar.jsx",
-                            lineNumber: 18
-                        },
-                        __self: undefined,
-                        children: [
-                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
-                                href: "/",
-                                __source: {
-                                    fileName: "src/components/nav-bar/nav-bar.jsx",
-                                    lineNumber: 19
-                                },
-                                __self: undefined,
-                                children: "Home"
-                            }),
-                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
-                                href: `/profile`,
-                                __source: {
-                                    fileName: "src/components/nav-bar/nav-bar.jsx",
-                                    lineNumber: 20
-                                },
-                                __self: undefined,
-                                children: "Profile"
-                            }),
-                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Nav.Link, {
-                                onClick: ()=>onLoggedOut()
-                                ,
-                                __source: {
-                                    fileName: "src/components/nav-bar/nav-bar.jsx",
-                                    lineNumber: 21
-                                },
-                                __self: undefined,
-                                children: "Logout"
-                            })
-                        ]
-                    })
-                })
-            ]
-        })
-    }));
-};
-_c = MyNavbar;
-exports.default = MyNavbar;
-var _c;
-$RefreshReg$(_c, "MyNavbar");
-
-  $parcel$ReactRefreshHelpers$4e37.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-bootstrap":"h2YVd","./nav-bar.scss":"jDPsg","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"jDPsg":[function() {},{}],"2E7Aw":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$58c6 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$58c6.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _favoriteMovies = require("./favorite-movies");
-var _favoriteMoviesDefault = parcelHelpers.interopDefault(_favoriteMovies);
-var _updateUser = require("./update-user");
-var _updateUserDefault = parcelHelpers.interopDefault(_updateUser);
-var _userInfo = require("./user-info");
-var _userInfoDefault = parcelHelpers.interopDefault(_userInfo);
-var _reactBootstrap = require("react-bootstrap");
-var _constant = require("../../utils/constant");
-var _breadcrumb = require("react-bootstrap/Breadcrumb");
-var _breadcrumbDefault = parcelHelpers.interopDefault(_breadcrumb);
-const ProfileView = ({ user , movies  })=>{
-    const favoriteMovies = user.FavoriteMovies.map((favMovie)=>movies.find((movie)=>movie._id === favMovie
-        )
-    );
-    const handleDelFavMovie = (movieId)=>{
-        const user1 = JSON.parse(localStorage.getItem('user'));
-        const token = localStorage.getItem('token');
-        _axiosDefault.default.delete(`${_constant.API_URL}/users/${user1.Username}/movies/${movieId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response)=>{
-            const updatedUser = response.data;
-            console.log('Movie deleted from fav list');
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            window.location.reload();
-        }).catch((error)=>{
-            console.log('Fav movie deleting failed.', error);
-        });
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Container, {
-        __source: {
-            fileName: "src/components/profile-view/profile-view.jsx",
-            lineNumber: 36
-        },
-        __self: undefined,
-        children: [
-            /*#__PURE__*/ _jsxRuntime.jsxs(_breadcrumbDefault.default, {
-                __source: {
-                    fileName: "src/components/profile-view/profile-view.jsx",
-                    lineNumber: 37
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        href: "/",
-                        __source: {
-                            fileName: "src/components/profile-view/profile-view.jsx",
-                            lineNumber: 38
-                        },
-                        __self: undefined,
-                        children: "Home"
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_breadcrumbDefault.default.Item, {
-                        active: true,
-                        __source: {
-                            fileName: "src/components/profile-view/profile-view.jsx",
-                            lineNumber: 39
-                        },
-                        __self: undefined,
-                        children: "Profile"
-                    })
-                ]
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Row, {
-                __source: {
-                    fileName: "src/components/profile-view/profile-view.jsx",
-                    lineNumber: 41
-                },
-                __self: undefined,
-                children: [
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                        xs: 12,
-                        sm: 4,
-                        __source: {
-                            fileName: "src/components/profile-view/profile-view.jsx",
-                            lineNumber: 42
-                        },
-                        __self: undefined,
-                        children: /*#__PURE__*/ _jsxRuntime.jsx(_userInfoDefault.default, {
-                            name: user.Username,
-                            email: user.Email,
-                            __source: {
-                                fileName: "src/components/profile-view/profile-view.jsx",
-                                lineNumber: 43
-                            },
-                            __self: undefined
-                        })
-                    }),
-                    /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                        xs: 12,
-                        sm: 8,
-                        __source: {
-                            fileName: "src/components/profile-view/profile-view.jsx",
-                            lineNumber: 45
-                        },
-                        __self: undefined,
-                        children: /*#__PURE__*/ _jsxRuntime.jsx(_updateUserDefault.default, {
-                            user: user,
-                            __source: {
-                                fileName: "src/components/profile-view/profile-view.jsx",
-                                lineNumber: 46
-                            },
-                            __self: undefined
-                        })
-                    })
-                ]
-            }),
-            /*#__PURE__*/ _jsxRuntime.jsx(_favoriteMoviesDefault.default, {
-                favoriteMovies: favoriteMovies,
-                delFavMovie: (id)=>handleDelFavMovie(id)
-                ,
-                __source: {
-                    fileName: "src/components/profile-view/profile-view.jsx",
-                    lineNumber: 49
-                },
-                __self: undefined
-            })
-        ]
-    }));
-};
-_c = ProfileView;
-exports.default = ProfileView;
-var _c;
-$RefreshReg$(_c, "ProfileView");
-
-  $parcel$ReactRefreshHelpers$58c6.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","axios":"iYoWk","./favorite-movies":"gKhXS","./update-user":"hBcEf","./user-info":"cK8m8","react-bootstrap":"h2YVd","../../utils/constant":"cR822","react-bootstrap/Breadcrumb":"9ph0G","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"gKhXS":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$7994 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$7994.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactRouterDom = require("react-router-dom");
-var _reactBootstrap = require("react-bootstrap");
-var _profileViewScss = require("./profile-view.scss");
-const FavoriteMovies = ({ favoriteMovies , delFavMovie  })=>{
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-        __source: {
-            fileName: "src/components/profile-view/favorite-movies.jsx",
-            lineNumber: 11
-        },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-            __source: {
-                fileName: "src/components/profile-view/favorite-movies.jsx",
-                lineNumber: 12
-            },
-            __self: undefined,
-            children: [
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
-                    __source: {
-                        fileName: "src/components/profile-view/favorite-movies.jsx",
-                        lineNumber: 13
-                    },
-                    __self: undefined,
-                    children: /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                        xs: 12,
-                        __source: {
-                            fileName: "src/components/profile-view/favorite-movies.jsx",
-                            lineNumber: 14
-                        },
-                        __self: undefined,
-                        children: /*#__PURE__*/ _jsxRuntime.jsx("h4", {
-                            __source: {
-                                fileName: "src/components/profile-view/favorite-movies.jsx",
-                                lineNumber: 15
-                            },
-                            __self: undefined,
-                            children: "Favorite Movies"
-                        })
-                    })
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Row, {
-                    __source: {
-                        fileName: "src/components/profile-view/favorite-movies.jsx",
-                        lineNumber: 18
-                    },
-                    __self: undefined,
-                    children: favoriteMovies.length !== 0 ? favoriteMovies.map((movie)=>/*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Col, {
-                            xs: 12,
-                            md: 6,
-                            lg: 3,
-                            className: "fav-movie",
-                            __source: {
-                                fileName: "src/components/profile-view/favorite-movies.jsx",
-                                lineNumber: 21
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure, {
-                                    __source: {
-                                        fileName: "src/components/profile-view/favorite-movies.jsx",
-                                        lineNumber: 28
-                                    },
-                                    __self: undefined,
-                                    children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactRouterDom.Link, {
-                                        to: `/movies/${movie._id}`,
-                                        __source: {
-                                            fileName: "src/components/profile-view/favorite-movies.jsx",
-                                            lineNumber: 29
-                                        },
-                                        __self: undefined,
-                                        children: [
-                                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Image, {
-                                                src: movie.ImageURL,
-                                                alt: movie.Title,
-                                                crossOrigin: "anonymous",
-                                                __source: {
-                                                    fileName: "src/components/profile-view/favorite-movies.jsx",
-                                                    lineNumber: 30
-                                                },
-                                                __self: undefined
-                                            }),
-                                            /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Figure.Caption, {
-                                                __source: {
-                                                    fileName: "src/components/profile-view/favorite-movies.jsx",
-                                                    lineNumber: 35
-                                                },
-                                                __self: undefined,
-                                                children: movie.Title
-                                            })
-                                        ]
-                                    })
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                                    variant: "secondary",
-                                    onClick: ()=>delFavMovie(movie._id)
-                                    ,
-                                    __source: {
-                                        fileName: "src/components/profile-view/favorite-movies.jsx",
-                                        lineNumber: 38
-                                    },
-                                    __self: undefined,
-                                    children: "Remove From list"
-                                })
-                            ]
-                        }, movie._id)
-                    ) : /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Col, {
-                        xs: 12,
-                        __source: {
-                            fileName: "src/components/profile-view/favorite-movies.jsx",
-                            lineNumber: 47
-                        },
-                        __self: undefined,
-                        children: /*#__PURE__*/ _jsxRuntime.jsx("p", {
-                            __source: {
-                                fileName: "src/components/profile-view/favorite-movies.jsx",
-                                lineNumber: 48
-                            },
-                            __self: undefined,
-                            children: "No movies favorited yet"
-                        })
-                    })
-                })
-            ]
-        })
-    }));
-};
-_c = FavoriteMovies;
-exports.default = FavoriteMovies;
-var _c;
-$RefreshReg$(_c, "FavoriteMovies");
-
-  $parcel$ReactRefreshHelpers$7994.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-router-dom":"cpyQW","react-bootstrap":"h2YVd","./profile-view.scss":"gb0ga","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"gb0ga":[function() {},{}],"hBcEf":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$f560 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$f560.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxRuntime = require("react/jsx-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _constant = require("../../utils/constant");
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
-var _reactBootstrap = require("react-bootstrap");
-var _validate = require("../../utils/validate");
-var _s = $RefreshSig$();
-const UpdateUser = ({ user  })=>{
-    _s();
-    const [userData, setUserData] = _reactDefault.default.useState({
-        username: `${user.Username}`,
-        password: '',
-        email: `${user.Email}`
-    });
-    const [errors, setErrors] = _react.useState({
-    });
-    const [message, setMessage] = _react.useState('');
-    const handleChange = (e)=>{
-        const { name , value  } = e.target;
-        let error = _validate.validate(name, value);
-        setErrors((prevErr)=>{
-            return {
-                ...prevErr,
-                ...error
-            };
-        });
-        setUserData((prevState)=>({
-                ...prevState,
-                [name]: value
-            })
-        );
-    };
-    const handleDelete = (e)=>{
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        if (confirm('Are you sure? This cannot be undone!')) _axiosDefault.default.delete(`${_constant.API_URL}/users/${user.Username}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response)=>{
-            const data = response.data;
-            setMessage('User info deleted');
-            localStorage.removeItem('user', JSON.stringify(data));
-            window.open('/register', '_self');
-        }).catch((e1)=>{
-            (error)=>console.error(error)
+        r.n = (e1)=>{
+            var t1 = e1 && e1.__esModule ? ()=>e1.default
+             : ()=>e1
             ;
-        });
-    };
-    const handleSubmit = (e)=>{
-        e.preventDefault();
-        //form can be submitted if there are no validation errors.
-        let isValid = Object.values(errors).every((error)=>error.length === 0
-        );
-        const token = localStorage.getItem('token');
-        isValid && _axiosDefault.default.put(`${_constant.API_URL}/users/${user.Username}`, {
-            Username: userData.username || user.Username,
-            Password: userData.password || user.Password,
-            Email: userData.email || user.Email,
-            Birthday: user.Birthday
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
+            return r.d(t1, {
+                a: t1
+            }), t1;
+        }, r.d = (e1, t2)=>{
+            for(var a1 in t2)r.o(t2, a1) && !r.o(e1, a1) && Object.defineProperty(e1, a1, {
+                enumerable: !0,
+                get: t2[a1]
+            });
+        }, r.o = (e1, t2)=>Object.prototype.hasOwnProperty.call(e1, t2)
+        , r.r = (e1)=>{
+            "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(e1, Symbol.toStringTag, {
+                value: "Module"
+            }), Object.defineProperty(e1, "__esModule", {
+                value: !0
+            });
+        };
+        var n = {
+        };
+        return (()=>{
+            r.r(n), r.d(n, {
+                default: ()=>k
+            });
+            var e1 = r(98), t2 = r.n(e1), a2 = r(697), i = r.n(a2);
+            function o() {
+                return o = Object.assign ? Object.assign.bind() : function(e2) {
+                    for(var t3 = 1; t3 < arguments.length; t3++){
+                        var a3 = arguments[t3];
+                        for(var r1 in a3)Object.prototype.hasOwnProperty.call(a3, r1) && (e2[r1] = a3[r1]);
+                    }
+                    return e2;
+                }, o.apply(this, arguments);
             }
-        }).then((response)=>{
-            const data = response.data;
-            setMessage('User info updated');
-            localStorage.setItem('user', JSON.stringify(data));
-            window.location.reload();
-        }).catch((e1)=>{
-            setMessage("User doesn't exists. Check username or password.");
-            console.log('no such user exists!!!');
-        });
-    };
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
-        __source: {
-            fileName: "src/components/profile-view/update-user.jsx",
-            lineNumber: 86
-        },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-            __source: {
-                fileName: "src/components/profile-view/update-user.jsx",
-                lineNumber: 87
-            },
-            __self: undefined,
-            children: [
-                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card.Title, {
-                    as: "h4",
-                    className: "text-center",
-                    __source: {
-                        fileName: "src/components/profile-view/update-user.jsx",
-                        lineNumber: 88
+            var s1 = function(e2) {
+                var a4 = e2.pageClassName, r2 = e2.pageLinkClassName, n1 = e2.page, i1 = e2.selected, s1 = e2.activeClassName, l = e2.activeLinkClassName, c = e2.getEventListener, p = e2.pageSelectedHandler, u = e2.href, g = e2.extraAriaContext, d = e2.pageLabelBuilder, f = e2.rel, v = e2.ariaLabel || "Page " + n1 + (g ? " " + g : ""), b = null;
+                return i1 && (b = "page", v = e2.ariaLabel || "Page " + n1 + " is your current page", a4 = (void 0) !== a4 ? a4 + " " + s1 : s1, (void 0) !== r2 ? (void 0) !== l && (r2 = r2 + " " + l) : r2 = l), t2().createElement("li", {
+                    className: a4
+                }, t2().createElement("a", o({
+                    rel: f,
+                    role: u ? void 0 : "button",
+                    className: r2,
+                    href: u,
+                    tabIndex: i1 ? "-1" : "0",
+                    "aria-label": v,
+                    "aria-current": b,
+                    onKeyPress: p
+                }, c(p)), d(n1)));
+            };
+            s1.propTypes = {
+                pageSelectedHandler: i().func.isRequired,
+                selected: i().bool.isRequired,
+                pageClassName: i().string,
+                pageLinkClassName: i().string,
+                activeClassName: i().string,
+                activeLinkClassName: i().string,
+                extraAriaContext: i().string,
+                href: i().string,
+                ariaLabel: i().string,
+                page: i().number.isRequired,
+                getEventListener: i().func.isRequired,
+                pageLabelBuilder: i().func.isRequired,
+                rel: i().string
+            };
+            const l = s1;
+            function c() {
+                return c = Object.assign ? Object.assign.bind() : function(e2) {
+                    for(var t3 = 1; t3 < arguments.length; t3++){
+                        var a4 = arguments[t3];
+                        for(var r2 in a4)Object.prototype.hasOwnProperty.call(a4, r2) && (e2[r2] = a4[r2]);
+                    }
+                    return e2;
+                }, c.apply(this, arguments);
+            }
+            var p = function(e2) {
+                var a5 = e2.breakLabel, r3 = e2.breakClassName, n1 = e2.breakLinkClassName, i1 = e2.breakHandler, o1 = e2.getEventListener, s1 = r3 || "break";
+                return t2().createElement("li", {
+                    className: s1
+                }, t2().createElement("a", c({
+                    className: n1,
+                    role: "button",
+                    tabIndex: "0",
+                    onKeyPress: i1
+                }, o1(i1)), a5));
+            };
+            p.propTypes = {
+                breakLabel: i().oneOfType([
+                    i().string,
+                    i().node
+                ]),
+                breakClassName: i().string,
+                breakLinkClassName: i().string,
+                breakHandler: i().func.isRequired,
+                getEventListener: i().func.isRequired
+            };
+            const u = p;
+            function g(e2) {
+                var t3 = arguments.length > 1 && (void 0) !== arguments[1] ? arguments[1] : "";
+                return null != e2 ? e2 : t3;
+            }
+            function d(e2) {
+                return d = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(e3) {
+                    return typeof e3;
+                } : function(e3) {
+                    return e3 && "function" == typeof Symbol && e3.constructor === Symbol && e3 !== Symbol.prototype ? "symbol" : typeof e3;
+                }, d(e2);
+            }
+            function f() {
+                return f = Object.assign ? Object.assign.bind() : function(e2) {
+                    for(var t3 = 1; t3 < arguments.length; t3++){
+                        var a5 = arguments[t3];
+                        for(var r3 in a5)Object.prototype.hasOwnProperty.call(a5, r3) && (e2[r3] = a5[r3]);
+                    }
+                    return e2;
+                }, f.apply(this, arguments);
+            }
+            function v(e2, t3) {
+                for(var a6 = 0; a6 < t3.length; a6++){
+                    var r4 = t3[a6];
+                    r4.enumerable = r4.enumerable || !1, r4.configurable = !0, "value" in r4 && (r4.writable = !0), Object.defineProperty(e2, r4.key, r4);
+                }
+            }
+            function b(e2, t3) {
+                return b = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function(e3, t4) {
+                    return e3.__proto__ = t4, e3;
+                }, b(e2, t3);
+            }
+            function h(e2, t3) {
+                if (t3 && ("object" === d(t3) || "function" == typeof t3)) return t3;
+                if ((void 0) !== t3) throw new TypeError("Derived constructors may only return object or undefined");
+                return m(e2);
+            }
+            function m(e2) {
+                if ((void 0) === e2) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+                return e2;
+            }
+            function y(e2) {
+                return y = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function(e3) {
+                    return e3.__proto__ || Object.getPrototypeOf(e3);
+                }, y(e2);
+            }
+            function C(e2, t3, a6) {
+                return t3 in e2 ? Object.defineProperty(e2, t3, {
+                    value: a6,
+                    enumerable: !0,
+                    configurable: !0,
+                    writable: !0
+                }) : e2[t3] = a6, e2;
+            }
+            var P = function(e2) {
+                !function(e3, t3) {
+                    if ("function" != typeof t3 && null !== t3) throw new TypeError("Super expression must either be null or a function");
+                    e3.prototype = Object.create(t3 && t3.prototype, {
+                        constructor: {
+                            value: e3,
+                            writable: !0,
+                            configurable: !0
+                        }
+                    }), Object.defineProperty(e3, "prototype", {
+                        writable: !1
+                    }), t3 && b(e3, t3);
+                }(s2, e2);
+                var a6, r5, n1, i1, o1 = (n1 = s2, i1 = function() {
+                    if ("undefined" == typeof Reflect || !Reflect.construct) return !1;
+                    if (Reflect.construct.sham) return !1;
+                    if ("function" == typeof Proxy) return !0;
+                    try {
+                        return Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function() {
+                        })), !0;
+                    } catch (e3) {
+                        return !1;
+                    }
+                }(), function() {
+                    var e3, t3 = y(n1);
+                    if (i1) {
+                        var a7 = y(this).constructor;
+                        e3 = Reflect.construct(t3, arguments, a7);
+                    } else e3 = t3.apply(this, arguments);
+                    return h(this, e3);
+                });
+                function s2(e3) {
+                    var a8, r6;
+                    return (function(e4, t3) {
+                        if (!(e4 instanceof t3)) throw new TypeError("Cannot call a class as a function");
+                    })(this, s2), C(m(a8 = o1.call(this, e3)), "handlePreviousPage", function(e4) {
+                        var t3 = a8.state.selected;
+                        a8.handleClick(e4, null, t3 > 0 ? t3 - 1 : void 0, {
+                            isPrevious: !0
+                        });
+                    }), C(m(a8), "handleNextPage", function(e4) {
+                        var t3 = a8.state.selected, r7 = a8.props.pageCount;
+                        a8.handleClick(e4, null, t3 < r7 - 1 ? t3 + 1 : void 0, {
+                            isNext: !0
+                        });
+                    }), C(m(a8), "handlePageSelected", function(e4, t3) {
+                        if (a8.state.selected === e4) return a8.callActiveCallback(e4), void a8.handleClick(t3, null, void 0, {
+                            isActive: !0
+                        });
+                        a8.handleClick(t3, null, e4);
+                    }), C(m(a8), "handlePageChange", function(e4) {
+                        a8.state.selected !== e4 && (a8.setState({
+                            selected: e4
+                        }), a8.callCallback(e4));
+                    }), C(m(a8), "getEventListener", function(e4) {
+                        return C({
+                        }, a8.props.eventListener, e4);
+                    }), C(m(a8), "handleClick", function(e4, t3, r7) {
+                        var n2 = arguments.length > 3 && (void 0) !== arguments[3] ? arguments[3] : {
+                        }, i2 = n2.isPrevious, o2 = (void 0) !== i2 && i2, s3 = n2.isNext, l1 = (void 0) !== s3 && s3, c1 = n2.isBreak, p1 = (void 0) !== c1 && c1, u1 = n2.isActive, g1 = (void 0) !== u1 && u1;
+                        e4.preventDefault ? e4.preventDefault() : e4.returnValue = !1;
+                        var d1 = a8.state.selected, f1 = a8.props.onClick, v1 = r7;
+                        if (f1) {
+                            var b1 = f1({
+                                index: t3,
+                                selected: d1,
+                                nextSelectedPage: r7,
+                                event: e4,
+                                isPrevious: o2,
+                                isNext: l1,
+                                isBreak: p1,
+                                isActive: g1
+                            });
+                            if (!1 === b1) return;
+                            Number.isInteger(b1) && (v1 = b1);
+                        }
+                        (void 0) !== v1 && a8.handlePageChange(v1);
+                    }), C(m(a8), "handleBreakClick", function(e4, t3) {
+                        var r7 = a8.state.selected;
+                        a8.handleClick(t3, e4, r7 < e4 ? a8.getForwardJump() : a8.getBackwardJump(), {
+                            isBreak: !0
+                        });
+                    }), C(m(a8), "callCallback", function(e4) {
+                        (void 0) !== a8.props.onPageChange && "function" == typeof a8.props.onPageChange && a8.props.onPageChange({
+                            selected: e4
+                        });
+                    }), C(m(a8), "callActiveCallback", function(e4) {
+                        (void 0) !== a8.props.onPageActive && "function" == typeof a8.props.onPageActive && a8.props.onPageActive({
+                            selected: e4
+                        });
+                    }), C(m(a8), "getElementPageRel", function(e4) {
+                        var t3 = a8.state.selected, r7 = a8.props, n2 = r7.nextPageRel, i2 = r7.prevPageRel, o2 = r7.selectedPageRel;
+                        return t3 - 1 === e4 ? i2 : t3 === e4 ? o2 : t3 + 1 === e4 ? n2 : void 0;
+                    }), C(m(a8), "pagination", function() {
+                        var e4 = [], r7 = a8.props, n2 = r7.pageRangeDisplayed, i2 = r7.pageCount, o2 = r7.marginPagesDisplayed, s3 = r7.breakLabel, l1 = r7.breakClassName, c1 = r7.breakLinkClassName, p1 = a8.state.selected;
+                        if (i2 <= n2) for(var g1 = 0; g1 < i2; g1++)e4.push(a8.getPageElement(g1));
+                        else {
+                            var d1 = n2 / 2, f1 = n2 - d1;
+                            p1 > i2 - n2 / 2 ? d1 = n2 - (f1 = i2 - p1) : p1 < n2 / 2 && (f1 = n2 - (d1 = p1));
+                            var v1, b2, h1 = function(e5) {
+                                return a8.getPageElement(e5);
+                            }, m1 = [];
+                            for(v1 = 0; v1 < i2; v1++){
+                                var y1 = v1 + 1;
+                                y1 <= o2 || y1 > i2 - o2 || v1 >= p1 - d1 && v1 <= p1 + (0 === p1 && n2 > 1 ? f1 - 1 : f1) ? m1.push({
+                                    type: "page",
+                                    index: v1,
+                                    display: h1(v1)
+                                }) : s3 && m1.length > 0 && m1[m1.length - 1].display !== b2 && (n2 > 0 || o2 > 0) && (b2 = t2().createElement(u, {
+                                    key: v1,
+                                    breakLabel: s3,
+                                    breakClassName: l1,
+                                    breakLinkClassName: c1,
+                                    breakHandler: a8.handleBreakClick.bind(null, v1),
+                                    getEventListener: a8.getEventListener
+                                }), m1.push({
+                                    type: "break",
+                                    index: v1,
+                                    display: b2
+                                }));
+                            }
+                            m1.forEach(function(t3, a9) {
+                                var r8 = t3;
+                                "break" === t3.type && m1[a9 - 1] && "page" === m1[a9 - 1].type && m1[a9 + 1] && "page" === m1[a9 + 1].type && m1[a9 + 1].index - m1[a9 - 1].index <= 2 && (r8 = {
+                                    type: "page",
+                                    index: t3.index,
+                                    display: h1(t3.index)
+                                }), e4.push(r8.display);
+                            });
+                        }
+                        return e4;
+                    }), (void 0) !== e3.initialPage && (void 0) !== e3.forcePage && console.warn("(react-paginate): Both initialPage (".concat(e3.initialPage, ") and forcePage (").concat(e3.forcePage, ") props are provided, which is discouraged.") + " Use exclusively forcePage prop for a controlled component.\nSee https://reactjs.org/docs/forms.html#controlled-components"), r6 = e3.initialPage ? e3.initialPage : e3.forcePage ? e3.forcePage : 0, a8.state = {
+                        selected: r6
+                    }, a8;
+                }
+                return a6 = s2, r5 = [
+                    {
+                        key: "componentDidMount",
+                        value: function() {
+                            var e3 = this.props, t3 = e3.initialPage, a8 = e3.disableInitialCallback, r6 = e3.extraAriaContext, n2 = e3.pageCount, i2 = e3.forcePage;
+                            (void 0) === t3 || a8 || this.callCallback(t3), r6 && console.warn("DEPRECATED (react-paginate): The extraAriaContext prop is deprecated. You should now use the ariaLabelBuilder instead."), Number.isInteger(n2) || console.warn("(react-paginate): The pageCount prop value provided is not an integer (".concat(n2, "). Did you forget a Math.ceil()?")), (void 0) !== t3 && t3 > n2 - 1 && console.warn("(react-paginate): The initialPage prop provided is greater than the maximum page index from pageCount prop (".concat(t3, " > ").concat(n2 - 1, ").")), (void 0) !== i2 && i2 > n2 - 1 && console.warn("(react-paginate): The forcePage prop provided is greater than the maximum page index from pageCount prop (".concat(i2, " > ").concat(n2 - 1, ")."));
+                        }
                     },
-                    __self: undefined,
-                    children: "Want to change some info?"
-                }),
-                message && /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                    className: "form-group",
-                    __source: {
-                        fileName: "src/components/profile-view/update-user.jsx",
-                        lineNumber: 92
+                    {
+                        key: "componentDidUpdate",
+                        value: function(e3) {
+                            (void 0) !== this.props.forcePage && this.props.forcePage !== e3.forcePage && (this.props.forcePage > this.props.pageCount - 1 && console.warn("(react-paginate): The forcePage prop provided is greater than the maximum page index from pageCount prop (".concat(this.props.forcePage, " > ").concat(this.props.pageCount - 1, ").")), this.setState({
+                                selected: this.props.forcePage
+                            })), Number.isInteger(e3.pageCount) && !Number.isInteger(this.props.pageCount) && console.warn("(react-paginate): The pageCount prop value provided is not an integer (".concat(this.props.pageCount, "). Did you forget a Math.ceil()?"));
+                        }
                     },
-                    __self: undefined,
-                    children: /*#__PURE__*/ _jsxRuntime.jsx("div", {
-                        className: "alert alert-danger my-1 py-2",
-                        role: "alert",
-                        __source: {
-                            fileName: "src/components/profile-view/update-user.jsx",
-                            lineNumber: 93
-                        },
-                        __self: undefined,
-                        children: message
-                    })
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form, {
-                    __source: {
-                        fileName: "src/components/profile-view/update-user.jsx",
-                        lineNumber: 98
+                    {
+                        key: "getForwardJump",
+                        value: function() {
+                            var e3 = this.state.selected, t3 = this.props, a8 = t3.pageCount, r6 = e3 + t3.pageRangeDisplayed;
+                            return r6 >= a8 ? a8 - 1 : r6;
+                        }
                     },
-                    __self: undefined,
-                    children: [
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                            controlId: "username",
-                            className: "mb-3",
-                            __source: {
-                                fileName: "src/components/profile-view/update-user.jsx",
-                                lineNumber: 99
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 100
-                                    },
-                                    __self: undefined,
-                                    children: "Username: "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                    type: "text",
-                                    name: "username",
-                                    value: userData.username || '',
-                                    onChange: handleChange,
-                                    placeholder: "Enter username here",
-                                    isInvalid: !!errors.username,
-                                    required: true,
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 101
-                                    },
-                                    __self: undefined
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                    type: "invalid",
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 110
-                                    },
-                                    __self: undefined,
-                                    children: errors.username
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                            controlId: "password",
-                            className: "mb-3",
-                            __source: {
-                                fileName: "src/components/profile-view/update-user.jsx",
-                                lineNumber: 114
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 115
-                                    },
-                                    __self: undefined,
-                                    children: "Password: "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                    type: "password",
-                                    name: "password",
-                                    value: userData.password,
-                                    onChange: handleChange,
-                                    placeholder: "Enter password here",
-                                    isInvalid: !!errors.password,
-                                    required: true,
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 116
-                                    },
-                                    __self: undefined
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                    type: "invalid",
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 125
-                                    },
-                                    __self: undefined,
-                                    children: errors.password
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Form.Group, {
-                            controlId: "email",
-                            className: "mb-3",
-                            __source: {
-                                fileName: "src/components/profile-view/update-user.jsx",
-                                lineNumber: 129
-                            },
-                            __self: undefined,
-                            children: [
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Label, {
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 130
-                                    },
-                                    __self: undefined,
-                                    children: "e-mail: "
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control, {
-                                    type: "email",
-                                    name: "email",
-                                    value: userData.email || '',
-                                    onChange: handleChange,
-                                    placeholder: "Enter email here",
-                                    isInvalid: !!errors.email,
-                                    required: true,
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 131
-                                    },
-                                    __self: undefined
-                                }),
-                                /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Form.Control.Feedback, {
-                                    type: "invalid",
-                                    __source: {
-                                        fileName: "src/components/profile-view/update-user.jsx",
-                                        lineNumber: 140
-                                    },
-                                    __self: undefined,
-                                    children: errors.email
-                                })
-                            ]
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                            type: "submit",
-                            className: "login-btn",
-                            disabled: !userData.password,
-                            onClick: handleSubmit,
-                            __source: {
-                                fileName: "src/components/profile-view/update-user.jsx",
-                                lineNumber: 144
-                            },
-                            __self: undefined,
-                            children: "Update"
-                        }),
-                        /*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Button, {
-                            className: "d-block mt-5 mb-5",
-                            variant: "warning",
-                            onClick: handleDelete,
-                            __source: {
-                                fileName: "src/components/profile-view/update-user.jsx",
-                                lineNumber: 152
-                            },
-                            __self: undefined,
-                            children: "Delete profile"
-                        })
-                    ]
-                })
-            ]
-        })
-    }));
-};
-_s(UpdateUser, "YWFRI6s5TmTKCXNJgsJY5aS7SOw=");
-_c = UpdateUser;
-exports.default = UpdateUser;
-var _c;
-$RefreshReg$(_c, "UpdateUser");
+                    {
+                        key: "getBackwardJump",
+                        value: function() {
+                            var e3 = this.state.selected - this.props.pageRangeDisplayed;
+                            return e3 < 0 ? 0 : e3;
+                        }
+                    },
+                    {
+                        key: "getElementHref",
+                        value: function(e3) {
+                            var t3 = this.props, a8 = t3.hrefBuilder, r6 = t3.pageCount, n2 = t3.hrefAllControls;
+                            if (a8) return n2 || e3 >= 0 && e3 < r6 ? a8(e3 + 1, r6, this.state.selected) : void 0;
+                        }
+                    },
+                    {
+                        key: "ariaLabelBuilder",
+                        value: function(e3) {
+                            var t3 = e3 === this.state.selected;
+                            if (this.props.ariaLabelBuilder && e3 >= 0 && e3 < this.props.pageCount) {
+                                var a8 = this.props.ariaLabelBuilder(e3 + 1, t3);
+                                return this.props.extraAriaContext && !t3 && (a8 = a8 + " " + this.props.extraAriaContext), a8;
+                            }
+                        }
+                    },
+                    {
+                        key: "getPageElement",
+                        value: function(e3) {
+                            var a9 = this.state.selected, r6 = this.props, n2 = r6.pageClassName, i2 = r6.pageLinkClassName, o2 = r6.activeClassName, s3 = r6.activeLinkClassName, c1 = r6.extraAriaContext, p1 = r6.pageLabelBuilder;
+                            return t2().createElement(l, {
+                                key: e3,
+                                pageSelectedHandler: this.handlePageSelected.bind(null, e3),
+                                selected: a9 === e3,
+                                rel: this.getElementPageRel(e3),
+                                pageClassName: n2,
+                                pageLinkClassName: i2,
+                                activeClassName: o2,
+                                activeLinkClassName: s3,
+                                extraAriaContext: c1,
+                                href: this.getElementHref(e3),
+                                ariaLabel: this.ariaLabelBuilder(e3),
+                                page: e3 + 1,
+                                pageLabelBuilder: p1,
+                                getEventListener: this.getEventListener
+                            });
+                        }
+                    },
+                    {
+                        key: "render",
+                        value: function() {
+                            var e3 = this.props.renderOnZeroPageCount;
+                            if (0 === this.props.pageCount && (void 0) !== e3) return e3 ? e3(this.props) : e3;
+                            var a9 = this.props, r6 = a9.disabledClassName, n2 = a9.disabledLinkClassName, i2 = a9.pageCount, o2 = a9.className, s3 = a9.containerClassName, l1 = a9.previousLabel, c1 = a9.previousClassName, p1 = a9.previousLinkClassName, u1 = a9.previousAriaLabel, d2 = a9.prevRel, v2 = a9.nextLabel, b3 = a9.nextClassName, h2 = a9.nextLinkClassName, m2 = a9.nextAriaLabel, y2 = a9.nextRel, C1 = this.state.selected, P1 = 0 === C1, k = C1 === i2 - 1, x = "".concat(g(c1)).concat(P1 ? " ".concat(g(r6)) : ""), N = "".concat(g(b3)).concat(k ? " ".concat(g(r6)) : ""), L = "".concat(g(p1)).concat(P1 ? " ".concat(g(n2)) : ""), O = "".concat(g(h2)).concat(k ? " ".concat(g(n2)) : ""), R = P1 ? "true" : "false", E = k ? "true" : "false";
+                            return t2().createElement("ul", {
+                                className: o2 || s3,
+                                role: "navigation",
+                                "aria-label": "Pagination"
+                            }, t2().createElement("li", {
+                                className: x
+                            }, t2().createElement("a", f({
+                                className: L,
+                                href: this.getElementHref(C1 - 1),
+                                tabIndex: P1 ? "-1" : "0",
+                                role: "button",
+                                onKeyPress: this.handlePreviousPage,
+                                "aria-disabled": R,
+                                "aria-label": u1,
+                                rel: d2
+                            }, this.getEventListener(this.handlePreviousPage)), l1)), this.pagination(), t2().createElement("li", {
+                                className: N
+                            }, t2().createElement("a", f({
+                                className: O,
+                                href: this.getElementHref(C1 + 1),
+                                tabIndex: k ? "-1" : "0",
+                                role: "button",
+                                onKeyPress: this.handleNextPage,
+                                "aria-disabled": E,
+                                "aria-label": m2,
+                                rel: y2
+                            }, this.getEventListener(this.handleNextPage)), v2)));
+                        }
+                    }
+                ], v(a6.prototype, r5), Object.defineProperty(a6, "prototype", {
+                    writable: !1
+                }), s2;
+            }(e1.Component);
+            C(P, "propTypes", {
+                pageCount: i().number.isRequired,
+                pageRangeDisplayed: i().number,
+                marginPagesDisplayed: i().number,
+                previousLabel: i().node,
+                previousAriaLabel: i().string,
+                prevPageRel: i().string,
+                prevRel: i().string,
+                nextLabel: i().node,
+                nextAriaLabel: i().string,
+                nextPageRel: i().string,
+                nextRel: i().string,
+                breakLabel: i().oneOfType([
+                    i().string,
+                    i().node
+                ]),
+                hrefBuilder: i().func,
+                hrefAllControls: i().bool,
+                onPageChange: i().func,
+                onPageActive: i().func,
+                onClick: i().func,
+                initialPage: i().number,
+                forcePage: i().number,
+                disableInitialCallback: i().bool,
+                containerClassName: i().string,
+                className: i().string,
+                pageClassName: i().string,
+                pageLinkClassName: i().string,
+                pageLabelBuilder: i().func,
+                activeClassName: i().string,
+                activeLinkClassName: i().string,
+                previousClassName: i().string,
+                nextClassName: i().string,
+                previousLinkClassName: i().string,
+                nextLinkClassName: i().string,
+                disabledClassName: i().string,
+                disabledLinkClassName: i().string,
+                breakClassName: i().string,
+                breakLinkClassName: i().string,
+                extraAriaContext: i().string,
+                ariaLabelBuilder: i().func,
+                eventListener: i().string,
+                renderOnZeroPageCount: i().func,
+                selectedPageRel: i().string
+            }), C(P, "defaultProps", {
+                pageRangeDisplayed: 2,
+                marginPagesDisplayed: 3,
+                activeClassName: "selected",
+                previousLabel: "Previous",
+                previousClassName: "previous",
+                previousAriaLabel: "Previous page",
+                prevPageRel: "prev",
+                prevRel: "prev",
+                nextLabel: "Next",
+                nextClassName: "next",
+                nextAriaLabel: "Next page",
+                nextPageRel: "next",
+                nextRel: "next",
+                breakLabel: "...",
+                disabledClassName: "disabled",
+                disableInitialCallback: !1,
+                pageLabelBuilder: function(e2) {
+                    return e2;
+                },
+                eventListener: "onClick",
+                renderOnZeroPageCount: void 0,
+                selectedPageRel: "canonical",
+                hrefAllControls: !1
+            });
+            const k = P;
+        })(), n;
+    })()
+);
 
-  $parcel$ReactRefreshHelpers$f560.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","../../utils/constant":"cR822","axios":"iYoWk","react-bootstrap":"h2YVd","../../utils/validate":"jdxGU","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"cK8m8":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$94e5 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+},{"react":"6TuXu"}],"99ezQ":[function() {},{}],"jtutY":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$b6e5 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$94e5.prelude(module);
+$parcel$ReactRefreshHelpers$b6e5.prelude(module);
 
 try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -76848,65 +78452,33 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxRuntime = require("react/jsx-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
-var _reactBootstrap = require("react-bootstrap");
-const UserInfo = ({ name , email  })=>{
-    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactBootstrap.Card, {
+var _reactRouterDom = require("react-router-dom");
+const PrivateRoute = ({ component: Component , isLoggedIn , ...rest })=>{
+    return(/*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Route, {
+        ...rest,
+        render: (props)=>isLoggedIn ? /*#__PURE__*/ _jsxRuntime.jsx(Component, {
+                ...props
+            }) : /*#__PURE__*/ _jsxRuntime.jsx(_reactRouterDom.Redirect, {
+                to: "/"
+            })
+        ,
         __source: {
-            fileName: "src/components/profile-view/user-info.jsx",
+            fileName: "src/components/main-view/PrivateRoute.js",
             lineNumber: 6
         },
-        __self: undefined,
-        children: /*#__PURE__*/ _jsxRuntime.jsxs(_reactBootstrap.Card.Body, {
-            __source: {
-                fileName: "src/components/profile-view/user-info.jsx",
-                lineNumber: 7
-            },
-            __self: undefined,
-            children: [
-                /*#__PURE__*/ _jsxRuntime.jsx("h4", {
-                    __source: {
-                        fileName: "src/components/profile-view/user-info.jsx",
-                        lineNumber: 8
-                    },
-                    __self: undefined,
-                    children: "User Info"
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
-                    __source: {
-                        fileName: "src/components/profile-view/user-info.jsx",
-                        lineNumber: 9
-                    },
-                    __self: undefined,
-                    children: [
-                        "Name: ",
-                        name
-                    ]
-                }),
-                /*#__PURE__*/ _jsxRuntime.jsxs("p", {
-                    __source: {
-                        fileName: "src/components/profile-view/user-info.jsx",
-                        lineNumber: 10
-                    },
-                    __self: undefined,
-                    children: [
-                        "e-mail: ",
-                        email
-                    ]
-                })
-            ]
-        })
+        __self: undefined
     }));
 };
-_c = UserInfo;
-exports.default = UserInfo;
+_c = PrivateRoute;
+exports.default = PrivateRoute;
 var _c;
-$RefreshReg$(_c, "UserInfo");
+$RefreshReg$(_c, "PrivateRoute");
 
-  $parcel$ReactRefreshHelpers$94e5.postlude(module);
+  $parcel$ReactRefreshHelpers$b6e5.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-bootstrap":"h2YVd","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"jUTZ8":[function() {},{}]},["aVk2c","fE14v","dLPEP"], "dLPEP", "parcelRequireaec4")
+},{"react/jsx-runtime":"8xIwr","react":"6TuXu","react-router-dom":"cpyQW","@parcel/transformer-js/src/esmodule-helpers.js":"6PVVw","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"3I5Fk"}],"jyMAr":[function() {},{}],"8bnpO":[function() {},{}],"jUTZ8":[function() {},{}]},["aVk2c","fE14v","dLPEP"], "dLPEP", "parcelRequireaec4")
 
 //# sourceMappingURL=index.6701a6e1.js.map

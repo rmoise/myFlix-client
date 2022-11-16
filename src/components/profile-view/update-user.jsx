@@ -143,7 +143,7 @@ const UpdateUser = ({ user }) => {
           </Form.Group>
           <Button
             type="submit"
-            className="login-btn mt-2 mb-3"
+            className="login-btn mt-2"
             disabled={!userData.password}
             onClick={handleSubmit}
           >
@@ -154,7 +154,7 @@ const UpdateUser = ({ user }) => {
               borderStyle: 'none',
               float: 'right',
             }}
-            className="d-block mt-2 mb-3"
+            className="d-block mt-2"
             variant="warning"
             onClick={handleDelete}
           >

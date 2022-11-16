@@ -1,17 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import { Container } from 'react-bootstrap';
+import { devToolsEnhancer } from 'redux-devtools-extension';
+import moviesApp from './reducers/reducers';
 import MainView from './components/main-view/main-view';
+import 'font-awesome/css/font-awesome.min.css';
 import './index.scss';
 
-class MyFlixApplication extends React.Component{
-    render(){
-        return (
-          <Container fluid>
-            <MainView />
-          </Container>
-        );
-    }
+const store = createStore(moviesApp, devToolsEnhancer());
+
+class MyFlixApplication extends React.Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <Container fluid>
+          <MainView />
+        </Container>
+      </Provider>
+    );
+  }
 }
 
 //to find root of your app

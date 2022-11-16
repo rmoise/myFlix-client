@@ -17,7 +17,7 @@ const GenreView = ({ genre, movies }) => {
         <Breadcrumb.Item active>Genre</Breadcrumb.Item>
       </Breadcrumb>
 
-      <Card className="mt-4 mx-auto" style={{ width: '80%' }}>
+      <Card className="mt-4 mx-auto">
         <Card.Body>
           <Card.Title as="h1" className="text-center">
             {genre.Name}
