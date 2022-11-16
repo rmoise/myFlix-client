@@ -10,7 +10,6 @@ import GenreView from '../genre-view/genre-view';
 import MyNavbar from '../nav-bar/nav-bar';
 import ProfileView from '../profile-view/profile-view';
 import MovieList from '../movie-list/movie-list';
-/* import PageLoader from '../page-loader/page-loader'; */
 import { setMovies } from '../../actions/actions';
 import { API_URL } from '../../utils/constant';
 
