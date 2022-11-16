@@ -40,7 +40,6 @@ const MovieList = ({visibilityFilter, movies, user}) => {
 
     return (
       <Row className="px-2 px-md-5">
-        <h1 className="text-center page-title mb-4">Movie List</h1>
         <VisibilityInputFilter visibilityFilter={visibilityFilter} />
         {filteredMovies.map((m) => (
           <Col md={3} key={m._id} className="g-4">
