@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Navbar, NavDropdown, Nav } from 'react-bootstrap';
 
+
 import './nav-bar.scss';
 
 const MyNavbar = ({ user }) => {
@@ -10,7 +11,12 @@ const MyNavbar = ({ user }) => {
   };
 
   return (
-    <Navbar sticky="top" expand="lg" className="navbar w-12 pb-2">
+    <Navbar
+      sticky="top"
+      variant="dark"
+      expand="lg"
+      className="navbar nav-color w-12 pb-2"
+    >
       <Container fluid className="px-md-5">
         <Navbar.Brand href="/">myFlix</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

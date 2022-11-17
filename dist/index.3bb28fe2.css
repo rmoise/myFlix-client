@@ -3000,8 +3000,13 @@
   color: #000 !important;
 }
 
-.navbar {
+.navbar, .nav-color {
   background-color: #dc143c !important;
+}
+
+.navbar-toggler, .navbar-toggler-icon {
+  color: #fff !important;
+  border-color: #fff !important;
 }
 
 .movie-poster {
