@@ -1,31 +1,29 @@
- .login-container {
-    margin: auto;
-
-
+.login-container {
+  margin: auto;
 }
 
 .login-btn {
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 .login-register {
-    font-size: 16px;
+  font-size: 16px;
 }
-
 
 .login-logo {
-    color: white;
-        margin: auto;
-    margin-top: 50px;
-    margin-bottom: 15px;
-    text-align: center;
+  color: white;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
-body {
-  height: 844px;
+.login-background {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
   background-color: blueviolet;
-  background-image:
-    linear-gradient(
-      blueviolet, #f06d06
-    );
+  background-image: linear-gradient(blueviolet, #f06d06);
 }

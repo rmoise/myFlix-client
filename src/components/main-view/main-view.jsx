@@ -85,7 +85,9 @@ class MainView extends React.Component {
                 isLoggedIn ? (
                   <MovieList user={user} />
                 ) : (
-                  <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />
+                  <Col className="login-background">
+                    <LoginView onLoggedIn={(user) => this.onLoggedIn(user)} />
+                  </Col>
                 )
               }
             />
@@ -95,7 +97,7 @@ class MainView extends React.Component {
               render={() => {
                 if (user) return <Redirect to="/" />;
                 return (
-                  <Col>
+                  <Col className="login-background">
                     <RegistrationView />
                   </Col>
                 );

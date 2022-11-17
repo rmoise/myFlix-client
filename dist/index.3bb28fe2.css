@@ -3055,10 +3055,11 @@
   margin: 50px auto 15px;
 }
 
-body {
-  height: 844px;
+.login-background {
   background-color: #8a2be2;
   background-image: linear-gradient(#8a2be2, #f06d06);
+  position: fixed;
+  inset: 0;
 }
 
 /*# sourceMappingURL=index.3bb28fe2.css.map */
