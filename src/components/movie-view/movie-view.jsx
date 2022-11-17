@@ -59,13 +59,20 @@ const MovieView = ({ movie }) => {
                 <span className="label h6">Description </span>
                 <p className="value m-0">{movie.Description}</p>
               </div>
-              <div className="movie-footer text-center text-sm-start align-items-end pt-0">
-                <Card.Footer className="p-md-0 pt-md-4">
+              <div className="movie-footer pb-2">
+                <Card.Footer className=" p-0 pt-4">
                   <Link to={`/directors/${movie.Director.Name}`}>
-                    <Button variant="outline-primary link">Director</Button>
+                    <Button
+                      className=" director-btn pb-sm-2 px-3"
+                      variant="outline-primary link"
+                    >
+                      Director
+                    </Button>
                   </Link>
                   <Link to={`/genres/${movie.Genre.Name}`}>
-                    <Button variant="outline-primary link">Genre</Button>
+                    <Button className="px-4" variant="outline-primary link">
+                      Genre
+                    </Button>
                   </Link>
                 </Card.Footer>
               </div>
