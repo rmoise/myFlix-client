@@ -21,7 +21,7 @@ const DirectorView = ({ director, movies }) => {
           <Card.Title as="h1" className="text-center mt-4">
             {director.Name}
           </Card.Title>
-          <div className="director-bio">
+          <div className="director-bio mt-5">
             <span className="label h6">Biography </span>
             <p className="value">{director.Bio}</p>
           </div>
