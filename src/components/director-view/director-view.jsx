@@ -18,7 +18,7 @@ const DirectorView = ({ director, movies }) => {
       </Breadcrumb>
       <Card className="mt-4 mx-auto" >
         <Card.Body>
-          <Card.Title as="h1" className="text-center">
+          <Card.Title as="h1" className="text-center mt-4">
             {director.Name}
           </Card.Title>
           <div className="director-bio">

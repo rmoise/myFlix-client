@@ -19,7 +19,7 @@ const GenreView = ({ genre, movies }) => {
 
       <Card className="mt-4 mx-auto">
         <Card.Body>
-          <Card.Title as="h1" className="text-center">
+          <Card.Title as="h1" className="text-center mt-4">
             {genre.Name}
           </Card.Title>
           <div className="genre-desc">
