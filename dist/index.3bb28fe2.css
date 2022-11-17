@@ -2992,6 +2992,18 @@
   font-size: 2rem !important;
 }
 
+.nav-link, .navbar-brand {
+  color: #fff !important;
+}
+
+.nav-link:hover, .navbar-brand:hover {
+  color: #000 !important;
+}
+
+.navbar {
+  background-color: #dc143c !important;
+}
+
 .movie-poster {
   object-fit: cover;
 }

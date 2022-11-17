@@ -10,7 +10,7 @@ const MyNavbar = ({ user }) => {
   };
 
   return (
-    <Navbar sticky="top" bg="light" expand="lg" className="navbar w-12 pb-2">
+    <Navbar sticky="top" expand="lg" className="navbar w-12 pb-2">
       <Container fluid className="px-md-5">
         <Navbar.Brand href="/">myFlix</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
