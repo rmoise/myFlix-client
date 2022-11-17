@@ -15,7 +15,12 @@
 }
 
 .navbar, .nav-color {
-    background-color: crimson!important;
+    background-color: blueviolet!important;
+      background-image:
+    linear-gradient(
+      to right,
+      blueviolet, #f06d06
+    );
 }
 
 .navbar-toggler, .navbar-toggler-icon {

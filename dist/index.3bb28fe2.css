@@ -3001,7 +3001,8 @@
 }
 
 .navbar, .nav-color {
-  background-color: #dc143c !important;
+  background-image: linear-gradient(to right, #8a2be2, #f06d06);
+  background-color: #8a2be2 !important;
 }
 
 .navbar-toggler, .navbar-toggler-icon {
