@@ -14,8 +14,18 @@
 
 
 .login-logo {
+    color: white;
         margin: auto;
     margin-top: 50px;
     margin-bottom: 15px;
     text-align: center;
+}
+
+body {
+  height: 844px;
+  background-color: blueviolet;
+  background-image:
+    linear-gradient(
+      blueviolet, #f06d06
+    );
 }

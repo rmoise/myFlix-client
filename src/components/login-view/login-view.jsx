@@ -55,11 +55,11 @@ const LoginView = ({ onLoggedIn }) => {
   };
 
   return (
-    <Col className="mx-auto" lg={4} md={8}>
-      <h1 className="login-logo">myFlix</h1>
+    <Col className="mx-3" lg={4} md={8}>
+      <h1 className="login-logo mb-2">myFlix</h1>
       <Card className="login-container">
         <Card.Body>
-          <Card.Title as="h4" className="text-center">
+          <Card.Title as="h4" className="mb-4 mt-2 text-center">
             Log into myFlix
           </Card.Title>
           {message && (
