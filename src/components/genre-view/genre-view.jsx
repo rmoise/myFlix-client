@@ -27,7 +27,7 @@ const GenreView = ({ genre, movies }) => {
             <p className="value">{genre.Description}</p>
           </div>
 
-          <Card.Title as="h4" className="pt-5">
+          <Card.Title as="h4" className="label pt-5">
             {genre.Name} Movies
           </Card.Title>
           <Row>

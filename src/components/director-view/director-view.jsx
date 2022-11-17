@@ -32,7 +32,7 @@ const DirectorView = ({ director, movies }) => {
             </p>
           </div>
 
-          <Card.Title as="h4" className="pt-5">
+          <Card.Title as="h4" className="label pt-5">
             Movies directed by {director.Name}{' '}
           </Card.Title>
           <Row>
