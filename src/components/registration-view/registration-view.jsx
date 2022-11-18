@@ -131,7 +131,7 @@ const RegistrationView = () => {
                   type="text"
                   className="form-control"
                   onFocus={(e) => (e.currentTarget.type = 'date')}
-                  onBlur={(e) => (e.currentTarget.type = 'text')}
+                  onBlur={(e) => (e.currentTarget.type = 'date')}
                   placeholder="plz select your date"
                 />
               </Form.Group>
