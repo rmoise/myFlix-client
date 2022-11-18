@@ -132,6 +132,7 @@ const RegistrationView = () => {
                   name="dob"
                   onChange={handleChange}
                   placeholder="Enter date of birth here"
+                  onfocus="(this.type='date')"
                 />
               </Form.Group>
               <Button
