@@ -130,6 +130,7 @@ Profile view
 
 <!-- prettier-ignore -->
 * [![React][react.org]][react-url]
+* [![React-Redux][react-redux.org]][react-redux-url]
 * [![Bootstrap][bootstrap.com]][bootstrap-url]
 * [![Netlify Status](https://api.netlify.com/api/v1/badges/974b109e-2090-4460-9490-350a84f313f9/deploy-status)](https://app.netlify.com/sites/myflix-movie-client-react/deploys)
 
@@ -147,6 +148,8 @@ Profile view
 
 [react.org]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org
+[react-redux.org]: https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white
+[react-redux-url]: https://react-redux.js.org
 [bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [bootstrap-url]: https://getbootstrap.com
 [product-screenshot]: img/myFlix-screenshot.png
