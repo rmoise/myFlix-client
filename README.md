@@ -7,7 +7,7 @@
     <img src="img/logo-readme.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h1 align="center">myFlix-client Technical Case Study</h1>
+  <h1 align="center">myFlix-client-Technical Case Study</h1>
 
   <p align="center">
     <a href="https://myflix-movie-client-react.netlify.app/">View Demo</a>
