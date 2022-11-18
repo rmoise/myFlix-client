@@ -128,7 +128,7 @@ const RegistrationView = () => {
               <Form.Group controlId="dob" className="mb-3">
                 <Form.Label>Date of Birth </Form.Label>
                 <Form.Control
-                  type="date"
+                  type="text"
                   name="dob"
                   onChange={handleChange}
                   placeholder="Enter date of birth here"
