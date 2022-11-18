@@ -24,9 +24,7 @@
   <ol>
     <li>
       <a href="#objective">Objective</a>
-      <ul>
         <li><a href="#context">Context</a></li>
-      </ul>
     </li>
     <li><a href="#the-5-ws">The 5 Ws</a></li>
        <li><a href="#user-stories">User Stories</a></li>
