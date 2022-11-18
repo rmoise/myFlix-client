@@ -128,11 +128,10 @@ const RegistrationView = () => {
               <Form.Group controlId="dob" className="mb-3">
                 <Form.Label>Date of Birth </Form.Label>
                 <Form.Control
-                  type="text"
-                  className="form-control"
-                  onFocus={(e) => (e.currentTarget.type = 'date')}
-                  onBlur={(e) => (e.currentTarget.type = 'date')}
-                  placeholder="plz select your date"
+                  type="date"
+                  name="dob"
+                  onChange={handleChange}
+                  placeholder="Enter date of birth here"
                 />
               </Form.Group>
               <Button
