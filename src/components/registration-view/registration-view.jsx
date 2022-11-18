@@ -132,8 +132,10 @@ const RegistrationView = () => {
                   name="dob"
                   onChange={handleChange}
                   placeholder="Enter date of birth here"
-                  onFocus={() => (ref.current.type = 'date')}
-                  onBlur={() => (ref.current.type = 'date')}
+                  onFocus={(e) => {
+                    e.currentTarget.type = 'date';
+                    e.currentTarget.focus();
+                  }}
                 />
               </Form.Group>
               <Button
