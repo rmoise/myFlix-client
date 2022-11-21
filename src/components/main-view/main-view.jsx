@@ -71,7 +71,7 @@ class MainView extends React.Component {
     let { movies } = this.props;
     const { user } = this.state;
     const isLoggedIn = !!user;
-    /* const { loading } = this.props; */
+    
 
     return (
       <Router>

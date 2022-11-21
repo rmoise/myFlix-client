@@ -9,7 +9,7 @@ export const validate = (fieldName, value) => {
             else if(!/^[a-zA-Z0-9_]*$/.test(value))
                 errors.username = 'Username must contain alphanumeric characters only';
             else if(value.length < 5)
-                errors.username = 'Username must conatin atleast 5 characters';
+                errors.username = 'Username must contain at least 5 characters';
             else
                 errors.username = '';
             break;
@@ -21,7 +21,7 @@ export const validate = (fieldName, value) => {
             if(!value)
                 errors.password = 'Password is required';
             else if(value.length < 6)
-                errors.password = 'Password must conatin atleast 6 characters';
+                errors.password = 'Password must contain at least 6 characters';
             else
                 errors.password = '';
             break;
